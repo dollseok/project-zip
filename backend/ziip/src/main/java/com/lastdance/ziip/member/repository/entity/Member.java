@@ -16,6 +16,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,7 +58,7 @@ public class Member extends BaseEntity{
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<ScheduleComment> scheduleComments;
 
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<SchedulePhoto> schedulePhotos;
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    private SchedulePhoto schedulePhoto;
 
 }
