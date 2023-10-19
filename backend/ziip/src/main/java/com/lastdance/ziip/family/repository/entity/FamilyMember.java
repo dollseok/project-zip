@@ -1,15 +1,12 @@
-package com.lastdance.ziip.diary.repository.entity;
+package com.lastdance.ziip.family.repository.entity;
 
-import com.lastdance.ziip.family.repository.entity.Family;
-import com.lastdance.ziip.global.entity.BaseEntity;
-import java.util.List;
+import com.lastdance.ziip.member.repository.entity.Member;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Diary extends BaseEntity {
+public class FamilyMember {
 
     @Id @GeneratedValue
     private Integer id;
@@ -30,9 +27,10 @@ public class Diary extends BaseEntity {
     @JoinColumn(name = "family_id")
     private Family family;
 
-    private String title;
-    private String content;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    @OneToMany(mappedBy = "diary", fetch = FetchType.LAZY)
-    private List<DiaryPhoto> diaryPhotos;
+
+
 }
