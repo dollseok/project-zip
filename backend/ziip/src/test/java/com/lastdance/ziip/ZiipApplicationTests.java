@@ -1,10 +1,10 @@
-package com.lastdance.ziip.demo;
+package com.lastdance.ziip;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DemoApplicationTests {
+class ZiipApplicationTests {
 
 	@Test
 	void contextLoads() {
