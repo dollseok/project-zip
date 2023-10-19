@@ -1,4 +1,4 @@
-package com.lastdance.ziip.schedule.repository.entity;
+package com.lastdance.ziip.diary.repository.entity;
 
 import com.lastdance.ziip.global.entity.BaseEntity;
 import com.lastdance.ziip.member.repository.entity.Member;
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ScheduleComment extends BaseEntity {
+public class DiaryComment extends BaseEntity {
 
     @Id @GeneratedValue
     private Integer id;
@@ -29,9 +29,10 @@ public class ScheduleComment extends BaseEntity {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id")
-    private Schedule schedule;
+    @JoinColumn(name = "diary_id")
+    private Diary diary;
 
     private String content;
 
 }
+

@@ -43,8 +43,5 @@ public class Schedule extends BaseEntity {
     private List<ScheduleMember> scheduleMembers;
 
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
-    private List<ScheduleComment> scheduleComments;
-
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
     private List<SchedulePhoto> schedulePhotos;
 }

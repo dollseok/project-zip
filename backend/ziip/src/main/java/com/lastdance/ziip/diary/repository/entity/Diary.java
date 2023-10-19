@@ -35,4 +35,7 @@ public class Diary extends BaseEntity {
 
     @OneToMany(mappedBy = "diary", fetch = FetchType.LAZY)
     private List<DiaryPhoto> diaryPhotos;
+
+    @OneToMany(mappedBy = "diary", fetch = FetchType.LAZY)
+    private List<DiaryComment> diaryComments;
 }
