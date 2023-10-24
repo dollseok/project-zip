@@ -2,6 +2,7 @@ package com.lastdance.ziip.family.repository.entity;
 
 import com.lastdance.ziip.diary.repository.entity.Diary;
 import com.lastdance.ziip.global.entity.BaseEntity;
+import com.lastdance.ziip.question.repository.entity.Question;
 import com.lastdance.ziip.schedule.repository.entity.Schedule;
 import java.util.List;
 import javax.persistence.Entity;
@@ -39,4 +40,6 @@ public class Family extends BaseEntity {
     @OneToMany(mappedBy = "family", fetch = FetchType.LAZY)
     private List<Schedule> schedules;
 
+    @OneToMany(mappedBy = "family", fetch = FetchType.LAZY)
+    private List<Question> questions;
 }
