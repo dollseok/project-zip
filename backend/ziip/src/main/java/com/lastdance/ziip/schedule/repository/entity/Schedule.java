@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import com.lastdance.ziip.plan.repository.entity.Plan;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,16 +34,11 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "family_id")
     private Family family;
 
-    private String name;
-    private String imgUrl;
-    private String imgName;
+    private String title;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String content;
 
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
-    private List<ScheduleMember> scheduleMembers;
+    private List<Plan> plans;
 
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
-    private List<SchedulePhoto> schedulePhotos;
 }

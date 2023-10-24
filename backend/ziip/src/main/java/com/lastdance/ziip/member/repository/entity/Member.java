@@ -5,6 +5,7 @@ import com.lastdance.ziip.family.repository.entity.FamilyMember;
 import com.lastdance.ziip.global.entity.BaseEntity;
 import com.lastdance.ziip.member.enums.Role;
 import com.lastdance.ziip.member.enums.SocialType;
+import com.lastdance.ziip.plan.repository.entity.Plan;
 import com.lastdance.ziip.schedule.repository.entity.ScheduleMember;
 import com.lastdance.ziip.schedule.repository.entity.SchedulePhoto;
 import java.util.List;
@@ -30,7 +31,7 @@ import lombok.NoArgsConstructor;
 public class Member extends BaseEntity{
 
     @Id @GeneratedValue
-    private Integer id;
+    private Long id;
 
     private String email;
 
@@ -54,6 +55,5 @@ public class Member extends BaseEntity{
     private List<ScheduleMember> scheduleMembers;
 
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
-    private SchedulePhoto schedulePhoto;
-
+    private Plan plan;
 }
