@@ -26,3 +26,16 @@ logging:
       amazonaws:
         util:
           EC2MetadataUtils: ERROR
+
+redis:
+  host: localhost
+  port: 6379
+  password: redis
+
+oauth2:
+  kakao:
+    redirect-uri: http://localhost:3000/login/oauth2/code/kakao
+
+#oauth2:
+#  kakao:
+#    redirect-uri: https://k9b206.p.ssafy.io/login/oauth2/code/kakao
