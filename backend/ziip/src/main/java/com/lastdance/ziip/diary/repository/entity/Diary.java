@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class Diary extends BaseEntity {
 
     @Id @GeneratedValue
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "family_id")

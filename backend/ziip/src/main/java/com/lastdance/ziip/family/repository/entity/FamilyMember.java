@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class FamilyMember {
 
     @Id @GeneratedValue
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "family_id")

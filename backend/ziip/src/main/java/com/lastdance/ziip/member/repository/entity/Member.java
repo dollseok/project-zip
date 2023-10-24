@@ -8,8 +8,7 @@ import com.lastdance.ziip.global.entity.BaseEntity;
 import com.lastdance.ziip.member.enums.Role;
 import com.lastdance.ziip.member.enums.SocialType;
 import com.lastdance.ziip.plan.repository.entity.Plan;
-import com.lastdance.ziip.schedule.repository.entity.ScheduleMember;
-import com.lastdance.ziip.schedule.repository.entity.SchedulePhoto;
+
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

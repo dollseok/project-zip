@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class Family extends BaseEntity {
 
     @Id @GeneratedValue
-    private Integer id;
+    private Long id;
 
     private String name;
     private String code;

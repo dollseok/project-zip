@@ -1,5 +1,6 @@
 package com.lastdance.ziip.plan.repository.entity;
 
+import com.lastdance.ziip.plan.enums.Code;
 import com.lastdance.ziip.plan.enums.Status;
 import lombok.*;
 
@@ -18,5 +19,6 @@ public class StatusCode {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    private Integer code;
+    @Enumerated(EnumType.STRING)
+    private Code code;
 }

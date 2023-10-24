@@ -18,5 +18,5 @@ public class Emotion {
     private String imgUrl;
 
     @OneToOne(mappedBy = "emotion",fetch = FetchType.LAZY)
-    private Emotion emotion;
+    private Diary diary;
 }

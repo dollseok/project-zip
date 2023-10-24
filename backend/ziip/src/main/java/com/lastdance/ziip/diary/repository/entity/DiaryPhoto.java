@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class DiaryPhoto extends BaseEntity {
 
     @Id @GeneratedValue
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id")
