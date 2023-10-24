@@ -1,5 +1,7 @@
 package com.lastdance.ziip.member.repository.entity;
 
+import com.lastdance.ziip.diary.repository.entity.Diary;
+import com.lastdance.ziip.diary.repository.entity.DiaryComment;
 import com.lastdance.ziip.member.enums.Gender;
 import com.lastdance.ziip.family.repository.entity.FamilyMember;
 import com.lastdance.ziip.global.entity.BaseEntity;
@@ -52,7 +54,10 @@ public class Member extends BaseEntity{
     private List<FamilyMember> familyMembers;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<ScheduleMember> scheduleMembers;
+    private List<Diary> diaries;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<DiaryComment> diaryComments;
 
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Plan plan;
