@@ -15,11 +15,13 @@ import javax.persistence.*;
 public class Plan extends BaseEntity {
 
     @Id @GeneratedValue
+    @Column(nullable = false)
     private Long id;
 
     // 일정 id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
+    @Column(nullable = false)
     private Schedule schedule;
 
     // 회원 id(담당자)
@@ -30,10 +32,13 @@ public class Plan extends BaseEntity {
     // 할일 상태 코드 id
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_id")
+    @Column(nullable = false)
     private StatusCode statusCode;
 
     // 제목
+    @Column(nullable = false)
     private String title;
+
     // 메모
     private String content;
 }

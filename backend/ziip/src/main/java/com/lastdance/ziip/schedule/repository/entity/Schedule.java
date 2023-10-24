@@ -4,13 +4,7 @@ import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.global.entity.BaseEntity;
 import java.time.LocalDate;
 import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import com.lastdance.ziip.plan.repository.entity.Plan;
 import lombok.AccessLevel;
@@ -28,14 +22,21 @@ import org.springframework.cglib.core.Local;
 public class Schedule extends BaseEntity {
 
     @Id @GeneratedValue
+    @Column(nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "family_id")
+    @Column(nullable = false)
     private Family family;
 
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private LocalDate startDate;
+
+    @Column(nullable = false)
     private LocalDate endDate;
 
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)

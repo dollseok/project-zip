@@ -5,11 +5,9 @@ import com.lastdance.ziip.global.entity.BaseEntity;
 import com.lastdance.ziip.question.repository.entity.Question;
 import com.lastdance.ziip.schedule.repository.entity.Schedule;
 import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,9 +22,12 @@ import lombok.NoArgsConstructor;
 public class Family extends BaseEntity {
 
     @Id @GeneratedValue
+    @Column(nullable = false)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
+
     private String code;
     private String profileImgUrl;
     private String profileImgName;

@@ -10,14 +10,9 @@ import com.lastdance.ziip.member.enums.SocialType;
 import com.lastdance.ziip.plan.repository.entity.Plan;
 
 import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,20 +27,28 @@ import lombok.NoArgsConstructor;
 public class Member extends BaseEntity{
 
     @Id @GeneratedValue
+    @Column(nullable = false)
     private Long id;
 
+    @Column(nullable = false)
     private String email;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Gender gender;
+
+    @Column(nullable = false)
     private String name;
+
     private String profileImgUrl;
     private String profileImgName;
     private String socialId;
 
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
+
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
 
