@@ -6,9 +6,15 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+
+import com.lastdance.ziip.member.enums.SocialType;
+import com.lastdance.ziip.member.repository.MemberRepository;
+import com.lastdance.ziip.member.repository.entity.Member;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -89,11 +95,11 @@ public class JwtTokenProvider {
 
     }
 
-    public void storeRefreshToken(int id, String refreshToken) {
+    public void storeRefreshToken(Long id, String refreshToken) {
         Member member = memberRepository.findById(id).orElse(null);
         if (member != null) {
             redisTemplate.opsForValue().set(
-                    Integer.toString(id),
+                    Long.toString(id),
                     refreshToken,
                     refreshTokenValidTime,
                     TimeUnit.MILLISECONDS
