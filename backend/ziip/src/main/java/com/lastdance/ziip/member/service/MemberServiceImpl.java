@@ -339,33 +339,33 @@ public class MemberServiceImpl implements MemberService {
                         .build())
                 .build();
     }
-//
-//    @Transactional(readOnly = true)
-//    public BaseResponseDto validNickname(String nickname, Member member) {
-//        Member findMember = memberRepository.findByNickname(nickname).orElse(null);
-//        //닉네임 중복
-//        if (findMember != null) {
-//
-//            return BaseResponseDto.builder()
-//                    .success(false)
-//                    .message("닉네임이 중복되었습니다")
-//                    .data(NickNameResponseDto.builder()
-//                            .memberId(member.getId())
-//                            .nickname(nickname)
-//                            .build())
-//                    .build();
-//        }
-//
-//
-//        return BaseResponseDto.builder()
-//                .success(true)
-//                .message("닉네임이 사용가능합니다")
-//                .data(NickNameResponseDto.builder()
-//                        .memberId(member.getId())
-//                        .nickname(nickname)
-//                        .build())
-//                .build();
-//    }
+
+    @Transactional(readOnly = true)
+    public BaseResponseDto validNickname(String nickname, Member member) {
+        Member findMember = memberRepository.findByName(nickname).orElse(null);
+        //닉네임 중복
+        if (findMember != null) {
+
+            return BaseResponseDto.builder()
+                    .success(false)
+                    .message("닉네임이 중복되었습니다")
+                    .data(NickNameResponseDto.builder()
+                            .memberId(member.getId())
+                            .name(nickname)
+                            .build())
+                    .build();
+        }
+
+
+        return BaseResponseDto.builder()
+                .success(true)
+                .message("닉네임이 사용가능합니다")
+                .data(NickNameResponseDto.builder()
+                        .memberId(member.getId())
+                        .name(nickname)
+                        .build())
+                .build();
+    }
 //
 //    @Override
 //    public BaseResponseDto deleteMember(Member findMember) {

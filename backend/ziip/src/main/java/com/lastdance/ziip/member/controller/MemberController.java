@@ -131,18 +131,18 @@ public class MemberController {
 
         return memberService.updateNickname(nicknameRequestDto.getName(), findMember);
     }
-//
-//    @Operation(summary = "닉네임 중복 검사", description = "닉네임 중복 검사")
-//    @GetMapping("/nickname")
-//    public BaseResponseDto validNickname(@RequestParam("nickname") String nickname,
-//                                         HttpServletRequest httpServletRequest) {
-//        String token = httpServletRequest.getHeader("Authorization");
-//        if (token == null) return null;
-//
-//        Member findMember = memberService.findMemberByJwtToken(token);
-//
-//        return memberService.validNickname(nickname, findMember);
-//    }
+
+    @Operation(summary = "닉네임 중복 검사", description = "닉네임 중복 검사")
+    @GetMapping("/nickname")
+    public BaseResponseDto validNickname(@RequestParam("nickname") String nickname,
+                                         HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) return null;
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        return memberService.validNickname(nickname, findMember);
+    }
 //
 //    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴")
 //    @PutMapping("/withdrawal")

@@ -19,8 +19,8 @@ public interface MemberService {
 //    BaseResponseDto updateMemberInfo(Integer memberId, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto, Member findMember, MultipartFile file);
 //
     BaseResponseDto updateNickname(String nickname, Member findMember);
-//
-//    BaseResponseDto validNickname(String nickname, Member findMember);
+
+    BaseResponseDto validNickname(String nickname, Member findMember);
 //
 //    BaseResponseDto deleteMember(Member findMember);
 //
