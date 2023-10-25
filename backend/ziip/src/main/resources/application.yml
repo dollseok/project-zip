@@ -61,3 +61,5 @@ oauth2:
     state: test
   kakao:
     client-id: ${KAKAO_CLIENT_ID}
+    redirect-uri: http://localhost:3000/login/oauth2/code/kakao
+
