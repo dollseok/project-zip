@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class KakaoOAuth2 {
-    @Value("${oauth2.kakao.client-id}")
+    @Value("${KAKAO_CLIENT_ID}")
     String clientId;
     private String getAccessToken(String authorizedCode, String redirectUri) {
         // HttpHeader 오브젝트 생성
