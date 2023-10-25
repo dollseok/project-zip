@@ -2,13 +2,12 @@ package com.lastdance.ziip.family.repository.entity;
 
 import com.lastdance.ziip.diary.repository.entity.Diary;
 import com.lastdance.ziip.global.entity.BaseEntity;
+import com.lastdance.ziip.question.repository.entity.Question;
 import com.lastdance.ziip.schedule.repository.entity.Schedule;
 import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,9 +22,12 @@ import lombok.NoArgsConstructor;
 public class Family extends BaseEntity {
 
     @Id @GeneratedValue
-    private Integer id;
+    @Column(nullable = false)
+    private Long id;
 
+    @Column(nullable = false)
     private String name;
+
     private String code;
     private String profileImgUrl;
     private String profileImgName;
@@ -39,4 +41,6 @@ public class Family extends BaseEntity {
     @OneToMany(mappedBy = "family", fetch = FetchType.LAZY)
     private List<Schedule> schedules;
 
+    @OneToMany(mappedBy = "family", fetch = FetchType.LAZY)
+    private List<Question> questions;
 }
