@@ -11,10 +11,7 @@ import com.lastdance.ziip.global.exception.validator.MemberValidator;
 import com.lastdance.ziip.member.dto.LoginDto;
 import com.lastdance.ziip.member.dto.TokenDto;
 import com.lastdance.ziip.member.dto.request.MemberInfoUpdateRequestDto;
-import com.lastdance.ziip.member.dto.response.BaseResponseDto;
-import com.lastdance.ziip.member.dto.response.MemberInfoResponseDto;
-import com.lastdance.ziip.member.dto.response.MemberUpdateResponseDto;
-import com.lastdance.ziip.member.dto.response.NickNameResponseDto;
+import com.lastdance.ziip.member.dto.response.*;
 import com.lastdance.ziip.member.enums.Gender;
 import com.lastdance.ziip.member.enums.Role;
 import com.lastdance.ziip.member.enums.SocialType;
@@ -226,23 +223,22 @@ public class MemberServiceImpl implements MemberService {
 
     }
 
-//    @Override
-//    public MemberAllInfoResponse getALlMemberInfo(Member findMember) {
-//
-//        MemberAllInfoResponse memberAllInfoResponse = MemberAllInfoResponse.builder()
-//                .id(findMember.getId())
-//                .bbtiType(findMember.getBbtiType().getId())
-//                .email(findMember.getEmail())
-//                .nickname(findMember.getNickname())
-//                .gender(findMember.getGender().name())
-//                .profileImgName(findMember.getProfileImgName())
-//                .profileImgPath(findMember.getProfileImgPath())
-//                .socialId(findMember.getSocialId())
-//                .socialType(findMember.getSocialType())
-//                .role(findMember.getRole().getValue())
-//                .build();
-//        return memberAllInfoResponse;
-//    }
+    @Override
+    public MemberAllInfoResponse getALlMemberInfo(Member findMember) {
+
+        MemberAllInfoResponse memberAllInfoResponse = MemberAllInfoResponse.builder()
+                .id(findMember.getId())
+                .email(findMember.getEmail())
+                .name(findMember.getName())
+                .gender(findMember.getGender().name())
+                .profileImgName(findMember.getProfileImgName())
+                .profileImgUrl(findMember.getProfileImgUrl())
+                .socialId(findMember.getSocialId())
+                .socialType(findMember.getSocialType())
+                .role(findMember.getRole().getValue())
+                .build();
+        return memberAllInfoResponse;
+    }
 
 //    @Override
 //    public MyPageMemberInfoResponse getMyPageMemberInfo(int memberId) {
