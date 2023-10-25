@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Getter
@@ -13,15 +14,15 @@ import javax.validation.constraints.NotNull;
 public class Emotion {
 
     @Id @GeneratedValue
-    @Column(nullable = false)
+     
     private Long id;
 
-    @Column(nullable = false)
+     
     private String emotionName;
 
-    @Column(nullable = false)
+     
     private String imgUrl;
 
-    @OneToOne(mappedBy = "emotion",fetch = FetchType.LAZY)
-    private Diary diary;
+    @OneToMany(mappedBy = "emotion",fetch = FetchType.LAZY)
+    private List<Diary> diaries;
 }

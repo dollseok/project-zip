@@ -21,28 +21,24 @@ import lombok.NoArgsConstructor;
 public class Diary extends BaseEntity {
 
     @Id @GeneratedValue
-    @Column(nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "family_id")
-    @Column(nullable = false)
+     
     private Family family;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    @Column(nullable = false)
+     
     private Member member;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "emotion_id")
-    @Column(nullable = false)
     private Emotion emotion;
 
-    @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
     private String content;
 
     @OneToMany(mappedBy = "diary", fetch = FetchType.LAZY)

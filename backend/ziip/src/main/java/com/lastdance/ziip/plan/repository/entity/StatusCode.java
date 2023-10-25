@@ -14,14 +14,14 @@ import javax.persistence.*;
 public class StatusCode {
 
     @Id @GeneratedValue
-    @Column(nullable = false)
+     
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+     
     private Status status;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+     
     private Code code;
 }

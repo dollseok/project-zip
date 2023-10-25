@@ -19,18 +19,18 @@ import lombok.NoArgsConstructor;
 public class DiaryPhoto extends BaseEntity {
 
     @Id @GeneratedValue
-    @Column(nullable = false)
+     
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id")
-    @Column(nullable = false)
+     
     private Diary diary;
 
-    @Column(nullable = false)
+     
     private String imgUrl;
 
-    @Column(nullable = false)
+     
     private String imgName;
 
 }

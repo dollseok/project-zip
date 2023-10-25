@@ -22,10 +22,10 @@ import lombok.NoArgsConstructor;
 public class Family extends BaseEntity {
 
     @Id @GeneratedValue
-    @Column(nullable = false)
+     
     private Long id;
 
-    @Column(nullable = false)
+     
     private String name;
 
     private String code;
