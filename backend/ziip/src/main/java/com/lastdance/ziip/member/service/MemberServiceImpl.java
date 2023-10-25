@@ -14,6 +14,7 @@ import com.lastdance.ziip.member.dto.request.MemberInfoUpdateRequestDto;
 import com.lastdance.ziip.member.dto.response.BaseResponseDto;
 import com.lastdance.ziip.member.dto.response.MemberInfoResponseDto;
 import com.lastdance.ziip.member.dto.response.MemberUpdateResponseDto;
+import com.lastdance.ziip.member.dto.response.NickNameResponseDto;
 import com.lastdance.ziip.member.enums.Gender;
 import com.lastdance.ziip.member.enums.Role;
 import com.lastdance.ziip.member.enums.SocialType;
@@ -97,6 +98,7 @@ public class MemberServiceImpl implements MemberService {
             Member member = Member.builder()
                     .email(email)
                     .gender(gender)
+                    .name("")
                     .profileImgName(null)
                     .profileImgUrl(null)
                     .socialId(socialId)
@@ -151,6 +153,7 @@ public class MemberServiceImpl implements MemberService {
             Member member = Member.builder()
                     .email(email)
                     .gender(gender)
+                    .name("")
                     .profileImgName(null)
                     .profileImgUrl(null)
                     .socialId(socialId)
@@ -307,35 +310,35 @@ public class MemberServiceImpl implements MemberService {
 //
 //    }
 //
-//    @Transactional
-//    public BaseResponseDto updateNickname(String nickname, Member member) {
-//
-//        if (nickname == null || nickname.isBlank()) {
-//            throw new CustomException(HttpStatus.BAD_REQUEST, -101, "닉네임은 null이 될 수 없습니다");
-//        }
-//
-//        if (!isValidNickname(nickname) || (nickname.length() < 2 || nickname.length() >= 9)) {
-//            throw new CustomException(HttpStatus.BAD_REQUEST, -102, "닉네임 정규식 혹은 길이가 맞지 않습니다");
-//        }
-//
-//        Optional<Member> findNickname = memberRepository.findByNickname(nickname);
-//
-//        //닉네임 중복체크
-//        if (findNickname.isPresent() && !member.getNickname().equals(findNickname.get().getNickname())) {
-//            throw new CustomException(HttpStatus.BAD_REQUEST, -100, "닉네임이 중복되었습니다");
-//        }
-//
-//        member.updateNickname(nickname);
-//
-//        return BaseResponseDto.builder()
-//                .success(true)
-//                .message("닉네임이 등록되었습니다")
-//                .data(NickNameResponseDto.builder()
-//                        .memberId(member.getId())
-//                        .nickname(member.getNickname())
-//                        .build())
-//                .build();
-//    }
+    @Transactional
+    public BaseResponseDto updateNickname(String nickname, Member member) {
+
+        if (nickname == null || nickname.isBlank()) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, -101, "닉네임은 null이 될 수 없습니다");
+        }
+
+        if (!isValidNickname(nickname) || (nickname.length() < 2 || nickname.length() >= 9)) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, -102, "닉네임 정규식 혹은 길이가 맞지 않습니다");
+        }
+
+        Optional<Member> findNickname = memberRepository.findByName(nickname);
+
+        //닉네임 중복체크
+        if (findNickname.isPresent() && !member.getName().equals(findNickname.get().getName())) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, -100, "닉네임이 중복되었습니다");
+        }
+
+        member.updateName(nickname);
+
+        return BaseResponseDto.builder()
+                .success(true)
+                .message("닉네임이 등록되었습니다")
+                .data(NickNameResponseDto.builder()
+                        .memberId(member.getId())
+                        .name(member.getName())
+                        .build())
+                .build();
+    }
 //
 //    @Transactional(readOnly = true)
 //    public BaseResponseDto validNickname(String nickname, Member member) {
@@ -406,8 +409,8 @@ public class MemberServiceImpl implements MemberService {
                 .build();
     }
 
-//    private boolean isValidNickname(String nickname) {
-//
-//        return Pattern.matches("[a-zA-Z0-9[가-힣]]*$", nickname);
-//    }
+    private boolean isValidNickname(String nickname) {
+
+        return Pattern.matches("[a-zA-Z0-9[가-힣]]*$", nickname);
+    }
 }

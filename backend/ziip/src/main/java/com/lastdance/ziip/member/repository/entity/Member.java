@@ -63,4 +63,8 @@ public class Member extends BaseEntity{
 
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
     private Plan plan;
+
+    public void updateName(String name){
+        this.name = name;
+    }
 }
