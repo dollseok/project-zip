@@ -10,13 +10,14 @@ import CalendarScreen from './CalendarScreen';
 import ScheduleScreen from './ScheduleScreen';
 import DiaryScreen from './diary/DiaryScreen';
 import AlbumScreen from './album/AlbumScreen';
+import FamilyMainScreen from './FamilyMainScreen';
 
 const Tab = createBottomTabNavigator();
 
 export default function HomeScreen() {
 	return (
 		<Tab.Navigator
-			initialRouteName="캘린더"
+			initialRouteName="메인"
 			screenOptions={({ route }) => ({
 				tabBarIcon: ({ focused, color, size }) => {
 					let iconName;
@@ -25,10 +26,12 @@ export default function HomeScreen() {
 						iconName = 'paper-plane';
 					} else if (route.name === '앨범') {
 						iconName = 'images';
-					} else if (route.name === '일정') {
+					} else if (route.name === '캘린더') {
 						iconName = 'calendar-outline';
 					} else if (route.name === '마이페이지') {
 						iconName = 'ios-person-circle-outline';
+					} else if (route.name === '메인') {
+						iconName = 'home';
 					}
 
 					return <Ionicons name={iconName} size={size} color={color} />;
@@ -50,15 +53,15 @@ export default function HomeScreen() {
 				}}
 			/>
 			<Tab.Screen
-				name="캘린더"
-				component={CalendarScreen}
+				name="메인"
+				component={FamilyMainScreen}
 				options={{
 					headerShown: false,
 				}}
 			/>
 			<Tab.Screen
-				name="일정"
-				component={ScheduleScreen}
+				name="캘린더"
+				component={CalendarScreen}
 				options={{
 					headerShown: false,
 				}}
