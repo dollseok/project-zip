@@ -58,6 +58,7 @@ public class FamilyController {
                 HttpStatus.OK);
     }
 
+    @Operation(summary = "가족 초대 수락", description = "초대코드로 가족 초대 수락하기 API")
     @PostMapping("/accept")
     public ResponseEntity<ResponseTemplate<FamilyRegisterAcceptResponse>> acceptFamily(HttpServletRequest httpServletRequest,
                                                                                        @RequestBody FamilyRegisterAcceptRequest familyRegisterAcceptRequest){
@@ -76,6 +77,8 @@ public class FamilyController {
                         .build(),
                 HttpStatus.OK);
     }
+
+
 
     @ExceptionHandler(MemberAlreadyRegisteredInFamilyException.class)
     public ResponseEntity<ResponseTemplate<String>> handleMemberAlreadyRegisteredInFamily(MemberAlreadyRegisteredInFamilyException ex) {
