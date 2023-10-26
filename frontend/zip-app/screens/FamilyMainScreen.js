@@ -20,7 +20,7 @@ export default function FamilyMainScreen() {
 			const accessToken = await AsyncStorage.getItem('accessToken');
 
 			axios
-				.get(`http://localhost:9090/api/schedule/list?familyId=${familyId}`, {
+				.get(`http://localhost:8080/api/schedule/list?familyId=${familyId}`, {
 					headers: {
 						Accept: 'application/json',
 						'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ export default function FamilyMainScreen() {
 
 			// 일기 리스트 데이터 불러오기
 			axios
-				.get(`http://localhost:9090/api/diary/list?familyId=${familyId}`, {
+				.get(`http://localhost:8080/api/diary/list?familyId=${familyId}`, {
 					headers: {
 						Accept: 'application/json',
 						'Content-Type': 'application/json',

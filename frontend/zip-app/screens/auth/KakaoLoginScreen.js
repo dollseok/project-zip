@@ -1,13 +1,13 @@
 import { WebView } from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, View, Text, Button } from 'react-native';
-import axios from 'axios';
+import axiosInstance from ;
 
-const REST_API_KEY = '59355f756d67cb7ecec20ede9b74ec8c';
+const REST_API_KEY = 'd162981d38b2d120dd8de1714dd68c63';
 // const REDIRECT_URI = 'https://auth.expo.io/@hyeongseoklee/zip-app'
 // const REDIRECT_URI = 'http://172.20.10.3:8081/auth/kakao/callback';
 // const REDIRECT_URI = 'http://192.168.31.236:8081/auth/kakao/callback';
-const REDIRECT_URI = 'http://192.168.0.8:8081/auth/kakao/callback';
+const REDIRECT_URI = 'http://localhost:8081/auth/kakao/callback';
 
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
 
@@ -23,19 +23,29 @@ export default function KakaoLoginScreen({ navigation }) {
 	};
 
 	const requestToken = async (code) => {
-		// const requestTokenUrl = 'http://10.0.2.2:9090/api/auth/kakao';
-		const requestTokenUrl = 'http://localhost:9090/api/auth/kakao';
+		const requestTokenUrl = 'http://10.0.2.2:8080/api/members/kakao/login';
+		// const requestTokenUrl = 'http://localhost:9090/api/auth/kakao';
 
 		try {
 			const body = {
 				code,
 			};
 			const response = await axios.post(requestTokenUrl, body);
-			console.log(response.data);
-			// accessToken을 AsyncStorage에 저장
-			if (response.data && response.data.accessToken) {
-				await AsyncStorage.setItem('accessToken', response.data.accessToken);
+			
+			const accessToken = response.headers.authorization;
+			const refreshToken = response.headers["Authorization-Refresh"];
+			console.log(refreshToken);
+
+			if (accessToken) {
+				// AsyncStorage에 accessToken 저장
+				await AsyncStorage.setItem('accessToken', accessToken);
 			}
+
+			if (refreshToken) {
+				// AsyncStorage에 refreshToken 저장
+				await AsyncStorage.setItem('refreshToken', refreshToken);
+			}
+
 			await navigation.navigate('가족선택');
 		} catch (e) {
 			console.log(e);

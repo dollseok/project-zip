@@ -8,7 +8,9 @@ export default function SelectScreen({ navigation }) {
     // 비동기 함수를 정의
     const fetchAccessToken = async () => {
       const accessToken = await AsyncStorage.getItem('accessToken');
-      console.log("localstorage에서 가져온 토큰 : ", accessToken);
+      const refreshToken = await AsyncStorage.getItem('refreshToken');
+      console.log("localstorage에서 가져온 AccessToken : ", accessToken);
+      console.log("localstorage에서 가져온 RefreshToken : ", refreshToken);
     };
 
     // 비동기 함수 호출
