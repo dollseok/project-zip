@@ -4,6 +4,7 @@ import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequest;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterRequest;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterAcceptResponse;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterResponseDto;
+import com.lastdance.ziip.family.exception.MemberAlreadyRegisteredInFamilyException;
 import com.lastdance.ziip.family.repository.FamilyMemberRepository;
 import com.lastdance.ziip.family.repository.FamilyRepository;
 import com.lastdance.ziip.family.repository.entity.Family;
@@ -99,6 +100,12 @@ public class FamilyServiceImpl implements FamilyService {
     @Override
     public FamilyRegisterAcceptResponse acceptFamily(Member findMember, FamilyRegisterAcceptRequest familyRegisterAcceptRequest) {
         Family family = familyRepository.findByCode(familyRegisterAcceptRequest.getFamilyCode());
+
+        FamilyMember existingFamilyMember = familyMemberRepository.findByMemberAndFamily(findMember, family);
+        if (existingFamilyMember != null) {
+            throw new MemberAlreadyRegisteredInFamilyException("해당 멤버는 이미 이 가족에 등록되어 있습니다.");
+        }
+
 
         FamilyMember familyMember = FamilyMember.builder()
                 .member(findMember)

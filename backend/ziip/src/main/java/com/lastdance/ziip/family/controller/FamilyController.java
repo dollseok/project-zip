@@ -6,6 +6,7 @@ import com.lastdance.ziip.family.dto.request.FamilyRegisterRequest;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterAcceptResponse;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterResponseDto;
 import com.lastdance.ziip.family.enums.FamilyResponseMessage;
+import com.lastdance.ziip.family.exception.MemberAlreadyRegisteredInFamilyException;
 import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.family.service.FamilyService;
 import com.lastdance.ziip.global.util.ResponseTemplate;
@@ -75,6 +76,17 @@ public class FamilyController {
                         .build(),
                 HttpStatus.OK);
     }
+
+    @ExceptionHandler(MemberAlreadyRegisteredInFamilyException.class)
+    public ResponseEntity<ResponseTemplate<String>> handleMemberAlreadyRegisteredInFamily(MemberAlreadyRegisteredInFamilyException ex) {
+        return new ResponseEntity<>(
+                ResponseTemplate.<String>builder()
+                        .msg(ex.getMessage())
+                        .result(false)
+                        .build(),
+                HttpStatus.BAD_REQUEST);
+    }
+
 
 
 
