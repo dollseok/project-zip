@@ -16,6 +16,13 @@ export default function ScheduleList() {
 					title: '제주도 비행기 표 예매',
 					content: '25일 점심먹고 출발 ~~ 어쩌구 ~~',
 				},
+				{
+					planId: 2,
+					memberId: 1,
+					status_code: 0,
+					title: '연돈 예약하기',
+					content: '25일 저녁!!',
+				},
 			],
 		},
 		{
@@ -28,8 +35,13 @@ export default function ScheduleList() {
 
 	return (
 		<View style={styles.scheduleList}>
-			{schedules.map((schedule, idx) => {
-				return <ScheduleItem schedule={schedule} key={idx}></ScheduleItem>;
+			{schedules.map((schedule) => {
+				return (
+					<ScheduleItem
+						schedule={schedule}
+						key={schedule.scheduleId}
+					></ScheduleItem>
+				);
 			})}
 		</View>
 	);
@@ -38,8 +50,8 @@ export default function ScheduleList() {
 const styles = StyleSheet.create({
 	scheduleList: {
 		marginTop: 20,
-		borderWidth: 1,
-		borderColor: 'black',
+		// borderWidth: 1,
+		// borderColor: 'black',
 		alignItems: 'center',
 		width: '80%',
 		height: '60%',

@@ -1,7 +1,9 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useState, useEffect } from 'react';
 
 import ScheduleList from '../components/schedule/ScheduleList';
+
+import { AntDesign } from '@expo/vector-icons';
 
 export default function ScheduleScreen({ route, navigation }) {
 	// 캘린더에서 받아온 현재 날짜정보
@@ -19,13 +21,20 @@ export default function ScheduleScreen({ route, navigation }) {
 	return (
 		<View style={styles.container}>
 			<View style={styles.dateContainer}>
+				{/* 연도 선택 */}
 				<View style={styles.selectYear}>
 					<Text style={{ fontSize: 24 }}>{currentYear}</Text>
 				</View>
+				{/* 월 선택 */}
 				<View style={styles.selectMonth}>
 					<Text style={{ fontSize: 40 }}>{currentMonth}</Text>
 				</View>
 			</View>
+			{/* 일정 추가 버튼 */}
+			<TouchableOpacity style={styles.addBtnContainer}>
+				<AntDesign name="plus" size={24} color="black" />
+			</TouchableOpacity>
+			{/* 일정 리스트 */}
 			<ScheduleList></ScheduleList>
 		</View>
 	);
@@ -49,5 +58,9 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		// borderWidth: 1,
 		// borderColor: 'black',
+	},
+	addBtnContainer: {
+		width: '80%',
+		alignItems: 'flex-end',
 	},
 });
