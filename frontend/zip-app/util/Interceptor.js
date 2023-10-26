@@ -2,7 +2,8 @@ import Axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const axiosInstance = Axios.create({
-	baseURL: 'http://10.0.2.2:8080/api',
+	// baseURL: 'http://10.0.2.2:8080/api',
+	baseURL: 'http://localhost:8080/api',
 	timeout: 5000,
 });
 
@@ -32,12 +33,12 @@ axiosInstance.interceptors.response.use(
 				const response = await postRefreshToken();
 				const newAccessToken = response.headers['authorization'];
 				// console.log(newAccessToken, "newAccessToken");
-				localStorage.setItem('accessToken', response.headers['authorization']);
-				localStorage.setItem(
+				await AsyncStorage.setItem('accessToken', response.headers['authorization']);
+				await AsyncStorage.setItem(
 					'refreshToken',
 					response.headers['authorization-refresh'],
 				);
-				axios.defaults.headers.common.Authorization = newAccessToken;
+				Axios.defaults.headers.common.Authorization = newAccessToken;
 				originRequest.headers.Authorization = newAccessToken;
 				// console.log("토큰 재발급 완료");
 				return axios(originRequest);
