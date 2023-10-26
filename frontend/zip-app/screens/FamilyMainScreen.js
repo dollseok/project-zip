@@ -8,7 +8,7 @@ import {
 	Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import axiosInstance from '../util/Interceptor'
 
 export default function FamilyMainScreen() {
 	const [schedules, setSchedules] = useState([]);
@@ -19,14 +19,8 @@ export default function FamilyMainScreen() {
 			const familyId = 1;
 			const accessToken = await AsyncStorage.getItem('accessToken');
 
-			axios
-				.get(`http://localhost:8080/api/schedule/list?familyId=${familyId}`, {
-					headers: {
-						Accept: 'application/json',
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${accessToken}`,
-					},
-				})
+			axiosInstance
+				.get(`/schedule/list?familyId=${familyId}`)
 				.then((response) => {
 					console.log('일정 : ', response.data.list);
 					setSchedules(response.data.list);
@@ -36,12 +30,12 @@ export default function FamilyMainScreen() {
 				});
 
 			// 일기 리스트 데이터 불러오기
-			axios
-				.get(`http://localhost:8080/api/diary/list?familyId=${familyId}`, {
+			axiosInstance
+				.get(`/diary/list?familyId=${familyId}`, {
 					headers: {
 						Accept: 'application/json',
 						'Content-Type': 'application/json',
-						Authorization: `Bearer ${accessToken}`,
+						Authorization: accessToken,
 					},
 				})
 				.then((response) => {
@@ -62,7 +56,7 @@ export default function FamilyMainScreen() {
 			style={styles.container}
 			resizeMode="cover"
 		>
-			<Text style={styles.heading}>일정</Text>
+			<Text style={styles.headingSchedule}>일정</Text>
 			<FlatList
 				data={schedules}
 				renderItem={({ item }) => (
@@ -78,7 +72,7 @@ export default function FamilyMainScreen() {
 				keyExtractor={(item) => item.scheduleId.toString()}
 			/>
 			{/* 일기 리스트 출력 */}
-			<Text style={styles.heading}>일기</Text>
+			<Text style={styles.headingDiary}>일기</Text>
 			<FlatList
 				data={diaries}
 				renderItem={({ item }) => (
@@ -103,11 +97,18 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	heading: {
+	headingSchedule: {
 		fontSize: 30,
 		fontWeight: 'bold',
 		color: 'white',
-		marginTop: 40,
+		marginTop: 50,
+		marginBottom: 20,
+	},
+	headingDiary: {
+		fontSize: 30,
+		fontWeight: 'bold',
+		color: 'white',
+		// marginTop: 20,
 		marginBottom: 20,
 	},
 	scheduleItem: {
