@@ -18,7 +18,7 @@ public interface MemberService {
 
     Member findMemberByJwtToken(String token);
 
-    BaseResponseDto updateMemberInfo(Integer memberId, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto, Member findMember, MultipartFile file);
+    BaseResponseDto updateMemberInfo(Long memberId, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto, Member findMember, MultipartFile file);
 
     BaseResponseDto updateNickname(String nickname, Member findMember);
 
