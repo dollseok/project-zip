@@ -22,12 +22,10 @@ import lombok.NoArgsConstructor;
 public class Family extends BaseEntity {
 
     @Id @GeneratedValue
-     
     private Long id;
-
      
     private String name;
-
+    private String content;
     private String code;
     private String profileImgUrl;
     private String profileImgName;
