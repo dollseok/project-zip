@@ -8,16 +8,22 @@ import {
 	Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axiosInstance from '../util/Interceptor'
+import axiosInstance from '../util/Interceptor';
 
 export default function FamilyMainScreen() {
+	const [family, setFamily] = useState([]);
 	const [schedules, setSchedules] = useState([]);
 	const [diaries, setDiaries] = useState([]);
 
 	useEffect(() => {
 		async function fetchData() {
 			const familyId = 1;
-			const accessToken = await AsyncStorage.getItem('accessToken');
+
+			axiosInstance
+				.get(`/family/choice?familyId=${familyId}`)
+				.then((response) => {
+					setFamily(response.data.family);
+				});
 
 			axiosInstance
 				.get(`/schedule/list?familyId=${familyId}`)
@@ -29,15 +35,8 @@ export default function FamilyMainScreen() {
 					console.error('There was an error!', error);
 				});
 
-			// 일기 리스트 데이터 불러오기
 			axiosInstance
-				.get(`/diary/list?familyId=${familyId}`, {
-					headers: {
-						Accept: 'application/json',
-						'Content-Type': 'application/json',
-						Authorization: accessToken,
-					},
-				})
+				.get(`/diary/list?familyId=${familyId}`)
 				.then((response) => {
 					console.log('일기 : ', response.data.list);
 					setDiaries(response.data.list);
@@ -52,10 +51,19 @@ export default function FamilyMainScreen() {
 
 	return (
 		<ImageBackground
-			source={require('../assets/family.png')}
+			source={{ uri: family.familyProfileImgUrl }}
 			style={styles.container}
 			resizeMode="cover"
 		>
+			<Text style={styles.familyName}>{family.familyName}</Text>
+
+			<Text style={styles.familyContent}>{family.familyContent}</Text>
+
+			<Image
+				source={{ uri: family.memberProfileImgUrl }}
+				style={styles.memberImage}
+			/>
+
 			<Text style={styles.headingSchedule}>일정</Text>
 			<FlatList
 				data={schedules}
@@ -97,18 +105,34 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	headingSchedule: {
+	familyName: {
 		fontSize: 30,
+		marginTop: 50,
 		fontWeight: 'bold',
 		color: 'white',
-		marginTop: 50,
+	},
+	familyContent: {
+		fontSize: 20,
+		color: 'white',
+		marginTop: 10,
+	},
+	memberImage: {
+		width: 100, // 원하는 이미지 크기로 조정
+		height: 100, // 원하는 이미지 크기로 조정
+		marginTop: 20,
+		borderRadius: 50, // 원형 이미지를 위해
+	},
+	headingSchedule: {
+		fontSize: 25,
+		fontWeight: 'bold',
+		color: 'white',
+		marginTop: 30,
 		marginBottom: 20,
 	},
 	headingDiary: {
-		fontSize: 30,
+		fontSize: 25,
 		fontWeight: 'bold',
 		color: 'white',
-		// marginTop: 20,
 		marginBottom: 20,
 	},
 	scheduleItem: {
