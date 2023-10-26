@@ -9,6 +9,8 @@ import com.lastdance.ziip.member.dto.response.MemberInfoResponseDto;
 import com.lastdance.ziip.member.repository.entity.Member;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 public interface MemberService {
 
     LoginDto findKakaoMemberByAuthorizedCode(String code, String kakaoRedirectUrl);
@@ -18,7 +20,7 @@ public interface MemberService {
 
     Member findMemberByJwtToken(String token);
 
-    BaseResponseDto updateMemberInfo(Long memberId, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto, Member findMember, MultipartFile file);
+    BaseResponseDto updateMemberInfo(Long memberId, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto, Member findMember, MultipartFile file) throws IOException;
 
     BaseResponseDto updateNickname(String nickname, Member findMember);
 

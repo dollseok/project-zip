@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @Tag(name = "Members", description = "멤버 관련 API")
 @RestController
@@ -106,7 +107,7 @@ public class MemberController {
     private BaseResponseDto updateMemberInfo(@PathVariable Long id,
                                              @RequestPart(name = "name", required = false) MemberInfoUpdateRequestDto memberInfoUpdateRequestDto,
                                              @RequestParam(value = "file", required = false) MultipartFile file
-            , HttpServletRequest httpServletRequest) {
+            , HttpServletRequest httpServletRequest) throws IOException {
 
         if (memberInfoUpdateRequestDto != null) {
 
