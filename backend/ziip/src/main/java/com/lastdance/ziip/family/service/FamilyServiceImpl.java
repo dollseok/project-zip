@@ -1,6 +1,8 @@
 package com.lastdance.ziip.family.service;
 
+import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequest;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterRequest;
+import com.lastdance.ziip.family.dto.response.FamilyRegisterAcceptResponse;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterResponseDto;
 import com.lastdance.ziip.family.repository.FamilyMemberRepository;
 import com.lastdance.ziip.family.repository.FamilyRepository;
@@ -92,6 +94,25 @@ public class FamilyServiceImpl implements FamilyService {
             return familyRegisterResponseDto;
         }
 
+    }
+
+    @Override
+    public FamilyRegisterAcceptResponse acceptFamily(Member findMember, FamilyRegisterAcceptRequest familyRegisterAcceptRequest) {
+        Family family = familyRepository.findByCode(familyRegisterAcceptRequest.getFamilyCode());
+
+        FamilyMember familyMember = FamilyMember.builder()
+                .member(findMember)
+                .family(family)
+                .nickname(familyRegisterAcceptRequest.getNickname())
+                .build();
+
+        FamilyMember saveFamilyMember = familyMemberRepository.save(familyMember);
+
+        FamilyRegisterAcceptResponse familyRegisterAcceptResponse = FamilyRegisterAcceptResponse.builder()
+                .familyId(saveFamilyMember.getId())
+                .build();
+
+        return familyRegisterAcceptResponse;
     }
 
 }

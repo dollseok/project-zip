@@ -1,7 +1,9 @@
 package com.lastdance.ziip.family.controller;
 
 
+import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequest;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterRequest;
+import com.lastdance.ziip.family.dto.response.FamilyRegisterAcceptResponse;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterResponseDto;
 import com.lastdance.ziip.family.enums.FamilyResponseMessage;
 import com.lastdance.ziip.family.repository.entity.Family;
@@ -37,7 +39,7 @@ public class FamilyController {
     @PostMapping("/register")
     public ResponseEntity<ResponseTemplate<FamilyRegisterResponseDto>> registFamily(HttpServletRequest httpServletRequest,
                                                                                     @RequestPart(name = "familyRegisterRequest") FamilyRegisterRequest familyRegisterRequest,
-                                                                                    @RequestParam(value = "file", required = false)MultipartFile file) throws IOException {
+                                                                                    @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) return null;
@@ -54,4 +56,26 @@ public class FamilyController {
                         .build(),
                 HttpStatus.OK);
     }
+
+    @PostMapping("/accept")
+    public ResponseEntity<ResponseTemplate<FamilyRegisterAcceptResponse>> acceptFamily(HttpServletRequest httpServletRequest,
+                                                                                       @RequestBody FamilyRegisterAcceptRequest familyRegisterAcceptRequest){
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token ==null)return null;
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        FamilyRegisterAcceptResponse familyRegisterAcceptResponse = familyService.acceptFamily(findMember, familyRegisterAcceptRequest);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<FamilyRegisterAcceptResponse>builder()
+                        .msg(FamilyResponseMessage.FAMILY_ACCEPT_SUCCESS.getMessage())
+                        .data(familyRegisterAcceptResponse)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+    }
+
+
+
 }
