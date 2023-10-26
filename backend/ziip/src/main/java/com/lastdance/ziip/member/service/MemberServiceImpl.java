@@ -6,8 +6,11 @@ import com.lastdance.ziip.global.auth.oauth2.kakao.KakaoMemberDto;
 import com.lastdance.ziip.global.auth.oauth2.kakao.KakaoOAuth2;
 import com.lastdance.ziip.global.auth.oauth2.naver.NaverMemberDto;
 import com.lastdance.ziip.global.auth.oauth2.naver.NaverOAuth2;
+import com.lastdance.ziip.global.awsS3.AwsS3Uploader;
+import com.lastdance.ziip.global.awsS3.S3Uploader;
 import com.lastdance.ziip.global.exception.CustomException;
 import com.lastdance.ziip.global.exception.validator.MemberValidator;
+import com.lastdance.ziip.member.dto.FileDto;
 import com.lastdance.ziip.member.dto.LoginDto;
 import com.lastdance.ziip.member.dto.TokenDto;
 import com.lastdance.ziip.member.dto.request.MemberInfoUpdateRequestDto;
@@ -26,8 +29,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Pattern;
+
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -56,6 +61,7 @@ public class MemberServiceImpl implements MemberService {
     //private final BbtiRepository bbtiRepository;
     //private final RecordRepository recordRepository;
     //private final DiaryRepository diaryRepository;
+    private final S3Uploader s3Uploader;
 
     // authorizedCode로 가입된 사용자 조회
     @Transactional
@@ -215,14 +221,6 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("회원아이디 \"" + id + " \" 에해당하는 사용자가 존재하지 않습니다."));
     }
 
-    @Override
-    public BaseResponseDto updateMemberInfo(Integer memberId,
-            MemberInfoUpdateRequestDto memberInfoUpdateRequestDto, Member findMember,
-            MultipartFile file) {
-        return null;
-    }
-
-
     @Transactional(readOnly = true)
     public MemberInfoResponseDto getMemberInfo(Member findMember) {
 
@@ -263,7 +261,7 @@ public class MemberServiceImpl implements MemberService {
 //    }
 
     @Transactional
-    public BaseResponseDto updateMemberInfo(Long id, MemberInfoUpdateRequestDto mypageUpdateRequestDto, Member findMember, MultipartFile file) {
+    public BaseResponseDto updateMemberInfo(Long id, MemberInfoUpdateRequestDto mypageUpdateRequestDto, Member findMember, MultipartFile file) throws IOException {
 
         if (findMember.getId() != id) {
             throw new IllegalArgumentException("잘못된 접근입니다");
@@ -275,6 +273,17 @@ public class MemberServiceImpl implements MemberService {
 //                FileDto newfileDto = fileUploadUtil.uploadFile(file, findMember);
 //                findMember.updateMemberInfo(newfileDto);
 //                findMember.getProfileImgPath();
+                String fileUrl = s3Uploader.upload(file, "member");
+                String originalName = file.getOriginalFilename();
+
+                FileDto newfileDto = FileDto.builder()
+                        .fileOriginalName(originalName)
+                        .filePath(fileUrl)
+                        .build();
+
+                findMember.updateMemberInfo(newfileDto);
+
+
             }
 
         } else {
@@ -293,13 +302,24 @@ public class MemberServiceImpl implements MemberService {
                 throw new CustomException(HttpStatus.BAD_REQUEST, -100, "닉네임이 중복되었습니다");
             }
 
-//            if (mypageUpdateRequestDto.getFile() != null) {
+            if (mypageUpdateRequestDto.getFile() != null) {
 //                FileDto newfileDto = fileUploadUtil.uploadFile(mypageUpdateRequestDto.getFile(), findMember);
 //                findMember.updateMemberInfo(mypageUpdateRequestDto, newfileDto);
 //                findMember.getProfileImgPath();
-//            } else {
-//                findMember.updateMemberInfo(mypageUpdateRequestDto);
-//            }
+
+                String fileUrl = s3Uploader.upload(file, "member");
+                String originalName = file.getOriginalFilename();
+
+                FileDto newfileDto = FileDto.builder()
+                        .fileOriginalName(originalName)
+                        .filePath(fileUrl)
+                        .build();
+
+                findMember.updateMemberInfo(mypageUpdateRequestDto, newfileDto);
+
+            } else {
+                findMember.updateMemberInfo(mypageUpdateRequestDto);
+            }
         }
 
         MemberUpdateResponseDto newMember = MemberUpdateResponseDto.builder()
@@ -407,7 +427,7 @@ public class MemberServiceImpl implements MemberService {
 
         Optional<Member> targetMember = memberRepository.findById(id);
 
-        memberValidator.checkMember(targetMember,id);
+        memberValidator.checkMember(targetMember, id);
 
         return MemberInfoResponseDto.builder()
                 .member(targetMember.get())

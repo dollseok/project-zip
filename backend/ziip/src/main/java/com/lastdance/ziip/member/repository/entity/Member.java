@@ -2,6 +2,8 @@ package com.lastdance.ziip.member.repository.entity;
 
 import com.lastdance.ziip.diary.repository.entity.Diary;
 import com.lastdance.ziip.diary.repository.entity.DiaryComment;
+import com.lastdance.ziip.member.dto.FileDto;
+import com.lastdance.ziip.member.dto.request.MemberInfoUpdateRequestDto;
 import com.lastdance.ziip.member.enums.Gender;
 import com.lastdance.ziip.family.repository.entity.FamilyMember;
 import com.lastdance.ziip.global.entity.BaseEntity;
@@ -67,4 +69,19 @@ public class Member extends BaseEntity{
     public void updateName(String name){
         this.name = name;
     }
+
+    //회원정보 수정
+    public void updateMemberInfo(MemberInfoUpdateRequestDto mypageUpdateRequestDto, FileDto fileDto) {
+        this.name = mypageUpdateRequestDto.getName();
+        this.profileImgName = fileDto.getFileOriginalName();
+        this.profileImgUrl = fileDto.getFilePath();
+    }
+    public void updateMemberInfo(MemberInfoUpdateRequestDto mypageUpdateRequestDto) {
+        this.name = mypageUpdateRequestDto.getName();
+    }
+    public void updateMemberInfo(FileDto fileDto) {
+        this.profileImgName = fileDto.getFileOriginalName();
+        this.profileImgUrl = fileDto.getFilePath();
+    }
+
 }
