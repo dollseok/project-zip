@@ -215,6 +215,14 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("회원아이디 \"" + id + " \" 에해당하는 사용자가 존재하지 않습니다."));
     }
 
+    @Override
+    public BaseResponseDto updateMemberInfo(Integer memberId,
+            MemberInfoUpdateRequestDto memberInfoUpdateRequestDto, Member findMember,
+            MultipartFile file) {
+        return null;
+    }
+
+
     @Transactional(readOnly = true)
     public MemberInfoResponseDto getMemberInfo(Member findMember) {
 
