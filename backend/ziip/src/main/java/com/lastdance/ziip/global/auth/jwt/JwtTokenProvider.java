@@ -27,13 +27,13 @@ import org.springframework.stereotype.Component;
 public class JwtTokenProvider {
     private final UserDetailsService userDetailsService;
 
-    @Value("${jwt.secretKey}")
+    @Value("${JWT_SECRET_KEY}")
     private String secretKey;
 
-    @Value("${jwt.access.expiration}")
+    @Value("${JWT_ACCESS_EXPIRATION}")
     private Long accessTokenValidTime;
 
-    @Value("${jwt.refresh.expiration}")
+    @Value("${JWT_REFRESH_EXPIRATION}")
     private Long refreshTokenValidTime;
 
     private final MemberRepository memberRepository;
@@ -43,7 +43,7 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createAccessToken(Integer id, String userPk, SocialType socialType) {
+    public String createAccessToken(Long id, String userPk, SocialType socialType) {
         Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣음
         claims.put("id", id);
         claims.put("socialType",socialType);
@@ -58,11 +58,11 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String createRefreshToken(Integer id) {
+    public String createRefreshToken(Long id) {
 
         Date now = new Date();
         return Jwts.builder()
-                .setId(Integer.toString(id)) // 정보 저장
+                .setId(Long.toString(id)) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + refreshTokenValidTime)) // set Expire Time
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘과

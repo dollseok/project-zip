@@ -13,10 +13,10 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class NaverOAuth2 {
-    @Value("${oauth2.naver.client-id}")
+    @Value("${NAVER_CLIENT_ID}")
     String clientId;
 
-    @Value("${oauth2.naver.client-secret}")
+    @Value("${NAVER_CLIENT_SECRET}")
     private String clientSecret;
     private String getAccessToken(String authorizedCode, String naverState) {
         // HttpHeader 오브젝트 생성

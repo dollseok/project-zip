@@ -1,12 +1,10 @@
 package com.lastdance.ziip.family.repository.entity;
 
 import com.lastdance.ziip.member.repository.entity.Member;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class FamilyMember {
 
     @Id @GeneratedValue
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "family_id")
@@ -31,6 +29,7 @@ public class FamilyMember {
     @JoinColumn(name = "member_id")
     private Member member;
 
-
+     
+    private String nickname;
 
 }

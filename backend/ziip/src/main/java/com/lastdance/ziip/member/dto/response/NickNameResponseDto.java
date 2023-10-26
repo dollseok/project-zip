@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder
 public class NickNameResponseDto {
 
-    private Integer memberId;
-    private String nickname;
+    private Long memberId;
+    private String name;
 
 }

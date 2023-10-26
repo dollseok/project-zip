@@ -8,10 +8,8 @@ import com.lastdance.ziip.member.dto.TokenDto;
 import com.lastdance.ziip.member.dto.request.LoginRequestDto;
 import com.lastdance.ziip.member.dto.request.MemberInfoUpdateRequestDto;
 import com.lastdance.ziip.member.dto.request.NicknameRequestDto;
-import com.lastdance.ziip.member.dto.response.BaseResponseDto;
-import com.lastdance.ziip.member.dto.response.LoginResponseDto;
-import com.lastdance.ziip.member.dto.response.MemberInfoResponseDto;
-import com.lastdance.ziip.member.dto.response.RefreshTokenResponseDto;
+import com.lastdance.ziip.member.dto.response.*;
+import com.lastdance.ziip.member.enums.MemberResponseMessage;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,7 +57,7 @@ public class MemberController {
                 .body(LoginResponseDto.builder()
                         .message("카카오 로그인을 성공하셨습니다")
                         .id(member.getId())
-                        .nickname(member.getNickname())
+                        .name(member.getName())
                         .firstLogin(member.isFirstLogin())
                         .build());
     }
@@ -79,7 +77,7 @@ public class MemberController {
                 .body(LoginResponseDto.builder()
                         .message("네이버 로그인을 성공하셨습니다")
                         .id(member.getId())
-                        .nickname(member.getNickname())
+                        .name(member.getName())
                         .firstLogin(member.isFirstLogin())
                         .build());
     }
@@ -103,23 +101,23 @@ public class MemberController {
                         .build());
     }
 
-    @Operation(summary = "멤버 정보 수정", description = "멤버 정보(프로필사진,닉네임) 수정")
-    @PutMapping("/{id}")
-    private BaseResponseDto updateMemberInfo(@PathVariable Integer id,
-                                             @RequestPart(name = "nickname", required = false) MemberInfoUpdateRequestDto memberInfoUpdateRequestDto,
-                                             @RequestParam(value = "file", required = false) MultipartFile file
-            , HttpServletRequest httpServletRequest) {
-
-        if (memberInfoUpdateRequestDto != null) {
-
-            memberInfoUpdateRequestDto.setFile(file);
-        }
-        String token = httpServletRequest.getHeader("Authorization");
-        Member findMember = memberService.findMemberByJwtToken(token);
-
-        return memberService.updateMemberInfo(id, memberInfoUpdateRequestDto, findMember, file);
-    }
-
+//    @Operation(summary = "멤버 정보 수정", description = "멤버 정보(프로필사진,닉네임) 수정")
+//    @PutMapping("/{id}")
+//    private BaseResponseDto updateMemberInfo(@PathVariable Integer id,
+//                                             @RequestPart(name = "nickname", required = false) MemberInfoUpdateRequestDto memberInfoUpdateRequestDto,
+//                                             @RequestParam(value = "file", required = false) MultipartFile file
+//            , HttpServletRequest httpServletRequest) {
+//
+//        if (memberInfoUpdateRequestDto != null) {
+//
+//            memberInfoUpdateRequestDto.setFile(file);
+//        }
+//        String token = httpServletRequest.getHeader("Authorization");
+//        Member findMember = memberService.findMemberByJwtToken(token);
+//
+//        return memberService.updateMemberInfo(id, memberInfoUpdateRequestDto, findMember, file);
+//    }
+//
     @Operation(summary = "닉네임 설정", description = "닉네임 설정")
     @PutMapping("/nickname")
     private BaseResponseDto setNickname(@RequestBody NicknameRequestDto nicknameRequestDto,
@@ -129,7 +127,7 @@ public class MemberController {
 
         Member findMember = memberService.findMemberByJwtToken(token);
 
-        return memberService.updateNickname(nicknameRequestDto.getNickname(), findMember);
+        return memberService.updateNickname(nicknameRequestDto.getName(), findMember);
     }
 
     @Operation(summary = "닉네임 중복 검사", description = "닉네임 중복 검사")
@@ -143,52 +141,52 @@ public class MemberController {
 
         return memberService.validNickname(nickname, findMember);
     }
-
-    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴")
-    @PutMapping("/withdrawal")
-    public BaseResponseDto withdrawal(HttpServletRequest httpServletRequest) {
-        System.out.println("탈퇴");
-        String token = httpServletRequest.getHeader("Authorization");
-        if (token == null) return null;
-        Member findMember = memberService.findMemberByJwtToken(token);
-        System.out.println("탈퇴 돌아감");
-        return memberService.deleteMember(findMember);
-    }
-
-    //마이페이지 사용자 정보 조회
-    @Operation(summary = "마이페이지 사용자 정보 조회", description = "사용자 정보(닉네임,상테메세지,프로필사진경로)")
-    @GetMapping("/getInfo")
-    public MemberInfoResponseDto defaultMemberInfo(HttpServletRequest httpServletRequest) {
-
-        String token = httpServletRequest.getHeader("Authorization");
-        if (token == null) return null;
-
-        Member findMember = memberService.findMemberByJwtToken(token);
-
-        return memberService.getMemberInfo(findMember);
-
-    }
-
-    // 사용자 정보 전체 조회
-//    @Operation(summary = "사용자 정보 전체 조회", description = "사용자 정보 전체 조회")
-//    @GetMapping("/allGetInfo")
-//    public ResponseEntity<ResponseTemplate<MemberAllInfoResponse>> getAllMemberInfo(HttpServletRequest httpServletRequest){
+//
+//    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴")
+//    @PutMapping("/withdrawal")
+//    public BaseResponseDto withdrawal(HttpServletRequest httpServletRequest) {
+//        System.out.println("탈퇴");
+//        String token = httpServletRequest.getHeader("Authorization");
+//        if (token == null) return null;
+//        Member findMember = memberService.findMemberByJwtToken(token);
+//        System.out.println("탈퇴 돌아감");
+//        return memberService.deleteMember(findMember);
+//    }
+//
+//    //마이페이지 사용자 정보 조회
+//    @Operation(summary = "마이페이지 사용자 정보 조회", description = "사용자 정보(닉네임,상테메세지,프로필사진경로)")
+//    @GetMapping("/getInfo")
+//    public MemberInfoResponseDto defaultMemberInfo(HttpServletRequest httpServletRequest) {
 //
 //        String token = httpServletRequest.getHeader("Authorization");
 //        if (token == null) return null;
 //
 //        Member findMember = memberService.findMemberByJwtToken(token);
 //
-//        MemberAllInfoResponse memberAllInfoResponse = memberService.getALlMemberInfo(findMember);
+//        return memberService.getMemberInfo(findMember);
 //
-//        return new ResponseEntity<>(
-//                ResponseTemplate.<MemberAllInfoResponse>builder()
-//                        .result(true)
-//                        .msg(MemberResponseMessage.MEMBER_GETALLMEMBER_SUCCESS.getMessage())
-//                        .data(memberAllInfoResponse)
-//                        .build(),
-//                HttpStatus.OK);
 //    }
+
+    // 사용자 정보 전체 조회
+    @Operation(summary = "사용자 정보 전체 조회", description = "사용자 정보 전체 조회")
+    @GetMapping("/allGetInfo")
+    public ResponseEntity<ResponseTemplate<MemberAllInfoResponse>> getAllMemberInfo(HttpServletRequest httpServletRequest){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) return null;
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        MemberAllInfoResponse memberAllInfoResponse = memberService.getALlMemberInfo(findMember);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<MemberAllInfoResponse>builder()
+                        .result(true)
+                        .msg(MemberResponseMessage.MEMBER_GETALLMEMBER_SUCCESS.getMessage())
+                        .data(memberAllInfoResponse)
+                        .build(),
+                HttpStatus.OK);
+    }
 
 
     //mypage 조회(기록 페이지 상단 조회)

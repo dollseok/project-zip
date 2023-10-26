@@ -5,11 +5,11 @@ import lombok.Getter;
 
 @Getter
 public class RefreshTokenResponseDto {
-    private Integer id;
+    private Long id;
     private String message;
 
     @Builder
-    public RefreshTokenResponseDto(Integer id, String message) {
+    public RefreshTokenResponseDto(Long id, String message) {
         this.id = id;
         this.message = message;
     }

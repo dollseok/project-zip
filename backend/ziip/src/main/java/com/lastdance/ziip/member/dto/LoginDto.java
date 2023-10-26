@@ -10,9 +10,9 @@ import lombok.Data;
 @Builder
 public class LoginDto {
 
-    private Integer id;
+    private Long id;
     private String socialId;
     private SocialType socialType;
-    private String nickname;
+    private String name;
     private boolean firstLogin;
 }

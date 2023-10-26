@@ -11,9 +11,7 @@ import com.lastdance.ziip.global.exception.validator.MemberValidator;
 import com.lastdance.ziip.member.dto.LoginDto;
 import com.lastdance.ziip.member.dto.TokenDto;
 import com.lastdance.ziip.member.dto.request.MemberInfoUpdateRequestDto;
-import com.lastdance.ziip.member.dto.response.BaseResponseDto;
-import com.lastdance.ziip.member.dto.response.MemberInfoResponseDto;
-import com.lastdance.ziip.member.dto.response.MemberUpdateResponseDto;
+import com.lastdance.ziip.member.dto.response.*;
 import com.lastdance.ziip.member.enums.Gender;
 import com.lastdance.ziip.member.enums.Role;
 import com.lastdance.ziip.member.enums.SocialType;
@@ -39,11 +37,11 @@ public class MemberServiceImpl implements MemberService {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-    @Value("${file.member-server-domain}")
-    private String serverDomain;
-
-    @Value("${file.member-url-path}")
-    private String urlPath;
+//    @Value("${file.member-server-domain}")
+//    private String serverDomain;
+//
+//    @Value("${file.member-url-path}")
+//    private String urlPath;
 
 
     private final KakaoOAuth2 kakaoOAuth2;
@@ -51,12 +49,12 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     //    private final ShowInfoRepository showInfoRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final FileUploadUtil fileUploadUtil;
+    //private final FileUploadUtil fileUploadUtil;
     private final RedisTemplate<String, String> redisTemplate;
     private final MemberValidator memberValidator;
     //private final BbtiRepository bbtiRepository;
     //private final RecordRepository recordRepository;
-    private final DiaryRepository diaryRepository;
+    //private final DiaryRepository diaryRepository;
 
     // authorizedCode로 가입된 사용자 조회
     @Transactional
@@ -73,7 +71,7 @@ public class MemberServiceImpl implements MemberService {
                     .id(optionalMember.get().getId())
                     .socialId(optionalMember.get().getSocialId())
                     .socialType(optionalMember.get().getSocialType())
-                    .nickname(optionalMember.get().getNickname())
+                    .name(optionalMember.get().getName())
                     .firstLogin(false)
                     .build();
         }
@@ -93,15 +91,13 @@ public class MemberServiceImpl implements MemberService {
             }
             System.out.println(gender);
 
-            Optional<BbtiType> bbtiType = bbtiRepository.findById(1);
 
             Member member = Member.builder()
-                    .bbtiType(bbtiType.orElseThrow(() -> new RuntimeException("BbtiType not found")))
                     .email(email)
-                    .nickname("")
                     .gender(gender)
+                    .name("")
                     .profileImgName(null)
-                    .profileImgPath(null)
+                    .profileImgUrl(null)
                     .socialId(socialId)
                     .socialType(SocialType.KAKAO)
                     .role(Role.USER)
@@ -113,7 +109,7 @@ public class MemberServiceImpl implements MemberService {
                     .id(member.getId())
                     .socialId(member.getSocialId())
                     .socialType(member.getSocialType())
-                    .nickname(member.getNickname())
+                    .name(member.getName())
                     .firstLogin(true)
                     .build();
         }
@@ -133,7 +129,7 @@ public class MemberServiceImpl implements MemberService {
                     .id(optionalMember.get().getId())
                     .socialId(optionalMember.get().getSocialId())
                     .socialType(optionalMember.get().getSocialType())
-                    .nickname(optionalMember.get().getNickname())
+                    .name(optionalMember.get().getName())
                     .firstLogin(false)
                     .build();
         }
@@ -151,15 +147,12 @@ public class MemberServiceImpl implements MemberService {
                 gender = null;
             }
 
-            Optional<BbtiType> bbtiType = bbtiRepository.findById(1);
-
             Member member = Member.builder()
-                    .bbtiType(bbtiType.orElseThrow(() -> new RuntimeException("BbtiType not found")))
                     .email(email)
-                    .nickname("")
                     .gender(gender)
+                    .name("")
                     .profileImgName(null)
-                    .profileImgPath(null)
+                    .profileImgUrl(null)
                     .socialId(socialId)
                     .socialType(SocialType.KAKAO)
                     .role(Role.USER)
@@ -170,7 +163,7 @@ public class MemberServiceImpl implements MemberService {
                     .id(member.getId())
                     .socialId(member.getSocialId())
                     .socialType(member.getSocialType())
-                    .nickname(member.getNickname())
+                    .name(member.getName())
                     .firstLogin(true)
                     .build();
         }
@@ -189,13 +182,13 @@ public class MemberServiceImpl implements MemberService {
                 .parseClaimsJws(refreshToken).getBody().getId();
 
 
-        Member findMember = memberRepository.findById(Integer.parseInt(id))
+        Member findMember = memberRepository.findById(Long.parseLong(id))
                 .orElse(null);
         if (findMember == null) {
             throw new CustomException(HttpStatus.BAD_REQUEST, -1, "일치하는 유저가 없습니다");
         }
 
-        String redisRefreshToken = redisTemplate.opsForValue().get(Integer.toString(findMember.getId()));
+        String redisRefreshToken = redisTemplate.opsForValue().get(Long.toString(findMember.getId()));
 
         if (!refreshToken.equals(redisRefreshToken)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, -1, "refresh Token 불일치");
@@ -217,7 +210,7 @@ public class MemberServiceImpl implements MemberService {
         String id = String.valueOf(Jwts.parser().setSigningKey(secretKey.getBytes())
                 .parseClaimsJws(token).getBody().get("id"));
 
-        return memberRepository.findById(Integer.parseInt(id))
+        return memberRepository.findById(Long.parseLong(id))
                 .orElseThrow(() -> new IllegalArgumentException("회원아이디 \"" + id + " \" 에해당하는 사용자가 존재하지 않습니다."));
     }
 
@@ -230,23 +223,22 @@ public class MemberServiceImpl implements MemberService {
 
     }
 
-//    @Override
-//    public MemberAllInfoResponse getALlMemberInfo(Member findMember) {
-//
-//        MemberAllInfoResponse memberAllInfoResponse = MemberAllInfoResponse.builder()
-//                .id(findMember.getId())
-//                .bbtiType(findMember.getBbtiType().getId())
-//                .email(findMember.getEmail())
-//                .nickname(findMember.getNickname())
-//                .gender(findMember.getGender().name())
-//                .profileImgName(findMember.getProfileImgName())
-//                .profileImgPath(findMember.getProfileImgPath())
-//                .socialId(findMember.getSocialId())
-//                .socialType(findMember.getSocialType())
-//                .role(findMember.getRole().getValue())
-//                .build();
-//        return memberAllInfoResponse;
-//    }
+    @Override
+    public MemberAllInfoResponse getALlMemberInfo(Member findMember) {
+
+        MemberAllInfoResponse memberAllInfoResponse = MemberAllInfoResponse.builder()
+                .id(findMember.getId())
+                .email(findMember.getEmail())
+                .name(findMember.getName())
+                .gender(findMember.getGender().name())
+                .profileImgName(findMember.getProfileImgName())
+                .profileImgUrl(findMember.getProfileImgUrl())
+                .socialId(findMember.getSocialId())
+                .socialType(findMember.getSocialType())
+                .role(findMember.getRole().getValue())
+                .build();
+        return memberAllInfoResponse;
+    }
 
 //    @Override
 //    public MyPageMemberInfoResponse getMyPageMemberInfo(int memberId) {
@@ -261,59 +253,59 @@ public class MemberServiceImpl implements MemberService {
 //                .build()).orElse(null);
 //    }
 
-    @Transactional
-    public BaseResponseDto updateMemberInfo(Integer id, MemberInfoUpdateRequestDto mypageUpdateRequestDto, Member findMember, MultipartFile file) {
-
-        if (findMember.getId() != id) {
-            throw new IllegalArgumentException("잘못된 접근입니다");
-        }
-
-        if (mypageUpdateRequestDto == null) {
-
-            if (file != null) {
-                FileDto newfileDto = fileUploadUtil.uploadFile(file, findMember);
-                findMember.updateMemberInfo(newfileDto);
-                findMember.getProfileImgPath();
-            }
-
-        } else {
-            if (mypageUpdateRequestDto.getNickname() == null || mypageUpdateRequestDto.getNickname().isBlank()) {
-                throw new CustomException(HttpStatus.BAD_REQUEST, -101, "닉네임은 null이 될 수 없습니다");
-            }
-
-            if (!isValidNickname(mypageUpdateRequestDto.getNickname()) || (mypageUpdateRequestDto.getNickname().length() < 2 || mypageUpdateRequestDto.getNickname().length() >= 9)) {
-                throw new CustomException(HttpStatus.BAD_REQUEST, -102, "닉네임 정규식 혹은 길이가 맞지 않습니다");
-            }
-
-            Optional<Member> findNickname = memberRepository.findByNickname(mypageUpdateRequestDto.getNickname());
-
-            //닉네임 중복체크
-            if (findNickname.isPresent() && !findMember.getNickname().equals(findNickname.get().getNickname())) {
-                throw new CustomException(HttpStatus.BAD_REQUEST, -100, "닉네임이 중복되었습니다");
-            }
-
-            if (mypageUpdateRequestDto.getFile() != null) {
-                FileDto newfileDto = fileUploadUtil.uploadFile(mypageUpdateRequestDto.getFile(), findMember);
-                findMember.updateMemberInfo(mypageUpdateRequestDto, newfileDto);
-                findMember.getProfileImgPath();
-            } else {
-                findMember.updateMemberInfo(mypageUpdateRequestDto);
-            }
-        }
-
-        MemberUpdateResponseDto newMember = MemberUpdateResponseDto.builder()
-                .member(findMember)
-                .build();
-
-        return BaseResponseDto.builder()
-                .success(true)
-                .message("사용자 정보를 수정하였습니다")
-                .data(newMember)
-                .build();
-
-
-    }
-
+//    @Transactional
+//    public BaseResponseDto updateMemberInfo(Integer id, MemberInfoUpdateRequestDto mypageUpdateRequestDto, Member findMember, MultipartFile file) {
+//
+//        if (findMember.getId() != id) {
+//            throw new IllegalArgumentException("잘못된 접근입니다");
+//        }
+//
+//        if (mypageUpdateRequestDto == null) {
+//
+//            if (file != null) {
+//                FileDto newfileDto = fileUploadUtil.uploadFile(file, findMember);
+//                findMember.updateMemberInfo(newfileDto);
+//                findMember.getProfileImgPath();
+//            }
+//
+//        } else {
+//            if (mypageUpdateRequestDto.getNickname() == null || mypageUpdateRequestDto.getNickname().isBlank()) {
+//                throw new CustomException(HttpStatus.BAD_REQUEST, -101, "닉네임은 null이 될 수 없습니다");
+//            }
+//
+//            if (!isValidNickname(mypageUpdateRequestDto.getNickname()) || (mypageUpdateRequestDto.getNickname().length() < 2 || mypageUpdateRequestDto.getNickname().length() >= 9)) {
+//                throw new CustomException(HttpStatus.BAD_REQUEST, -102, "닉네임 정규식 혹은 길이가 맞지 않습니다");
+//            }
+//
+//            Optional<Member> findNickname = memberRepository.findByNickname(mypageUpdateRequestDto.getNickname());
+//
+//            //닉네임 중복체크
+//            if (findNickname.isPresent() && !findMember.getNickname().equals(findNickname.get().getNickname())) {
+//                throw new CustomException(HttpStatus.BAD_REQUEST, -100, "닉네임이 중복되었습니다");
+//            }
+//
+//            if (mypageUpdateRequestDto.getFile() != null) {
+//                FileDto newfileDto = fileUploadUtil.uploadFile(mypageUpdateRequestDto.getFile(), findMember);
+//                findMember.updateMemberInfo(mypageUpdateRequestDto, newfileDto);
+//                findMember.getProfileImgPath();
+//            } else {
+//                findMember.updateMemberInfo(mypageUpdateRequestDto);
+//            }
+//        }
+//
+//        MemberUpdateResponseDto newMember = MemberUpdateResponseDto.builder()
+//                .member(findMember)
+//                .build();
+//
+//        return BaseResponseDto.builder()
+//                .success(true)
+//                .message("사용자 정보를 수정하였습니다")
+//                .data(newMember)
+//                .build();
+//
+//
+//    }
+//
     @Transactional
     public BaseResponseDto updateNickname(String nickname, Member member) {
 
@@ -325,28 +317,28 @@ public class MemberServiceImpl implements MemberService {
             throw new CustomException(HttpStatus.BAD_REQUEST, -102, "닉네임 정규식 혹은 길이가 맞지 않습니다");
         }
 
-        Optional<Member> findNickname = memberRepository.findByNickname(nickname);
+        Optional<Member> findNickname = memberRepository.findByName(nickname);
 
         //닉네임 중복체크
-        if (findNickname.isPresent() && !member.getNickname().equals(findNickname.get().getNickname())) {
+        if (findNickname.isPresent() && !member.getName().equals(findNickname.get().getName())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, -100, "닉네임이 중복되었습니다");
         }
 
-        member.updateNickname(nickname);
+        member.updateName(nickname);
 
         return BaseResponseDto.builder()
                 .success(true)
                 .message("닉네임이 등록되었습니다")
                 .data(NickNameResponseDto.builder()
                         .memberId(member.getId())
-                        .nickname(member.getNickname())
+                        .name(member.getName())
                         .build())
                 .build();
     }
 
     @Transactional(readOnly = true)
     public BaseResponseDto validNickname(String nickname, Member member) {
-        Member findMember = memberRepository.findByNickname(nickname).orElse(null);
+        Member findMember = memberRepository.findByName(nickname).orElse(null);
         //닉네임 중복
         if (findMember != null) {
 
@@ -355,7 +347,7 @@ public class MemberServiceImpl implements MemberService {
                     .message("닉네임이 중복되었습니다")
                     .data(NickNameResponseDto.builder()
                             .memberId(member.getId())
-                            .nickname(nickname)
+                            .name(nickname)
                             .build())
                     .build();
         }
@@ -366,26 +358,26 @@ public class MemberServiceImpl implements MemberService {
                 .message("닉네임이 사용가능합니다")
                 .data(NickNameResponseDto.builder()
                         .memberId(member.getId())
-                        .nickname(nickname)
+                        .name(nickname)
                         .build())
                 .build();
     }
-
-    @Override
-    public BaseResponseDto deleteMember(Member findMember) {
-        System.out.println("탈퇴 서비스 임플");
-
-        Role role = Role.DELETED;
-        findMember.updateRole(role);
-
-
-        return BaseResponseDto.builder()
-                .success(true)
-                .message("회원 탈퇴를 하셨습니다")
-                .data(findMember.getId())
-                .build();
-
-    }
+//
+//    @Override
+//    public BaseResponseDto deleteMember(Member findMember) {
+//        System.out.println("탈퇴 서비스 임플");
+//
+//        Role role = Role.DELETED;
+//        findMember.updateRole(role);
+//
+//
+//        return BaseResponseDto.builder()
+//                .success(true)
+//                .message("회원 탈퇴를 하셨습니다")
+//                .data(findMember.getId())
+//                .build();
+//
+//    }
 
 
 //    @Transactional
@@ -402,7 +394,7 @@ public class MemberServiceImpl implements MemberService {
 //    }
 
     @Transactional(readOnly = true)
-    public MemberInfoResponseDto getDetailMemberInfo(Integer id) {
+    public MemberInfoResponseDto getDetailMemberInfo(Long id) {
 
         Optional<Member> targetMember = memberRepository.findById(id);
 

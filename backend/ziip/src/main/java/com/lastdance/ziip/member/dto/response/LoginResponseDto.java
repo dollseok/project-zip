@@ -9,8 +9,8 @@ import lombok.Data;
 @Builder
 public class LoginResponseDto {
 
-    private Integer id;
+    private Long id;
     private String message;
-    private String nickname;
+    private String name;
     private Boolean firstLogin;
 }

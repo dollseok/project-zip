@@ -10,10 +10,10 @@ public class TokenDto {
 
     private String accessToken;
     private String refreshToken;
-    private Integer id;
+    private Long id;
 
     @Builder
-    public TokenDto(String accessToken, String refreshToken, Integer id) {
+    public TokenDto(String accessToken, String refreshToken, Long id) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.id = id;

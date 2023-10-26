@@ -7,12 +7,12 @@ import lombok.Getter;
 @Getter
 public class MemberUpdateResponseDto {
 
-    private String nickname;
-    private String profileImgPath;
+    private String name;
+    private String profileImgUrl;
 
     @Builder
     public MemberUpdateResponseDto(Member member) {
-        this.nickname = member.getNickname();
-        this.profileImgPath = member.getProfileImgPath();
+        this.name = member.getName();
+        this.profileImgUrl = member.getProfileImgUrl();
     }
 }

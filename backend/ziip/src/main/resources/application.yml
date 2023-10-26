@@ -4,6 +4,24 @@ server:
 spring:
   application:
     name: ziip
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${MARIA_URL}
+    username: ${MARIA_USER}
+    password: ${MARIA_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
 
 # S3
 cloud:
@@ -27,15 +45,21 @@ logging:
         util:
           EC2MetadataUtils: ERROR
 
-redis:
-  host: localhost
-  port: 6379
-  password: redis
+jwt:
+  secretKey: ${JWT_SECRET_KEY}
+  access:
+    expiration: ${JWT_ACCESS_EXPIRATION}
+    header: Authorization
+  refresh:
+    expiration: ${JWT_REFRESH_EXPIRATION}
+    header: Authorization-refresh
 
 oauth2:
+  naver:
+    client-id: ${NAVER_CLIENT_ID}
+    client-secret: ${NAVER_CLIENT_SECRET}
+    state: test
   kakao:
+    client-id: ${KAKAO_CLIENT_ID}
     redirect-uri: http://localhost:3000/login/oauth2/code/kakao
 
-#oauth2:
-#  kakao:
-#    redirect-uri: https://k9b206.p.ssafy.io/login/oauth2/code/kakao

@@ -2,12 +2,10 @@ package com.lastdance.ziip.diary.repository.entity;
 
 import com.lastdance.ziip.global.entity.BaseEntity;
 import com.lastdance.ziip.member.repository.entity.Member;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,16 +20,20 @@ import lombok.NoArgsConstructor;
 public class DiaryComment extends BaseEntity {
 
     @Id @GeneratedValue
-    private Integer id;
+     
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+     
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id")
+     
     private Diary diary;
 
+     
     private String content;
 
 }

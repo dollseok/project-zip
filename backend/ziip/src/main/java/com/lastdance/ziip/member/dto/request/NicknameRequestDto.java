@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class NicknameRequestDto {
 
-    private String nickname;
+    private String name;
 }

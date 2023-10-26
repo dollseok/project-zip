@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class MemberInfoResponseDto {
 
-    private Integer id;
+    private Long id;
     private String email;
     private String name;
     private Gender gender;

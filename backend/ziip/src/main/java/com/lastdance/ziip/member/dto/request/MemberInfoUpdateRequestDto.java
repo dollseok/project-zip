@@ -12,6 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class MemberInfoUpdateRequestDto {
 
-    private String nickname;
+    private String name;
     private MultipartFile file;
 }
