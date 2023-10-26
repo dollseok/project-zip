@@ -1,7 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { format } from 'date-fns';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import ScheduleScreen from './ScheduleScreen';
 
 // 달력 현지화
 LocaleConfig.locales['fr'] = {
@@ -50,21 +54,38 @@ LocaleConfig.defaultLocale = 'fr';
 
 const customTheme = {
 	'stylesheet.calendar.header': {
+		// 일요일 색상 변경
 		dayTextAtIndex0: {
-			// 일요일 색상 변경
 			color: 'red',
 		},
+		// 월 ~ 토요일 검정색 변경
+		dayTextAtIndex1: {
+			color: 'black',
+		},
+		dayTextAtIndex2: {
+			color: 'black',
+		},
+		dayTextAtIndex3: {
+			color: 'black',
+		},
+		dayTextAtIndex4: {
+			color: 'black',
+		},
+		dayTextAtIndex5: {
+			color: 'black',
+		},
 		dayTextAtIndex6: {
-			// 토요일 색상 변경
-			color: 'blue',
+			color: 'black',
 		},
 		monthText: {
 			// 월 글씨 크기
 			fontSize: 24,
+			fontWeight: 'bold',
 		},
 		yearText: {
 			// 연도 글씨 크기
 			fontSize: 24,
+			fontWeight: 'bold',
 		},
 	},
 	selectedDayBackgroundColor: 'black', // 선택된 날짜 배경색
@@ -74,23 +95,23 @@ const customTheme = {
 	// 일자 폰트 (1, 2, ... , 31)
 	textDayFontWeight: '800',
 	textDayFontSize: 24,
-	// 헤더 폰트 (일, 월, ..., 토)
+	// 요일 폰트 (일, 월, ..., 토)
 	textDayHeaderFontWeight: '800',
 	textDayHeaderFontSize: 24,
 };
 
-export default function CalendarScreen() {
+export default function CalendarScreen({ navigation }) {
 	const posts = [
 		{
 			id: 1,
-			title: '제목',
-			contents: '내용',
+			title: '10월 가족여행',
+			contents: '제주도',
 			date: '2023-10-24',
 		},
 		{
 			id: 2,
-			title: '제목',
-			contents: '내용',
+			title: '10월 가족여행',
+			contents: '연돈 뿌시기',
 			date: '2023-10-25',
 		},
 	];
@@ -113,14 +134,17 @@ export default function CalendarScreen() {
 		},
 	};
 
+	const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+	const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.dateContainer}>
 				<View style={styles.selectYear}>
-					<Text>연도 선택</Text>
+					<Text style={{ fontSize: 24 }}>{currentYear}</Text>
 				</View>
 				<View style={styles.selectMonth}>
-					<Text>월 선택</Text>
+					<Text style={{ fontSize: 40 }}>{currentMonth}</Text>
 				</View>
 			</View>
 			<View style={styles.calendarContainer}>
@@ -128,12 +152,19 @@ export default function CalendarScreen() {
 					style={styles.calendar}
 					markedDates={markedSelectedDates}
 					// 달력 타이틀 커스텀 => 2023 10
-					monthFormat="yyyy MM"
+					monthFormat="yyyy년 MM월"
 					// 스와이프로 월 변경 가능
 					enableSwipeMonths={true}
 					theme={customTheme}
 					onDayPress={(day) => {
 						setSelectedDate(day.dateString);
+						navigation.navigate('일정', {
+							dateInfo: day.dateString,
+						});
+					}}
+					onMonthChange={(month) => {
+						setCurrentYear(month.year);
+						setCurrentMonth(month.month);
 					}}
 				/>
 			</View>
@@ -148,16 +179,17 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	dateContainer: {
-		flexDirection: 'row',
-		gap: 50,
+		gap: 20,
 	},
 	selectYear: {
-		borderWidth: 1,
-		borderColor: 'black',
+		alignItems: 'center',
+		// borderWidth: 1,
+		// borderColor: 'black',
 	},
 	selectMonth: {
-		borderWidth: 1,
-		borderColor: 'black',
+		alignItems: 'center',
+		// borderWidth: 1,
+		// borderColor: 'black',
 	},
 	calendarContainer: {
 		marginTop: 20,

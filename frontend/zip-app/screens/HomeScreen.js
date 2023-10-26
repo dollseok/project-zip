@@ -4,7 +4,9 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // 화면 이동
+import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import MypageScreen from './MypageScreen';
 import CalendarScreen from './CalendarScreen';
 import ScheduleScreen from './ScheduleScreen';
@@ -13,6 +15,29 @@ import AlbumScreen from './album/AlbumScreen';
 import FamilyMainScreen from './FamilyMainScreen';
 
 const Tab = createBottomTabNavigator();
+
+function CalendarStack() {
+	const Stack = createStackNavigator();
+
+	return (
+		<Stack.Navigator>
+			<Stack.Screen
+				name="calendar"
+				component={CalendarScreen}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="일정"
+				component={ScheduleScreen}
+				options={{ headerShown: false }}
+			/>
+		</Stack.Navigator>
+	);
+}
+
+const tabBarStyle = {
+	backgroundColor: 'black',
+};
 
 export default function HomeScreen() {
 	return (
@@ -36,6 +61,7 @@ export default function HomeScreen() {
 
 					return <Ionicons name={iconName} size={size} color={color} />;
 				},
+				style: tabBarStyle,
 			})}
 		>
 			<Tab.Screen
@@ -61,7 +87,7 @@ export default function HomeScreen() {
 			/>
 			<Tab.Screen
 				name="캘린더"
-				component={CalendarScreen}
+				component={CalendarStack}
 				options={{
 					headerShown: false,
 				}}

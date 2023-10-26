@@ -2,13 +2,22 @@
 import 'react-native-gesture-handler';
 
 // 화면이동
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 
 import StackNavigator from './screens/navigation/StackNavigator';
 
+// 화면 배경색 변경
+const navTheme = {
+	...DefaultTheme,
+	colors: {
+		...DefaultTheme.colors,
+		background: 'white',
+	},
+};
+
 export default function App() {
 	return (
-		<NavigationContainer>
+		<NavigationContainer theme={navTheme}>
 			<StackNavigator />
 		</NavigationContainer>
 	);
