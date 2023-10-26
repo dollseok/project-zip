@@ -7,6 +7,7 @@ import com.lastdance.ziip.member.dto.response.BaseResponseDto;
 import com.lastdance.ziip.member.dto.response.MemberAllInfoResponse;
 import com.lastdance.ziip.member.dto.response.MemberInfoResponseDto;
 import com.lastdance.ziip.member.repository.entity.Member;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface MemberService {
 
@@ -17,8 +18,8 @@ public interface MemberService {
 
     Member findMemberByJwtToken(String token);
 
-//    BaseResponseDto updateMemberInfo(Integer memberId, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto, Member findMember, MultipartFile file);
-//
+    BaseResponseDto updateMemberInfo(Integer memberId, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto, Member findMember, MultipartFile file);
+
     BaseResponseDto updateNickname(String nickname, Member findMember);
 
     BaseResponseDto validNickname(String nickname, Member findMember);

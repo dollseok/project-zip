@@ -101,23 +101,23 @@ public class MemberController {
                         .build());
     }
 
-//    @Operation(summary = "멤버 정보 수정", description = "멤버 정보(프로필사진,닉네임) 수정")
-//    @PutMapping("/{id}")
-//    private BaseResponseDto updateMemberInfo(@PathVariable Integer id,
-//                                             @RequestPart(name = "nickname", required = false) MemberInfoUpdateRequestDto memberInfoUpdateRequestDto,
-//                                             @RequestParam(value = "file", required = false) MultipartFile file
-//            , HttpServletRequest httpServletRequest) {
-//
-//        if (memberInfoUpdateRequestDto != null) {
-//
-//            memberInfoUpdateRequestDto.setFile(file);
-//        }
-//        String token = httpServletRequest.getHeader("Authorization");
-//        Member findMember = memberService.findMemberByJwtToken(token);
-//
-//        return memberService.updateMemberInfo(id, memberInfoUpdateRequestDto, findMember, file);
-//    }
-//
+    @Operation(summary = "멤버 정보 수정", description = "멤버 정보(프로필사진,닉네임) 수정")
+    @PutMapping("/{id}")
+    private BaseResponseDto updateMemberInfo(@PathVariable Integer id,
+                                             @RequestPart(name = "name", required = false) MemberInfoUpdateRequestDto memberInfoUpdateRequestDto,
+                                             @RequestParam(value = "file", required = false) MultipartFile file
+            , HttpServletRequest httpServletRequest) {
+
+        if (memberInfoUpdateRequestDto != null) {
+
+            memberInfoUpdateRequestDto.setFile(file);
+        }
+        String token = httpServletRequest.getHeader("Authorization");
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        return memberService.updateMemberInfo(id, memberInfoUpdateRequestDto, findMember, file);
+    }
+
     @Operation(summary = "닉네임 설정", description = "닉네임 설정")
     @PutMapping("/nickname")
     private BaseResponseDto setNickname(@RequestBody NicknameRequestDto nicknameRequestDto,

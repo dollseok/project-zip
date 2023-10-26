@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -253,37 +254,37 @@ public class MemberServiceImpl implements MemberService {
 //                .build()).orElse(null);
 //    }
 
-//    @Transactional
-//    public BaseResponseDto updateMemberInfo(Integer id, MemberInfoUpdateRequestDto mypageUpdateRequestDto, Member findMember, MultipartFile file) {
-//
-//        if (findMember.getId() != id) {
-//            throw new IllegalArgumentException("잘못된 접근입니다");
-//        }
-//
-//        if (mypageUpdateRequestDto == null) {
-//
-//            if (file != null) {
+    @Transactional
+    public BaseResponseDto updateMemberInfo(Long id, MemberInfoUpdateRequestDto mypageUpdateRequestDto, Member findMember, MultipartFile file) {
+
+        if (findMember.getId() != id) {
+            throw new IllegalArgumentException("잘못된 접근입니다");
+        }
+
+        if (mypageUpdateRequestDto == null) {
+
+            if (file != null) {
 //                FileDto newfileDto = fileUploadUtil.uploadFile(file, findMember);
 //                findMember.updateMemberInfo(newfileDto);
 //                findMember.getProfileImgPath();
-//            }
-//
-//        } else {
-//            if (mypageUpdateRequestDto.getNickname() == null || mypageUpdateRequestDto.getNickname().isBlank()) {
-//                throw new CustomException(HttpStatus.BAD_REQUEST, -101, "닉네임은 null이 될 수 없습니다");
-//            }
-//
-//            if (!isValidNickname(mypageUpdateRequestDto.getNickname()) || (mypageUpdateRequestDto.getNickname().length() < 2 || mypageUpdateRequestDto.getNickname().length() >= 9)) {
-//                throw new CustomException(HttpStatus.BAD_REQUEST, -102, "닉네임 정규식 혹은 길이가 맞지 않습니다");
-//            }
-//
-//            Optional<Member> findNickname = memberRepository.findByNickname(mypageUpdateRequestDto.getNickname());
-//
-//            //닉네임 중복체크
-//            if (findNickname.isPresent() && !findMember.getNickname().equals(findNickname.get().getNickname())) {
-//                throw new CustomException(HttpStatus.BAD_REQUEST, -100, "닉네임이 중복되었습니다");
-//            }
-//
+            }
+
+        } else {
+            if (mypageUpdateRequestDto.getName() == null || mypageUpdateRequestDto.getName().isBlank()) {
+                throw new CustomException(HttpStatus.BAD_REQUEST, -101, "닉네임은 null이 될 수 없습니다");
+            }
+
+            if (!isValidNickname(mypageUpdateRequestDto.getName()) || (mypageUpdateRequestDto.getName().length() < 2 || mypageUpdateRequestDto.getName().length() >= 9)) {
+                throw new CustomException(HttpStatus.BAD_REQUEST, -102, "닉네임 정규식 혹은 길이가 맞지 않습니다");
+            }
+
+            Optional<Member> findNickname = memberRepository.findByName(mypageUpdateRequestDto.getName());
+
+            //닉네임 중복체크
+            if (findNickname.isPresent() && !findMember.getName().equals(findNickname.get().getName())) {
+                throw new CustomException(HttpStatus.BAD_REQUEST, -100, "닉네임이 중복되었습니다");
+            }
+
 //            if (mypageUpdateRequestDto.getFile() != null) {
 //                FileDto newfileDto = fileUploadUtil.uploadFile(mypageUpdateRequestDto.getFile(), findMember);
 //                findMember.updateMemberInfo(mypageUpdateRequestDto, newfileDto);
@@ -291,21 +292,21 @@ public class MemberServiceImpl implements MemberService {
 //            } else {
 //                findMember.updateMemberInfo(mypageUpdateRequestDto);
 //            }
-//        }
-//
-//        MemberUpdateResponseDto newMember = MemberUpdateResponseDto.builder()
-//                .member(findMember)
-//                .build();
-//
-//        return BaseResponseDto.builder()
-//                .success(true)
-//                .message("사용자 정보를 수정하였습니다")
-//                .data(newMember)
-//                .build();
-//
-//
-//    }
-//
+        }
+
+        MemberUpdateResponseDto newMember = MemberUpdateResponseDto.builder()
+                .member(findMember)
+                .build();
+
+        return BaseResponseDto.builder()
+                .success(true)
+                .message("사용자 정보를 수정하였습니다")
+                .data(newMember)
+                .build();
+
+
+    }
+
     @Transactional
     public BaseResponseDto updateNickname(String nickname, Member member) {
 
