@@ -1,11 +1,10 @@
 package com.lastdance.ziip.schedule.controller;
 
-import com.lastdance.ziip.family.dto.response.FamilyRegisterResponseDto;
-import com.lastdance.ziip.family.enums.FamilyResponseMessage;
 import com.lastdance.ziip.global.util.ResponseTemplate;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.member.service.MemberService;
 import com.lastdance.ziip.schedule.dto.request.ScheduleRegisterRequestDto;
+import com.lastdance.ziip.schedule.dto.response.ScheduleListResponseDto;
 import com.lastdance.ziip.schedule.dto.response.ScheduleRegisterResponseDto;
 import com.lastdance.ziip.schedule.enums.ScheduleResponseMessage;
 import com.lastdance.ziip.schedule.service.ScheduleService;
@@ -16,9 +15,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -53,6 +54,29 @@ public class ScheduleController {
                 ResponseTemplate.<ScheduleRegisterResponseDto>builder()
                         .msg(ScheduleResponseMessage.SCHEDULE_REGIST_SUCCESS.getMessage())
                         .data(scheduleRegisterResponseDto)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+    }
+
+    @Operation(summary = "일정 리스트 조회", description = "일정 리스트 조회 API")
+    @GetMapping("/list")
+    public ResponseEntity<ResponseTemplate<ScheduleListResponseDto>> listSchedule(
+            HttpServletRequest httpServletRequest, @RequestParam(name = "familyId") long familyId) {
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) {
+            return null;
+        }
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        ScheduleListResponseDto scheduleListResponse = scheduleService.listSchedule(findMember, familyId);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<ScheduleListResponseDto>builder()
+                        .msg(ScheduleResponseMessage.SCHEDULE_LIST_SUCCESS.getMessage())
+                        .data(scheduleListResponse)
                         .result(true)
                         .build(),
                 HttpStatus.OK);
