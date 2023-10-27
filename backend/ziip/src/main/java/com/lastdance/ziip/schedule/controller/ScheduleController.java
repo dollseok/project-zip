@@ -4,13 +4,16 @@ import com.lastdance.ziip.global.util.ResponseTemplate;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.member.service.MemberService;
 import com.lastdance.ziip.schedule.dto.request.ScheduleRegisterRequestDto;
+import com.lastdance.ziip.schedule.dto.response.ScheduleDetailResponseDto;
 import com.lastdance.ziip.schedule.dto.response.ScheduleListResponseDto;
 import com.lastdance.ziip.schedule.dto.response.ScheduleRegisterResponseDto;
 import com.lastdance.ziip.schedule.enums.ScheduleResponseMessage;
 import com.lastdance.ziip.schedule.service.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import javax.servlet.http.HttpServletRequest;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -77,6 +80,29 @@ public class ScheduleController {
                 ResponseTemplate.<ScheduleListResponseDto>builder()
                         .msg(ScheduleResponseMessage.SCHEDULE_LIST_SUCCESS.getMessage())
                         .data(scheduleListResponse)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+    }
+
+    @Operation(summary = "일정 상세 조회", description = "일정 상세 조회 API")
+    @GetMapping("/detail")
+    public ResponseEntity<ResponseTemplate<ScheduleDetailResponseDto>> DetailSchedule(HttpServletRequest httpServletRequest,
+                                                                                      @RequestParam(name = "scheduleId") long scheduleId) {
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) {
+            return null;
+        }
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        ScheduleDetailResponseDto scheduleDetailResponse = scheduleService.detailSchedule(findMember, scheduleId);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<ScheduleDetailResponseDto>builder()
+                        .msg(ScheduleResponseMessage.SCHEDULE_DETAIL_SUCCESS.getMessage())
+                        .data(scheduleDetailResponse)
                         .result(true)
                         .build(),
                 HttpStatus.OK);

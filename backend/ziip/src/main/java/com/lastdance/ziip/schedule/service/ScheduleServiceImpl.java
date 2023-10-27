@@ -3,10 +3,10 @@ package com.lastdance.ziip.schedule.service;
 import com.lastdance.ziip.family.repository.FamilyRepository;
 import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.member.repository.entity.Member;
+import com.lastdance.ziip.plan.repository.PlanRepository;
+import com.lastdance.ziip.plan.repository.entity.Plan;
 import com.lastdance.ziip.schedule.dto.request.ScheduleRegisterRequestDto;
-import com.lastdance.ziip.schedule.dto.response.ScheduleListDetailResponseDto;
-import com.lastdance.ziip.schedule.dto.response.ScheduleListResponseDto;
-import com.lastdance.ziip.schedule.dto.response.ScheduleRegisterResponseDto;
+import com.lastdance.ziip.schedule.dto.response.*;
 import com.lastdance.ziip.schedule.repository.ScheduleRepository;
 import com.lastdance.ziip.schedule.repository.entity.Schedule;
 import java.time.LocalDate;
@@ -27,6 +27,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     private final FamilyRepository familyRepository;
     private final ScheduleRepository scheduleRepository;
+    private final PlanRepository planRepository;
     @Override
     public ScheduleRegisterResponseDto registerSchedule(Member findMember,
             ScheduleRegisterRequestDto scheduleRegisterRequestDto) {
@@ -71,6 +72,37 @@ public class ScheduleServiceImpl implements ScheduleService{
         return ScheduleListResponseDto.builder()
                 .scheduleListDetailResponseList(scheduleListDetailResponseDtos)
                 .build();
+    }
+
+    @Override
+    public ScheduleDetailResponseDto detailSchedule(Member findMember, long scheduleId) {
+
+        Optional<Schedule> schedule = scheduleRepository.findById(scheduleId);
+
+        List<Plan> plans = planRepository.findAllBySchedule(schedule);
+
+        List<ScheduleDetailPlanResponseDto> scheduleDetailPlanResponseDtos = new ArrayList<>();
+
+        for (Plan plan : plans) {
+            ScheduleDetailPlanResponseDto scheduleDetailPlanResponseDto = ScheduleDetailPlanResponseDto.builder()
+                    .scheduleId(plan.getSchedule().getId())
+                    .memberId(plan.getMember().getId())
+                    .statusCode(Long.valueOf(plan.getStatusCode().getCode().getValue()))
+                    .title(plan.getTitle())
+                    .content(plan.getContent())
+                    .build();
+
+            scheduleDetailPlanResponseDtos.add(scheduleDetailPlanResponseDto);
+        }
+
+        ScheduleDetailResponseDto scheduleDetailResponseDto = ScheduleDetailResponseDto.builder()
+                .title(schedule.get().getTitle())
+                .startDate(String.valueOf(schedule.get().getStartDate()))
+                .endDate(String.valueOf(schedule.get().getEndDate()))
+                .scheduleDetailPlanResponseDtos(scheduleDetailPlanResponseDtos)
+                .build();
+
+        return scheduleDetailResponseDto;
     }
 
 }
