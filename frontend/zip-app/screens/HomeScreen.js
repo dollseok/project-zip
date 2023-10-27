@@ -4,7 +4,9 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // 화면 이동
+import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import MypageScreen from './MypageScreen';
 import CalendarScreen from './CalendarScreen';
 import ScheduleScreen from './ScheduleScreen';
@@ -14,11 +16,42 @@ import FamilyMainScreen from './FamilyMainScreen';
 
 const Tab = createBottomTabNavigator();
 
+function CalendarStack() {
+	const Stack = createStackNavigator();
+
+	return (
+		<Stack.Navigator>
+			<Stack.Screen
+				name="calendar"
+				component={CalendarScreen}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="일정"
+				component={ScheduleScreen}
+				options={{ headerShown: false }}
+			/>
+		</Stack.Navigator>
+	);
+}
+
+const tabBarStyle = {
+	backgroundColor: 'black',
+};
+
 export default function HomeScreen() {
 	return (
 		<Tab.Navigator
 			initialRouteName="메인"
 			screenOptions={({ route }) => ({
+				tabBarShowLabel: false, // 아이콘 별 이름 안보이게
+				tabBarStyle: {
+					backgroundColor: 'white', // 하단 탭 배경색상
+					height: '10%', // 하단 탭 높이
+					borderColor: 'white', // 경계선 안보이게
+				},
+				tabBarActiveTintColor: 'black', // 탭 활성화 아이콘 색상
+				tabBarInactiveTintColor: 'rgba(0, 0, 0, 0.2)', // 탭 비활성화 아이콘 색상
 				tabBarIcon: ({ focused, color, size }) => {
 					let iconName;
 
@@ -34,7 +67,7 @@ export default function HomeScreen() {
 						iconName = 'home';
 					}
 
-					return <Ionicons name={iconName} size={size} color={color} />;
+					return <Ionicons name={iconName} size={30} color={color} />;
 				},
 			})}
 		>
@@ -61,7 +94,7 @@ export default function HomeScreen() {
 			/>
 			<Tab.Screen
 				name="캘린더"
-				component={CalendarScreen}
+				component={CalendarStack}
 				options={{
 					headerShown: false,
 				}}

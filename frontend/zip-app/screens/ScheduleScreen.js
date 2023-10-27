@@ -1,19 +1,41 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { useState, useEffect } from 'react';
 
-export default function ScheduleScreen() {
+import ScheduleList from '../components/schedule/ScheduleList';
+
+import { AntDesign } from '@expo/vector-icons';
+
+export default function ScheduleScreen({ route, navigation }) {
+	// 캘린더에서 받아온 현재 날짜정보
+	// 예시) '2023-10-25'
+	const { dateInfo } = route.params;
+
+	const [currentYear, setCurrentYear] = useState();
+	const [currentMonth, setCurrentMonth] = useState();
+
+	useEffect(() => {
+		setCurrentYear(dateInfo.split('-')[0]);
+		setCurrentMonth(dateInfo.split('-')[1]);
+	}, []);
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.dateContainer}>
+				{/* 연도 선택 */}
 				<View style={styles.selectYear}>
-					<Text>연도 선택</Text>
+					<Text style={{ fontSize: 24 }}>{currentYear}</Text>
 				</View>
+				{/* 월 선택 */}
 				<View style={styles.selectMonth}>
-					<Text>월 선택</Text>
+					<Text style={{ fontSize: 40 }}>{currentMonth}</Text>
 				</View>
 			</View>
-			<View style={styles.scheduleList}>
-				<Text>일정 리스트</Text>
-			</View>
+			{/* 일정 추가 버튼 */}
+			<TouchableOpacity style={styles.addBtnContainer}>
+				<AntDesign name="plus" size={24} color="black" />
+			</TouchableOpacity>
+			{/* 일정 리스트 */}
+			<ScheduleList></ScheduleList>
 		</View>
 	);
 }
@@ -25,23 +47,20 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	dateContainer: {
-		flexDirection: 'row',
-		gap: 50,
+		gap: 20,
 	},
 	selectYear: {
-		borderWidth: 1,
-		borderColor: 'black',
+		alignItems: 'center',
+		// borderWidth: 1,
+		// borderColor: 'black',
 	},
 	selectMonth: {
-		borderWidth: 1,
-		borderColor: 'black',
-	},
-	scheduleList: {
-		borderWidth: 1,
-		borderColor: 'black',
 		alignItems: 'center',
-		justifyContent: 'center',
-		width: 300,
-		height: 400,
+		// borderWidth: 1,
+		// borderColor: 'black',
+	},
+	addBtnContainer: {
+		width: '80%',
+		alignItems: 'flex-end',
 	},
 });
