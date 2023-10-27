@@ -2,7 +2,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../HomeScreen';
 import IntroScreen from '../IntroScreen';
 import LoginScreen from '../auth/LoginScreen';
-import SelectScreen from '../SelectScreen';
+import FamilySelectScreen from '../family/FamilySelectScreen';
 import KakaoLoginScreen from '../auth/KakaoLoginScreen';
 import KakaoLoginCallBack from '../auth/KakaoLoginCallBack';
 
@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 
 export default function StackNavigator() {
 	return (
-		<Stack.Navigator initialRouteName="홈">
+		<Stack.Navigator initialRouteName="진입화면">
 			<Stack.Screen
 				name="홈"
 				component={HomeScreen}
@@ -28,7 +28,7 @@ export default function StackNavigator() {
 			/>
 			<Stack.Screen
 				name="가족선택"
-				component={SelectScreen}
+				component={FamilySelectScreen}
 				options={{ headerShown: false }}
 			/>
 			<Stack.Screen
