@@ -1,7 +1,15 @@
 package com.lastdance.ziip.family.service;
 
-import com.lastdance.ziip.family.dto.request.FamilyRegisterRequest;
+import com.lastdance.ziip.family.dto.request.FamilyNickNameRequestDto;
+import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequestDto;
+import com.lastdance.ziip.family.dto.request.FamilyRegisterRequestDto;
+import com.lastdance.ziip.family.dto.response.FamilyChoiceResponseDto;
+import com.lastdance.ziip.family.dto.response.FamilyListDetailResponseDto;
+import com.lastdance.ziip.family.dto.response.FamilyListResponseDto;
+import com.lastdance.ziip.family.dto.response.FamilyNickNameResponseDto;
+import com.lastdance.ziip.family.dto.response.FamilyRegisterAcceptResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterResponseDto;
+import com.lastdance.ziip.family.exception.MemberAlreadyRegisteredInFamilyException;
 import com.lastdance.ziip.family.repository.FamilyMemberRepository;
 import com.lastdance.ziip.family.repository.FamilyRepository;
 import com.lastdance.ziip.family.repository.entity.Family;
@@ -9,6 +17,9 @@ import com.lastdance.ziip.family.repository.entity.FamilyMember;
 import com.lastdance.ziip.global.awsS3.S3Uploader;
 import com.lastdance.ziip.member.dto.FileDto;
 import com.lastdance.ziip.member.repository.entity.Member;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,10 +40,10 @@ public class FamilyServiceImpl implements FamilyService {
     private final S3Uploader s3Uploader;
 
     @Override
-    public FamilyRegisterResponseDto registFamily(Member findMember, FamilyRegisterRequest familyRegisterRequest, MultipartFile file) throws IOException {
+    public FamilyRegisterResponseDto registFamily(Member findMember, FamilyRegisterRequestDto familyRegisterRequest, MultipartFile file) throws IOException {
 
         String code = String.valueOf(UUID.randomUUID());
-        System.out.println(code);
+
         // 이미지 등록 안했을 때
         if(file.isEmpty()){
             Family family = Family.builder()
@@ -92,6 +103,86 @@ public class FamilyServiceImpl implements FamilyService {
             return familyRegisterResponseDto;
         }
 
+    }
+
+    @Override
+    public FamilyRegisterAcceptResponseDto acceptFamily(Member findMember, FamilyRegisterAcceptRequestDto familyRegisterAcceptRequest) {
+        Family family = familyRepository.findByCode(familyRegisterAcceptRequest.getFamilyCode());
+
+        FamilyMember existingFamilyMember = familyMemberRepository.findByMemberAndFamily(findMember, family);
+        if (existingFamilyMember != null) {
+            throw new MemberAlreadyRegisteredInFamilyException("해당 멤버는 이미 이 가족에 등록되어 있습니다.");
+        }
+
+
+        FamilyMember familyMember = FamilyMember.builder()
+                .member(findMember)
+                .family(family)
+                .nickname(familyRegisterAcceptRequest.getNickname())
+                .build();
+
+        FamilyMember saveFamilyMember = familyMemberRepository.save(familyMember);
+
+        FamilyRegisterAcceptResponseDto familyRegisterAcceptResponse = FamilyRegisterAcceptResponseDto.builder()
+                .familyId(saveFamilyMember.getId())
+                .build();
+
+        return familyRegisterAcceptResponse;
+    }
+
+    @Override
+    public FamilyListResponseDto listFamily(Member findMember) {
+
+        List<FamilyMember> familyMembers = familyMemberRepository.findAllByMember(findMember);
+
+        List<FamilyListDetailResponseDto> familyListDetailResponseDtoList = new ArrayList<>();
+
+        for (FamilyMember familyMember : familyMembers) {
+            FamilyListDetailResponseDto familyListDetailResponseDto = FamilyListDetailResponseDto.builder()
+                    .id(familyMember.getFamily().getId())
+                    .name(familyMember.getFamily().getName())
+                    .profileImgUrl(familyMember.getFamily().getProfileImgUrl())
+                    .build();
+
+            familyListDetailResponseDtoList.add(familyListDetailResponseDto);
+        }
+
+        FamilyListResponseDto familyListResponseDto = FamilyListResponseDto.builder()
+                .familyListDetailResponseDtoList(familyListDetailResponseDtoList)
+                .build();
+
+        return familyListResponseDto;
+    }
+
+    @Override
+    public FamilyNickNameResponseDto modifyNickname(Member findMember,
+            FamilyNickNameRequestDto familyNickNameRequest) {
+
+        FamilyMember familyMember = familyMemberRepository.findByMemberAndFamilyId(findMember, familyNickNameRequest.getFamilyId());
+
+        familyMember.updateNickname(familyNickNameRequest.getNickname());
+
+        FamilyNickNameResponseDto familyNickNameResponse = FamilyNickNameResponseDto.builder()
+                .familyId(familyMember.getFamily().getId())
+                .build();
+
+        return familyNickNameResponse;
+    }
+
+    @Override
+    public FamilyChoiceResponseDto choiceFamily(Member findMember, long familyId) {
+
+        Optional<Family> family = familyRepository.findById(familyId);
+
+        FamilyChoiceResponseDto familyChoiceResponseDto = FamilyChoiceResponseDto.builder()
+                .familyId(family.get().getId())
+                .familyName(family.get().getName())
+                .familyContent(family.get().getContent())
+                .familyProfileImgUrl(family.get().getProfileImgUrl())
+                .memberProfileImgUrl(findMember.getProfileImgUrl())
+                .build();
+
+        return familyChoiceResponseDto;
     }
 
 }

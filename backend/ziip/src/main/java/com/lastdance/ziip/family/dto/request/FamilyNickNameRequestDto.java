@@ -1,16 +1,16 @@
 package com.lastdance.ziip.family.dto.request;
 
-
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-public class FamilyRegisterRequest {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class FamilyNickNameRequestDto {
 
-    String name;
-    String content;
+    Long familyId;
     String nickname;
 }
