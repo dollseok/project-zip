@@ -91,6 +91,7 @@ export default function HomeScreen() {
 				options={{
 					headerShown: false,
 				}}
+				// initialParams={{ familyId: route.params.familyId }}
 			/>
 			<Tab.Screen
 				name="캘린더"

@@ -115,9 +115,9 @@ const styles = StyleSheet.create({
 		backgroundColor: 'transparent',
 	},
 	icon: {
-		width: 24, // 아이콘의 크기. 필요에 따라 조절 가능
-		height: 24, // 아이콘의 크기. 필요에 따라 조절 가능
-		marginRight: 40, // 텍스트와의 간격
+		width: 24, 
+		height: 24, 
+		marginRight: 40, 
 	},
 	outlinedButtonText: {
 		fontSize: 18,
