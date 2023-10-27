@@ -20,6 +20,12 @@ export default function FamilySelectScreen({ navigation }) {
 		outputRange: ['-15deg', '0deg'],
 	});
 
+  const navigateToFamilySelection = (familyId) => {
+    console.log("선택한 가족 ID : ", familyId);
+	AsyncStorage.setItem('familyId', JSON.stringify(familyId));
+    navigation.navigate("홈");
+  };
+
 	useEffect(() => {
 		const animate = () => {
 			// -15도에서 0도로
@@ -69,7 +75,7 @@ export default function FamilySelectScreen({ navigation }) {
 					<FlatList
 						data={familyList}
 						renderItem={({ item }) => (
-							<TouchableOpacity>
+							<TouchableOpacity onPress={() => navigateToFamilySelection(item.familyId)}>
 								<Text style={styles.familyText}>{item.familyName}</Text>
 							</TouchableOpacity>
 						)}

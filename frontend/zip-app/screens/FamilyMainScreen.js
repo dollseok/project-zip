@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../util/Interceptor';
 import * as ImagePicker from 'expo-image-picker';
 
-export default function FamilyMainScreen() {
+export default function FamilyMainScreen({ route }) {
 	const [family, setFamily] = useState([]);
 	const [schedules, setSchedules] = useState([]);
 	const [diaries, setDiaries] = useState([]);
@@ -61,7 +61,7 @@ export default function FamilyMainScreen() {
 
 	useEffect(() => {
 		async function fetchData() {
-			const familyId = 1;
+			const familyId = await AsyncStorage.getItem('familyId');
 
 			axiosInstance
 				.get(`/family/choice?familyId=${familyId}`)
