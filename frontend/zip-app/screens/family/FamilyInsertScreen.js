@@ -13,19 +13,67 @@ import axiosInstance from '../../util/Interceptor';
 import { TextInput } from 'react-native-gesture-handler';
 
 export default function FamilyInsertScreen({ navigation }) {
-	const rotateValue = useRef(new Animated.Value(0)).current; // 초기 값 0
-	const [inputValue, setInputValue] = useState('');
-	const [familyNickname, setFamilyNickname] = useState(''); // 닉네임 상태 관리
+	const rotateValue = useRef(new Animated.Value(0)).current;
+	const [familyName, setFamilyName] = useState('');
+	const [familyMessage, setFamilyMessage] = useState('');
+	const [nickName, setNickname] = useState('');
+
+	const [isfamilyNameViewVisible, setfamilyNameViewVisible] = useState(true);
+	const [isMessageViewVisible, setMessageViewVisible] = useState(true);
+	const [isNicknameViewVisible, setNicknameViewVisible] = useState(true);
 
 	const rotateAnimation = rotateValue.interpolate({
 		inputRange: [0, 1],
 		outputRange: ['-15deg', '0deg'],
 	});
 
-	const handleButtonPress = () => {
-		// 버튼을 눌렀을 때 nickname 값을 변수에 저장하는 로직
-		let savedNickname = familyNickname;
-		console.log('저장된 닉네임:', savedNickname);
+	const handleFamilyNameButtonPress = () => {
+		setfamilyNameViewVisible(false);
+		console.log('저장된 가족 이름:', familyName);
+	};
+
+	const handleMessageButtonPress = () => {
+		setMessageViewVisible(false);
+		console.log('저장된 메시지:', familyMessage);
+	};
+
+	const handleNicknameButtonPress = () => {
+		console.log('저장된 닉네임:', nickName);
+
+		const formData = new FormData();
+
+		// 객체를 문자열로 변환하여 추가
+		formData.append(
+			'familyRegisterRequest',
+			JSON.stringify({
+				name: familyName,
+				content: familyMessage,
+				nickname: nickName,
+			}),
+		);
+
+		// file이 있는 경우에만 추가
+		// if (file) {
+		// 	formData.append('file', file);
+		// }
+
+        formData.append('file', null);
+
+		// axios 요청에 Content-Type을 multipart/form-data로 설정
+		axiosInstance
+			.post('/family/register', formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			})
+			.then((response) => {
+				console.log('저장된 가족의 ID : ', response.data.id);
+				AsyncStorage.setItem('familyId', JSON.stringify(response.data.id));
+				navigation.navigate('홈');
+			})
+			.catch((error) => {
+				console.error('가족 등록 에러: ', error);
+			});
 	};
 
 	useEffect(() => {
@@ -60,29 +108,74 @@ export default function FamilyInsertScreen({ navigation }) {
 				zip
 			</Animated.Text>
 			<View>
-				<View style={styles.conditionalContent}>
-					<Text style={styles.familyText}>가족 닉네임 만들기</Text>
-					<View style={styles.inputContainer}>
-						<TextInput
-							style={styles.inputNickname}
-							placeholder="닉네임을 설정하세요"
-							onChangeText={(text) => setFamilyNickname(text)}
-							value={familyNickname}
-						/>
-						<TouchableOpacity
-							style={[
-								styles.button,
-								!familyNickname ? styles.buttonDisabled : styles.buttonEnabled,
-							]}
-							onPress={handleButtonPress}
-							disabled={!familyNickname}
-						>
-							<Text style={{ color: 'white', fontWeight: 'bold' }}>완료</Text>
-						</TouchableOpacity>
+				{isfamilyNameViewVisible ? (
+					<View style={styles.conditionalContent}>
+						<Text style={styles.familyText}>가족 이름 만들기</Text>
+						<View style={styles.inputContainer}>
+							<TextInput
+								style={styles.inputText}
+								placeholder="가족 이름을 설정하세요"
+								onChangeText={(text) => setFamilyName(text)}
+								value={familyName}
+							/>
+							<TouchableOpacity
+								style={[
+									styles.button,
+									!familyName ? styles.buttonDisabled : styles.buttonEnabled,
+								]}
+								onPress={handleFamilyNameButtonPress}
+								disabled={!familyName}
+							>
+								<Text style={{ color: 'white', fontWeight: 'bold' }}>완료</Text>
+							</TouchableOpacity>
+						</View>
 					</View>
-				</View>
-
-                {/* 여기에 상태메시지 만들기 용 View 들어가야됨 */}
+				) : isMessageViewVisible ? (
+					<View style={styles.conditionalContent}>
+						<Text style={styles.familyText}>상태메시지 만들기</Text>
+						<View style={styles.inputContainer}>
+							<TextInput
+								style={styles.inputText}
+								placeholder="상태메시지를 설정하세요"
+								onChangeText={(text) => setFamilyMessage(text)}
+								value={familyMessage}
+							/>
+							<TouchableOpacity
+								style={[
+									styles.button,
+									!familyMessage ? styles.buttonDisabled : styles.buttonEnabled,
+								]}
+								onPress={handleMessageButtonPress}
+								disabled={!familyMessage}
+							>
+								<Text style={{ color: 'white', fontWeight: 'bold' }}>완료</Text>
+							</TouchableOpacity>
+						</View>
+					</View>
+				) : (
+					// 닉네임 입력 View
+					<View style={styles.conditionalContent}>
+						<Text style={styles.familyText}>닉네임 만들기</Text>
+						<View style={styles.inputContainer}>
+							<TextInput
+								style={styles.inputText}
+								placeholder="닉네임을 설정하세요"
+								onChangeText={(text) => setNickname(text)}
+								value={nickName}
+							/>
+							<TouchableOpacity
+								style={[
+									styles.button,
+									!nickName ? styles.buttonDisabled : styles.buttonEnabled,
+								]}
+								onPress={handleNicknameButtonPress}
+								disabled={!nickName}
+							>
+								<Text style={{ color: 'white', fontWeight: 'bold' }}>완료</Text>
+							</TouchableOpacity>
+						</View>
+					</View>
+				)}
 			</View>
 		</View>
 	);
@@ -115,7 +208,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		marginTop: 30,
 	},
-	inputNickname: {
+	inputText: {
 		borderBottomWidth: 1,
 		width: 180,
 	},
