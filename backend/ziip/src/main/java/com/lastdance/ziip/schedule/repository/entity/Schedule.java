@@ -2,6 +2,7 @@ package com.lastdance.ziip.schedule.repository.entity;
 
 import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.global.entity.BaseEntity;
+import com.lastdance.ziip.member.repository.entity.Member;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.*;
@@ -22,21 +23,18 @@ import org.springframework.cglib.core.Local;
 public class Schedule extends BaseEntity {
 
     @Id @GeneratedValue
-     
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "family_id")
-     
     private Family family;
 
-     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     private String title;
-
-     
     private LocalDate startDate;
-
-     
     private LocalDate endDate;
 
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
