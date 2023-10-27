@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import ScheduleScreen from './ScheduleScreen';
+import SchedulePreview from '../components/schedule/SchedulePreview';
 
 // 달력 현지화
 LocaleConfig.locales['fr'] = {
@@ -103,21 +104,37 @@ const customTheme = {
 export default function CalendarScreen({ navigation }) {
 	const posts = [
 		{
-			id: 1,
-			title: '10월 가족여행',
-			contents: '제주도',
-			date: '2023-10-24',
+			scheduleId: 1,
+			title: '가족여행',
+			startDate: '2023-10-25',
+			endDate: '2023-10-26',
+			plan: [
+				{
+					planId: 1,
+					memberId: 1,
+					status_code: 0,
+					title: '제주도 비행기 표 예매',
+					content: '25일 점심먹고 출발 ~~ 어쩌구 ~~',
+				},
+				{
+					planId: 2,
+					memberId: 1,
+					status_code: 0,
+					title: '연돈 예약하기',
+					content: '25일 저녁!!',
+				},
+			],
 		},
 		{
-			id: 2,
-			title: '10월 가족여행',
-			contents: '연돈 뿌시기',
-			date: '2023-10-25',
+			scheduleId: 2,
+			title: '어머니 생신',
+			startDate: '2023-10-28',
+			endDate: '2023-10-28',
 		},
 	];
 
 	const markedDates = posts.reduce((acc, current) => {
-		const formattedDate = format(new Date(current.date), 'yyyy-MM-dd');
+		const formattedDate = format(new Date(current.startDate), 'yyyy-MM-dd');
 		acc[formattedDate] = { marked: true };
 		return acc;
 	}, {});
@@ -136,6 +153,12 @@ export default function CalendarScreen({ navigation }) {
 
 	const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 	const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
+
+	// 일정 미리보기 팝업
+	const [modalVisible, setModalVisible] = useState(false);
+	const onModal = () => {
+		setModalVisible(true);
+	};
 
 	return (
 		<View style={styles.container}>
@@ -158,9 +181,10 @@ export default function CalendarScreen({ navigation }) {
 					theme={customTheme}
 					onDayPress={(day) => {
 						setSelectedDate(day.dateString);
-						navigation.navigate('일정', {
-							dateInfo: day.dateString,
-						});
+						onModal();
+						// navigation.navigate('일정', {
+						// 	dateInfo: day.dateString,
+						// });
 					}}
 					onMonthChange={(month) => {
 						setCurrentYear(month.year);
@@ -168,6 +192,11 @@ export default function CalendarScreen({ navigation }) {
 					}}
 				/>
 			</View>
+			<SchedulePreview
+				selectedDate={selectedDate}
+				modalVisible={modalVisible}
+				setModalVisible={setModalVisible}
+			/>
 		</View>
 	);
 }

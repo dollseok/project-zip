@@ -1,5 +1,7 @@
 import {
 	LayoutAnimation,
+	UIManager,
+	Platform,
 	StyleSheet,
 	View,
 	FlatList,
@@ -8,13 +10,20 @@ import {
 } from 'react-native';
 import { useState } from 'react';
 
+if (
+	Platform.OS === 'android' &&
+	UIManager.setLayoutAnimationEnabledExperimental
+) {
+	UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
 export default function ScheduleItem({ schedule }) {
 	const scheduleDay = schedule.startDate.split('-')[2];
 	// 일정 아이템이 확장되었는지 여부
 	const [expanded, setExpanded] = useState(false);
 
 	const toggleExpanded = () => {
-		LayoutAnimation.easeInEaseOut();
+		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
 		setExpanded(!expanded);
 	};
 
