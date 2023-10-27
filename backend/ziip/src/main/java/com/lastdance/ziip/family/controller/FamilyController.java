@@ -78,6 +78,7 @@ public class FamilyController {
                 HttpStatus.OK);
     }
 
+    @Operation(summary = "가족 리스트 조회", description = "가입된 가족 리스트 조회 API")
     @GetMapping("/list")
     public ResponseEntity<ResponseTemplate<FamilyListResponseDto>> listFamily(HttpServletRequest httpServletRequest){
 
