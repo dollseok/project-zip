@@ -3,6 +3,7 @@ import HomeScreen from '../HomeScreen';
 import IntroScreen from '../IntroScreen';
 import LoginScreen from '../auth/LoginScreen';
 import FamilySelectScreen from '../family/FamilySelectScreen';
+import FamilyInsertScreen from '../family/FamilyInsertScreen';
 import KakaoLoginScreen from '../auth/KakaoLoginScreen';
 import KakaoLoginCallBack from '../auth/KakaoLoginCallBack';
 
@@ -29,6 +30,11 @@ export default function StackNavigator() {
 			<Stack.Screen
 				name="가족선택"
 				component={FamilySelectScreen}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="가족추가"
+				component={FamilyInsertScreen}
 				options={{ headerShown: false }}
 			/>
 			<Stack.Screen
