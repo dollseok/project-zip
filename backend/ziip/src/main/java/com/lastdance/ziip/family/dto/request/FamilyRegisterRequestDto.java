@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class FamilyRegisterRequestDto {
 
-    String name;
-    String content;
-    String nickname;
+    private String name;
+    private String content;
+    private String nickname;
 }

@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FamilyListResponseDto {
 
-    List<FamilyListDetailResponseDto> familyListDetailResponseDtoList;
+    private List<FamilyListDetailResponseDto> familyListDetailResponseDtoList;
 
 }

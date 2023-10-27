@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FamilyRegisterAcceptResponseDto {
 
-    Long familyId;
+    private Long familyId;
 }

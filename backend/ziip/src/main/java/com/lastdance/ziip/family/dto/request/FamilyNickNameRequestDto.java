@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class FamilyNickNameRequestDto {
 
-    Long familyId;
-    String nickname;
+    private Long familyId;
+    private String nickname;
 }

@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class FamilyChoiceResponseDto {
 
-    Long familyId;
-    String familyName;
-    String familyContent;
-    String familyProfileImgUrl;
-    String memberProfileImgUrl;
+    private Long familyId;
+    private String familyName;
+    private String familyContent;
+    private String familyProfileImgUrl;
+    private String memberProfileImgUrl;
 
 }

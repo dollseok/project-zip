@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class FamilyListDetailResponseDto {
 
-    Long id;
-    String name;
-    String profileImgUrl;
+    private Long id;
+    private String name;
+    private String profileImgUrl;
 }
