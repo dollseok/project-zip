@@ -20,6 +20,7 @@ import com.lastdance.ziip.member.repository.entity.Member;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -135,24 +136,19 @@ public class FamilyServiceImpl implements FamilyService {
 
         List<FamilyMember> familyMembers = familyMemberRepository.findAllByMember(findMember);
 
-        List<FamilyListDetailResponseDto> familyListDetailResponseDtoList = new ArrayList<>();
+        List<FamilyListDetailResponseDto> familyListDetailResponseDtoList = familyMembers.stream()
+                .map(familyMember -> FamilyListDetailResponseDto.builder()
+                        .id(familyMember.getFamily().getId())
+                        .name(familyMember.getFamily().getName())
+                        .profileImgUrl(familyMember.getFamily().getProfileImgUrl())
+                        .build())
+                .collect(Collectors.toList());
 
-        for (FamilyMember familyMember : familyMembers) {
-            FamilyListDetailResponseDto familyListDetailResponseDto = FamilyListDetailResponseDto.builder()
-                    .id(familyMember.getFamily().getId())
-                    .name(familyMember.getFamily().getName())
-                    .profileImgUrl(familyMember.getFamily().getProfileImgUrl())
-                    .build();
-
-            familyListDetailResponseDtoList.add(familyListDetailResponseDto);
-        }
-
-        FamilyListResponseDto familyListResponseDto = FamilyListResponseDto.builder()
+        return FamilyListResponseDto.builder()
                 .familyListDetailResponseDtoList(familyListDetailResponseDtoList)
                 .build();
-
-        return familyListResponseDto;
     }
+
 
     @Override
     public FamilyNickNameResponseDto modifyNickname(Member findMember,
