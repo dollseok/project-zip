@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FamilyRegisterAcceptResponse {
+public class FamilyRegisterAcceptResponseDto {
 
     Long familyId;
 }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class FamilyRegisterRequest {
+public class FamilyRegisterRequestDto {
 
     String name;
     String content;
