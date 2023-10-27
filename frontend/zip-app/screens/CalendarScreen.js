@@ -1,12 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Modal, TouchableOpacity } from 'react-native';
+import { Picker } from '@react-native-community/picker';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import moment from 'moment';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import ScheduleScreen from './ScheduleScreen';
 import SchedulePreview from '../components/schedule/SchedulePreview';
+
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 // 달력 현지화
 LocaleConfig.locales['fr'] = {
@@ -102,6 +106,38 @@ const customTheme = {
 };
 
 export default function CalendarScreen({ navigation }) {
+	const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // 초기 년도 설정
+	const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // 초기 월 설정 (1은 1월을 의미)
+
+	const [isModalVisible, setisModalVisible] = useState(false);
+	const showPickerModal = () => {
+		setisModalVisible(true);
+	};
+
+	const hidePickerModal = () => {
+		setisModalVisible(false);
+	};
+
+	const [calendarKey, setCalendarKey] = useState(1);
+	const [calendarDate, setCalendarDate] = useState(
+		format(new Date(), 'yyyy-MM-dd'),
+	);
+
+	const handleYearChange = (year) => {
+		setSelectedYear(year);
+		updateCalendarDate(year, selectedMonth);
+	};
+
+	const handleMonthChange = (month) => {
+		setSelectedMonth(month);
+		updateCalendarDate(selectedYear, month);
+	};
+
+	const updateCalendarDate = (year, month) => {
+		const formattedDate = `${year}-${month.toString().padStart(2, '0')}-01`;
+		setCalendarDate(formattedDate);
+	};
+
 	const posts = [
 		{
 			scheduleId: 1,
@@ -169,6 +205,42 @@ export default function CalendarScreen({ navigation }) {
 				<View style={styles.selectMonth}>
 					<Text style={{ fontSize: 40 }}>{currentMonth}</Text>
 				</View>
+				<TouchableOpacity onPress={showPickerModal}>
+					<Text>날짜 선택</Text>
+				</TouchableOpacity>
+				<Modal visible={isModalVisible} animationType="slide">
+					<View>
+						<Picker
+							selectedValue={selectedYear}
+							onValueChange={handleYearChange}
+						>
+							<Picker.Item label="2020" value={2020} />
+							<Picker.Item label="2021" value={2021} />
+							<Picker.Item label="2022" value={2022} />
+							<Picker.Item label="2023" value={2023} />
+						</Picker>
+						<Picker
+							selectedValue={selectedMonth}
+							onValueChange={handleMonthChange}
+						>
+							<Picker.Item label="1" value={1} />
+							<Picker.Item label="2" value={2} />
+							<Picker.Item label="3" value={3} />
+							<Picker.Item label="4" value={4} />
+							<Picker.Item label="5" value={5} />
+							<Picker.Item label="6" value={6} />
+							<Picker.Item label="7" value={7} />
+							<Picker.Item label="8" value={8} />
+							<Picker.Item label="9" value={9} />
+							<Picker.Item label="10" value={10} />
+							<Picker.Item label="11" value={11} />
+							<Picker.Item label="12" value={12} />
+						</Picker>
+						<TouchableOpacity onPress={hidePickerModal}>
+							<Text>Done</Text>
+						</TouchableOpacity>
+					</View>
+				</Modal>
 			</View>
 			<View style={styles.calendarContainer}>
 				<Calendar
@@ -182,9 +254,6 @@ export default function CalendarScreen({ navigation }) {
 					onDayPress={(day) => {
 						setSelectedDate(day.dateString);
 						onModal();
-						// navigation.navigate('일정', {
-						// 	dateInfo: day.dateString,
-						// });
 					}}
 					onMonthChange={(month) => {
 						setCurrentYear(month.year);
@@ -193,6 +262,7 @@ export default function CalendarScreen({ navigation }) {
 				/>
 			</View>
 			<SchedulePreview
+				navigation={navigation}
 				selectedDate={selectedDate}
 				modalVisible={modalVisible}
 				setModalVisible={setModalVisible}

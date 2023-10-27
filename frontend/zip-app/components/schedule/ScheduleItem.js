@@ -10,12 +10,12 @@ import {
 } from 'react-native';
 import { useState } from 'react';
 
-if (
-	Platform.OS === 'android' &&
-	UIManager.setLayoutAnimationEnabledExperimental
-) {
-	UIManager.setLayoutAnimationEnabledExperimental(true);
-}
+// if (
+// 	Platform.OS === 'android' &&
+// 	UIManager.setLayoutAnimationEnabledExperimental
+// ) {
+// 	UIManager.setLayoutAnimationEnabledExperimental(true);
+// }
 
 export default function ScheduleItem({ schedule }) {
 	const scheduleDay = schedule.startDate.split('-')[2];
@@ -23,7 +23,7 @@ export default function ScheduleItem({ schedule }) {
 	const [expanded, setExpanded] = useState(false);
 
 	const toggleExpanded = () => {
-		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+		// LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
 		setExpanded(!expanded);
 	};
 

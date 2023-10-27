@@ -5,13 +5,14 @@ import {
 	Text,
 	Modal,
 	Animated,
+	TouchableOpacity,
 	TouchableWithoutFeedback,
 	Dimensions,
 	PanResponder,
 } from 'react-native';
 
 export default function SchedulePreview(props) {
-	const { modalVisible, setModalVisible, selectedDate } = props;
+	const { modalVisible, setModalVisible, selectedDate, navigation } = props;
 	const screenHeight = Dimensions.get('screen').height;
 	const panY = useRef(new Animated.Value(screenHeight)).current;
 	const translateY = panY.interpolate({
@@ -51,6 +52,8 @@ export default function SchedulePreview(props) {
 	useEffect(() => {
 		if (props.modalVisible) {
 			resetSchedulePreview.start();
+		} else {
+			closeSchedulePreview.start();
 		}
 	}, [props.modalVisible]);
 
@@ -84,6 +87,15 @@ export default function SchedulePreview(props) {
 							{selectedDate.split('-')[2]}
 						</Text>
 						<Text style={styles.dateUnitFont}>일</Text>
+						<TouchableOpacity
+							onPress={() => {
+								navigation.navigate('일정', {
+									dateInfo: selectedDate,
+								});
+							}}
+						>
+							<Text>자세히 보기</Text>
+						</TouchableOpacity>
 					</View>
 					<View style={styles.previewContent}>
 						<View>
