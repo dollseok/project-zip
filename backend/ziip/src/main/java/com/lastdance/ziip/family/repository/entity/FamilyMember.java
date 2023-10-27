@@ -3,7 +3,6 @@ package com.lastdance.ziip.family.repository.entity;
 import com.lastdance.ziip.member.repository.entity.Member;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,5 +29,9 @@ public class FamilyMember {
     private Member member;
 
     private String nickname;
+
+    public void updateNickname(String nickname){
+        this.nickname = nickname;
+    }
 
 }

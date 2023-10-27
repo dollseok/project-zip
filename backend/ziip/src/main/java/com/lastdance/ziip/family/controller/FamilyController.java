@@ -1,9 +1,11 @@
 package com.lastdance.ziip.family.controller;
 
 
+import com.lastdance.ziip.family.dto.request.FamilyNickNameRequest;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterRequestDto;
 import com.lastdance.ziip.family.dto.response.FamilyListResponseDto;
+import com.lastdance.ziip.family.dto.response.FamilyNickNameResponse;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterAcceptResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterResponseDto;
 import com.lastdance.ziip.family.enums.FamilyResponseMessage;
@@ -38,16 +40,20 @@ public class FamilyController {
 
     @Operation(summary = "가족 등록", description = "가족 등록하기 API(생성 시 초대코드 자동 생성)")
     @PostMapping("/register")
-    public ResponseEntity<ResponseTemplate<FamilyRegisterResponseDto>> registFamily(HttpServletRequest httpServletRequest,
-                                                                                    @RequestPart(name = "familyRegisterRequest") FamilyRegisterRequestDto familyRegisterRequest,
-                                                                                    @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+    public ResponseEntity<ResponseTemplate<FamilyRegisterResponseDto>> registFamily(
+            HttpServletRequest httpServletRequest,
+            @RequestPart(name = "familyRegisterRequest") FamilyRegisterRequestDto familyRegisterRequest,
+            @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
 
         String token = httpServletRequest.getHeader("Authorization");
-        if (token == null) return null;
+        if (token == null) {
+            return null;
+        }
 
         Member findMember = memberService.findMemberByJwtToken(token);
 
-        FamilyRegisterResponseDto familyRegisterResponseDto = familyService.registFamily(findMember, familyRegisterRequest, file);
+        FamilyRegisterResponseDto familyRegisterResponseDto = familyService.registFamily(findMember,
+                familyRegisterRequest, file);
 
         return new ResponseEntity<>(
                 ResponseTemplate.<FamilyRegisterResponseDto>builder()
@@ -60,14 +66,18 @@ public class FamilyController {
 
     @Operation(summary = "가족 초대 수락", description = "초대코드로 가족 초대 수락하기 API")
     @PostMapping("/accept")
-    public ResponseEntity<ResponseTemplate<FamilyRegisterAcceptResponseDto>> acceptFamily(HttpServletRequest httpServletRequest,
-                                                                                       @RequestBody FamilyRegisterAcceptRequestDto familyRegisterAcceptRequest){
+    public ResponseEntity<ResponseTemplate<FamilyRegisterAcceptResponseDto>> acceptFamily(
+            HttpServletRequest httpServletRequest,
+            @RequestBody FamilyRegisterAcceptRequestDto familyRegisterAcceptRequest) {
         String token = httpServletRequest.getHeader("Authorization");
-        if(token ==null)return null;
+        if (token == null) {
+            return null;
+        }
 
         Member findMember = memberService.findMemberByJwtToken(token);
 
-        FamilyRegisterAcceptResponseDto familyRegisterAcceptResponse = familyService.acceptFamily(findMember, familyRegisterAcceptRequest);
+        FamilyRegisterAcceptResponseDto familyRegisterAcceptResponse = familyService.acceptFamily(
+                findMember, familyRegisterAcceptRequest);
 
         return new ResponseEntity<>(
                 ResponseTemplate.<FamilyRegisterAcceptResponseDto>builder()
@@ -80,10 +90,13 @@ public class FamilyController {
 
     @Operation(summary = "가족 리스트 조회", description = "가입된 가족 리스트 조회 API")
     @GetMapping("/list")
-    public ResponseEntity<ResponseTemplate<FamilyListResponseDto>> listFamily(HttpServletRequest httpServletRequest){
+    public ResponseEntity<ResponseTemplate<FamilyListResponseDto>> listFamily(
+            HttpServletRequest httpServletRequest) {
 
         String token = httpServletRequest.getHeader("Authorization");
-        if (token == null) return null;
+        if (token == null) {
+            return null;
+        }
 
         Member findMember = memberService.findMemberByJwtToken(token);
 
@@ -98,10 +111,33 @@ public class FamilyController {
                 HttpStatus.OK);
     }
 
+    @PutMapping("/nickname")
+    public ResponseEntity<ResponseTemplate<FamilyNickNameResponse>> modifyNickname(
+            HttpServletRequest httpServletRequest,
+            @RequestBody FamilyNickNameRequest familyNickNameRequest) {
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) {
+            return null;
+        }
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        FamilyNickNameResponse familyNickNameResponse = familyService.modifyNickname(findMember,familyNickNameRequest);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<FamilyNickNameResponse>builder()
+                        .msg(FamilyResponseMessage.FAMILY_NICKNAME_SUCCESS.getMessage())
+                        .data(familyNickNameResponse)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+    }
 
 
     @ExceptionHandler(MemberAlreadyRegisteredInFamilyException.class)
-    public ResponseEntity<ResponseTemplate<String>> handleMemberAlreadyRegisteredInFamily(MemberAlreadyRegisteredInFamilyException ex) {
+    public ResponseEntity<ResponseTemplate<String>> handleMemberAlreadyRegisteredInFamily(
+            MemberAlreadyRegisteredInFamilyException ex) {
         return new ResponseEntity<>(
                 ResponseTemplate.<String>builder()
                         .msg(ex.getMessage())
@@ -109,8 +145,6 @@ public class FamilyController {
                         .build(),
                 HttpStatus.BAD_REQUEST);
     }
-
-
 
 
 }

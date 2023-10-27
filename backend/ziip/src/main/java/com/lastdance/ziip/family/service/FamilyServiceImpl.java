@@ -1,9 +1,11 @@
 package com.lastdance.ziip.family.service;
 
+import com.lastdance.ziip.family.dto.request.FamilyNickNameRequest;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterRequestDto;
 import com.lastdance.ziip.family.dto.response.FamilyListDetailResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyListResponseDto;
+import com.lastdance.ziip.family.dto.response.FamilyNickNameResponse;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterAcceptResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterResponseDto;
 import com.lastdance.ziip.family.exception.MemberAlreadyRegisteredInFamilyException;
@@ -148,6 +150,21 @@ public class FamilyServiceImpl implements FamilyService {
                 .build();
 
         return familyListResponseDto;
+    }
+
+    @Override
+    public FamilyNickNameResponse modifyNickname(Member findMember,
+            FamilyNickNameRequest familyNickNameRequest) {
+
+        FamilyMember familyMember = familyMemberRepository.findByMemberAndFamilyId(findMember, familyNickNameRequest.getFamilyId());
+
+        familyMember.updateNickname(familyNickNameRequest.getNickname());
+
+        FamilyNickNameResponse familyNickNameResponse = FamilyNickNameResponse.builder()
+                .familyId(familyMember.getFamily().getId())
+                .build();
+
+        return familyNickNameResponse;
     }
 
 }
