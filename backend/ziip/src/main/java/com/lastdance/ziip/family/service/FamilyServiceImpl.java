@@ -1,11 +1,12 @@
 package com.lastdance.ziip.family.service;
 
-import com.lastdance.ziip.family.dto.request.FamilyNickNameRequest;
+import com.lastdance.ziip.family.dto.request.FamilyNickNameRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterRequestDto;
+import com.lastdance.ziip.family.dto.response.FamilyChoiceResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyListDetailResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyListResponseDto;
-import com.lastdance.ziip.family.dto.response.FamilyNickNameResponse;
+import com.lastdance.ziip.family.dto.response.FamilyNickNameResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterAcceptResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterResponseDto;
 import com.lastdance.ziip.family.exception.MemberAlreadyRegisteredInFamilyException;
@@ -18,6 +19,7 @@ import com.lastdance.ziip.member.dto.FileDto;
 import com.lastdance.ziip.member.repository.entity.Member;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -153,18 +155,34 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public FamilyNickNameResponse modifyNickname(Member findMember,
-            FamilyNickNameRequest familyNickNameRequest) {
+    public FamilyNickNameResponseDto modifyNickname(Member findMember,
+            FamilyNickNameRequestDto familyNickNameRequest) {
 
         FamilyMember familyMember = familyMemberRepository.findByMemberAndFamilyId(findMember, familyNickNameRequest.getFamilyId());
 
         familyMember.updateNickname(familyNickNameRequest.getNickname());
 
-        FamilyNickNameResponse familyNickNameResponse = FamilyNickNameResponse.builder()
+        FamilyNickNameResponseDto familyNickNameResponse = FamilyNickNameResponseDto.builder()
                 .familyId(familyMember.getFamily().getId())
                 .build();
 
         return familyNickNameResponse;
+    }
+
+    @Override
+    public FamilyChoiceResponseDto choiceFamily(Member findMember, long familyId) {
+
+        Optional<Family> family = familyRepository.findById(familyId);
+
+        FamilyChoiceResponseDto familyChoiceResponseDto = FamilyChoiceResponseDto.builder()
+                .familyId(family.get().getId())
+                .familyName(family.get().getName())
+                .familyContent(family.get().getContent())
+                .familyProfileImgUrl(family.get().getProfileImgUrl())
+                .memberProfileImgUrl(findMember.getProfileImgUrl())
+                .build();
+
+        return familyChoiceResponseDto;
     }
 
 }

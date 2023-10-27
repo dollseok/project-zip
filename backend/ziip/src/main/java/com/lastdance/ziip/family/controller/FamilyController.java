@@ -1,11 +1,12 @@
 package com.lastdance.ziip.family.controller;
 
 
-import com.lastdance.ziip.family.dto.request.FamilyNickNameRequest;
+import com.lastdance.ziip.family.dto.request.FamilyNickNameRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterRequestDto;
+import com.lastdance.ziip.family.dto.response.FamilyChoiceResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyListResponseDto;
-import com.lastdance.ziip.family.dto.response.FamilyNickNameResponse;
+import com.lastdance.ziip.family.dto.response.FamilyNickNameResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterAcceptResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterResponseDto;
 import com.lastdance.ziip.family.enums.FamilyResponseMessage;
@@ -111,10 +112,11 @@ public class FamilyController {
                 HttpStatus.OK);
     }
 
+    @Operation(summary = "닉네임 변경", description = "가족 내 닉네임 변경 API")
     @PutMapping("/nickname")
-    public ResponseEntity<ResponseTemplate<FamilyNickNameResponse>> modifyNickname(
+    public ResponseEntity<ResponseTemplate<FamilyNickNameResponseDto>> modifyNickname(
             HttpServletRequest httpServletRequest,
-            @RequestBody FamilyNickNameRequest familyNickNameRequest) {
+            @RequestBody FamilyNickNameRequestDto familyNickNameRequest) {
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) {
@@ -123,12 +125,36 @@ public class FamilyController {
 
         Member findMember = memberService.findMemberByJwtToken(token);
 
-        FamilyNickNameResponse familyNickNameResponse = familyService.modifyNickname(findMember,familyNickNameRequest);
+        FamilyNickNameResponseDto familyNickNameResponse = familyService.modifyNickname(findMember,
+                familyNickNameRequest);
 
         return new ResponseEntity<>(
-                ResponseTemplate.<FamilyNickNameResponse>builder()
+                ResponseTemplate.<FamilyNickNameResponseDto>builder()
                         .msg(FamilyResponseMessage.FAMILY_NICKNAME_SUCCESS.getMessage())
                         .data(familyNickNameResponse)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+    }
+
+    @Operation(summary = "가족 선택", description = "선택한 가족의 정보를 알려주는 API")
+    @GetMapping("/choice")
+    public ResponseEntity<ResponseTemplate<FamilyChoiceResponseDto>> choiceFamily(
+            HttpServletRequest httpServletRequest,
+            @RequestParam(name = "familyId") long familyId){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) {
+            return null;
+        }
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        FamilyChoiceResponseDto familyChoiceResponse = familyService.choiceFamily(findMember, familyId);
+        return new ResponseEntity<>(
+                ResponseTemplate.<FamilyChoiceResponseDto>builder()
+                        .msg(FamilyResponseMessage.FAMILY_CHOICE_SUCCESS.getMessage())
+                        .data(familyChoiceResponse)
                         .result(true)
                         .build(),
                 HttpStatus.OK);
