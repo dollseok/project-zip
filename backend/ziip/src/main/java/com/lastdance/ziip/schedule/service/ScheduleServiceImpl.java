@@ -5,6 +5,7 @@ import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.plan.repository.PlanRepository;
 import com.lastdance.ziip.plan.repository.entity.Plan;
+import com.lastdance.ziip.schedule.dto.request.ScheduleModifyRequestDto;
 import com.lastdance.ziip.schedule.dto.request.ScheduleRegisterRequestDto;
 import com.lastdance.ziip.schedule.dto.response.*;
 import com.lastdance.ziip.schedule.repository.ScheduleRepository;
@@ -103,6 +104,22 @@ public class ScheduleServiceImpl implements ScheduleService{
                 .build();
 
         return scheduleDetailResponseDto;
+    }
+
+    @Override
+    public ScheduleModifyResponseDto modifySchedule(Member findMember, ScheduleModifyRequestDto scheduleModifyRequestDto) {
+
+        Optional<Schedule> schedule = scheduleRepository.findById(scheduleModifyRequestDto.getScheduleId());
+
+        schedule.get().update(scheduleModifyRequestDto);
+
+        scheduleRepository.save(schedule.get());
+
+        ScheduleModifyResponseDto scheduleModifyResponseDto = ScheduleModifyResponseDto.builder()
+                .scheduleId(scheduleModifyRequestDto.getScheduleId())
+                .build();
+
+        return scheduleModifyResponseDto;
     }
 
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.*;
 
 import com.lastdance.ziip.plan.repository.entity.Plan;
+import com.lastdance.ziip.schedule.dto.request.ScheduleModifyRequestDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,5 +40,11 @@ public class Schedule extends BaseEntity {
 
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
     private List<Plan> plans;
+
+    public void update(ScheduleModifyRequestDto scheduleModifyRequestDto){
+        this.title = scheduleModifyRequestDto.getScheduleTitle();
+        this.startDate = LocalDate.parse(scheduleModifyRequestDto.getStartDate());
+        this.endDate = LocalDate.parse(scheduleModifyRequestDto.getEndDate());
+    }
 
 }
