@@ -36,17 +36,17 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers(
-                        "/api/members/kakao/**",
-                        "/api/members/reissue").permitAll()
-//                //.antMatchers(HttpMethod.GET, "/api/routine/**").permitAll()
-                .antMatchers(
-                        "/swagger-ui/**",
-                        "/v3/api-docs/**",
-                        "/swagger-ui.html").permitAll()
-                .antMatchers("/img/member/**","/img/record/**").permitAll()
-                .anyRequest().authenticated()
-//                .antMatchers("/*").permitAll()
+//                .antMatchers(
+//                        "/api/members/kakao/**",
+//                        "/api/members/reissue").permitAll()
+////                //.antMatchers(HttpMethod.GET, "/api/routine/**").permitAll()
+//                .antMatchers(
+//                        "/swagger-ui/**",
+//                        "/v3/api-docs/**",
+//                        "/swagger-ui.html").permitAll()
+//                .antMatchers("/img/member/**","/img/record/**").permitAll()
+//                .anyRequest().authenticated()
+                .antMatchers("/**").permitAll()
                 .and()
                 .cors()
                 .and()
