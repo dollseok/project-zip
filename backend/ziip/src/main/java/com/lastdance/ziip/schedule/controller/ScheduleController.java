@@ -3,12 +3,10 @@ package com.lastdance.ziip.schedule.controller;
 import com.lastdance.ziip.global.util.ResponseTemplate;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.member.service.MemberService;
+import com.lastdance.ziip.schedule.dto.request.ScheduleDeleteRequestDto;
 import com.lastdance.ziip.schedule.dto.request.ScheduleModifyRequestDto;
 import com.lastdance.ziip.schedule.dto.request.ScheduleRegisterRequestDto;
-import com.lastdance.ziip.schedule.dto.response.ScheduleDetailResponseDto;
-import com.lastdance.ziip.schedule.dto.response.ScheduleListResponseDto;
-import com.lastdance.ziip.schedule.dto.response.ScheduleModifyResponseDto;
-import com.lastdance.ziip.schedule.dto.response.ScheduleRegisterResponseDto;
+import com.lastdance.ziip.schedule.dto.response.*;
 import com.lastdance.ziip.schedule.enums.ScheduleResponseMessage;
 import com.lastdance.ziip.schedule.service.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -122,6 +120,27 @@ public class ScheduleController {
                 ResponseTemplate.<ScheduleModifyResponseDto>builder()
                         .msg(ScheduleResponseMessage.SCHEDULE_MODIFY_SUCCESS.getMessage())
                         .data(scheduleModifyResponseDto)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+    }
+
+    @Operation(summary = "일정 삭제", description = "일정 삭제 API(관련 상세계획 모두 삭제)")
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseTemplate<ScheduleDeleteResponseDto>> deleteSchedule(HttpServletRequest httpServletRequest, @RequestBody ScheduleDeleteRequestDto scheduleDeleteRequestDto) {
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) {
+            return null;
+        }
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        ScheduleDeleteResponseDto scheduleDeleteResponseDto = scheduleService.deleteService(findMember, scheduleDeleteRequestDto);
+        return new ResponseEntity<>(
+                ResponseTemplate.<ScheduleDeleteResponseDto>builder()
+                        .msg(ScheduleResponseMessage.SCHEDULE_DELETE_SUCCESS.getMessage())
+                        .data(scheduleDeleteResponseDto)
                         .result(true)
                         .build(),
                 HttpStatus.OK);

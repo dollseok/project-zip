@@ -5,16 +5,19 @@ import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.plan.repository.PlanRepository;
 import com.lastdance.ziip.plan.repository.entity.Plan;
+import com.lastdance.ziip.schedule.dto.request.ScheduleDeleteRequestDto;
 import com.lastdance.ziip.schedule.dto.request.ScheduleModifyRequestDto;
 import com.lastdance.ziip.schedule.dto.request.ScheduleRegisterRequestDto;
 import com.lastdance.ziip.schedule.dto.response.*;
 import com.lastdance.ziip.schedule.repository.ScheduleRepository;
 import com.lastdance.ziip.schedule.repository.entity.Schedule;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,14 +27,15 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class ScheduleServiceImpl implements ScheduleService{
+public class ScheduleServiceImpl implements ScheduleService {
 
     private final FamilyRepository familyRepository;
     private final ScheduleRepository scheduleRepository;
     private final PlanRepository planRepository;
+
     @Override
     public ScheduleRegisterResponseDto registerSchedule(Member findMember,
-            ScheduleRegisterRequestDto scheduleRegisterRequestDto) {
+                                                        ScheduleRegisterRequestDto scheduleRegisterRequestDto) {
 
         System.out.println(scheduleRegisterRequestDto.getFamilyId());
         Optional<Family> family = familyRepository.findById(scheduleRegisterRequestDto.getFamilyId());
@@ -120,6 +124,26 @@ public class ScheduleServiceImpl implements ScheduleService{
                 .build();
 
         return scheduleModifyResponseDto;
+    }
+
+    @Override
+    public ScheduleDeleteResponseDto deleteService(Member findMember, ScheduleDeleteRequestDto scheduleDeleteRequestDto) {
+
+        Optional<Schedule> schedule = scheduleRepository.findById(scheduleDeleteRequestDto.getScheduleId());
+
+        List<Plan> plans = planRepository.findAllBySchedule(schedule);
+
+        for (Plan plan : plans) {
+            planRepository.delete(plan);
+        }
+
+        scheduleRepository.delete(schedule.get());
+
+        ScheduleDeleteResponseDto scheduleDeleteResponseDto = ScheduleDeleteResponseDto.builder()
+                .memberId(findMember.getId())
+                .build();
+
+        return scheduleDeleteResponseDto;
     }
 
 }
