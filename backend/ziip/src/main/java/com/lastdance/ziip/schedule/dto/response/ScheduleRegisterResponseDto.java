@@ -1,4 +1,4 @@
-package com.lastdance.ziip.family.dto.response;
+package com.lastdance.ziip.schedule.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FamilyNickNameResponseDto {
+public class ScheduleRegisterResponseDto {
 
-    private Long familyId;
+    private Long scheduleId;
 }

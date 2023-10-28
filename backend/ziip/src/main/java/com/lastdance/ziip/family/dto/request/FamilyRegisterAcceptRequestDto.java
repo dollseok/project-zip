@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class FamilyRegisterAcceptRequestDto {
 
-    String familyCode;
-    String nickname;
+    private String familyCode;
+    private String nickname;
 }

@@ -1,4 +1,4 @@
-package com.lastdance.ziip.family.dto.request;
+package com.lastdance.ziip.schedule.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,11 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class FamilyNickNameRequestDto {
+public class ScheduleDeleteRequestDto {
 
+    private Long scheduleId;
     private Long familyId;
-    private String nickname;
 }

@@ -11,6 +11,7 @@ import com.lastdance.ziip.member.enums.Role;
 import com.lastdance.ziip.member.enums.SocialType;
 import com.lastdance.ziip.plan.repository.entity.Plan;
 
+import com.lastdance.ziip.schedule.repository.entity.Schedule;
 import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -63,8 +64,11 @@ public class Member extends BaseEntity{
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<DiaryComment> diaryComments;
 
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
-    private Plan plan;
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Plan> plans;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Schedule> schedules;
 
     public void updateName(String name){
         this.name = name;

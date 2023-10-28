@@ -1,4 +1,4 @@
-package com.lastdance.ziip.family.dto.response;
+package com.lastdance.ziip.schedule.dto.response;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -7,11 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FamilyListResponseDto {
+@Builder
+public class ScheduleListResponseDto {
 
-    private List<FamilyListDetailResponseDto> familyListDetailResponseDtoList;
-
+    private List<ScheduleListDetailResponseDto> scheduleListDetailResponseList;
 }
