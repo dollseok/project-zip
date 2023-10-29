@@ -1,23 +1,20 @@
 package com.lastdance.ziip.schedule.dto.response;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CalenderYearScheduleResponseDto {
+public class CalenderYearPlanResponseDto {
 
-    private Long scheduleId;
-    private Long familyId;
+    private Long planId;
     private Long memberId;
+    private Long statusCode;
     private String title;
-    private String startDate;
-    private String endDate;
-    private List<CalenderYearPlanResponseDto> calenderYearPlanResponseDtoList;
+    private String content;
 }
