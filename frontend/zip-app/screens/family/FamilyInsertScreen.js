@@ -11,6 +11,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../../util/Interceptor';
 import { TextInput } from 'react-native-gesture-handler';
+import { Header } from 'react-native/Libraries/NewAppScreen';
+import axios from 'axios';
 
 export default function FamilyInsertScreen({ navigation }) {
 	const rotateValue = useRef(new Animated.Value(0)).current;
@@ -37,34 +39,29 @@ export default function FamilyInsertScreen({ navigation }) {
 		console.log('저장된 메시지:', familyMessage);
 	};
 
-	const handleNicknameButtonPress = () => {
+	const handleNicknameButtonPress = async () => {
 		console.log('저장된 닉네임:', nickName);
 
 		const formData = new FormData();
 
-		// 객체를 문자열로 변환하여 추가
-		formData.append(
-			'familyRegisterRequest',
-			JSON.stringify({
-				name: familyName,
-				content: familyMessage,
-				nickname: nickName,
-			}),
-		);
+		const familyRegisterRequest = {
+			name: familyName,
+			content: familyMessage,
+			nickname: nickName,
+		};
 
-		// file이 있는 경우에만 추가
-		// if (file) {
-		// 	formData.append('file', file);
-		// }
+		const json = JSON.stringify({ familyRegisterRequest });
+		
+		const jsonBlob = new Blob([familyRegisterRequest], { type: "application/json" });
 
-        formData.append('file', null);
+		formData.append('familyRegisterRequest', json);
+
+		console.log(formData.getAll('familyRegisterRequest'))
 
 		// axios 요청에 Content-Type을 multipart/form-data로 설정
-		axiosInstance
+		await axiosInstance
 			.post('/family/register', formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-				},
+				headers: {'Content-Type': 'multipart/form-data'}
 			})
 			.then((response) => {
 				console.log('저장된 가족의 ID : ', response.data.id);
