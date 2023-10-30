@@ -1,16 +1,14 @@
 import { StyleSheet, Text, View, Modal, TouchableOpacity } from 'react-native';
-import { Picker } from '@react-native-community/picker';
+// import { Picker } from '@react-native-community/picker';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { format } from 'date-fns';
 import { useEffect, useState, useCallback } from 'react';
-import moment from 'moment';
+import DatePicker from 'react-native-modern-datepicker';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import ScheduleScreen from './ScheduleScreen';
 import SchedulePreview from '../components/schedule/SchedulePreview';
-
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 // 달력 현지화
 LocaleConfig.locales['fr'] = {
@@ -196,6 +194,13 @@ export default function CalendarScreen({ navigation }) {
 		setModalVisible(true);
 	};
 
+	const handleDatePickerChange = (selectedYear, selectedMonth) => {
+		setCalendarDate(`${selectedYear}-${selectedMonth}-01`);
+		setCurrentYear(selectedYear);
+		setCurrentMonth(selectedMonth);
+		hidePickerModal();
+	};
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.dateContainer}>
@@ -210,32 +215,14 @@ export default function CalendarScreen({ navigation }) {
 				</TouchableOpacity>
 				<Modal visible={isModalVisible} animationType="slide">
 					<View>
-						<Picker
-							selectedValue={selectedYear}
-							onValueChange={handleYearChange}
-						>
-							<Picker.Item label="2020" value={2020} />
-							<Picker.Item label="2021" value={2021} />
-							<Picker.Item label="2022" value={2022} />
-							<Picker.Item label="2023" value={2023} />
-						</Picker>
-						<Picker
-							selectedValue={selectedMonth}
-							onValueChange={handleMonthChange}
-						>
-							<Picker.Item label="1" value={1} />
-							<Picker.Item label="2" value={2} />
-							<Picker.Item label="3" value={3} />
-							<Picker.Item label="4" value={4} />
-							<Picker.Item label="5" value={5} />
-							<Picker.Item label="6" value={6} />
-							<Picker.Item label="7" value={7} />
-							<Picker.Item label="8" value={8} />
-							<Picker.Item label="9" value={9} />
-							<Picker.Item label="10" value={10} />
-							<Picker.Item label="11" value={11} />
-							<Picker.Item label="12" value={12} />
-						</Picker>
+						<DatePicker
+							mode="monthYear"
+							selectorStartingYear={2020}
+							onMonthYearChange={(selectedDate) => {
+								const [year, month] = selectedDate.split(' ');
+								handleDatePickerChange(year, month);
+							}}
+						/>
 						<TouchableOpacity onPress={hidePickerModal}>
 							<Text>Done</Text>
 						</TouchableOpacity>
@@ -246,8 +233,11 @@ export default function CalendarScreen({ navigation }) {
 				<Calendar
 					style={styles.calendar}
 					markedDates={markedSelectedDates}
+					// 달력 헤더 안보이게
+					renderHeader={() => <></>}
+					renderArrow={() => <></>}
 					// 달력 타이틀 커스텀 => 2023 10
-					monthFormat="yyyy년 MM월"
+					monthFormat={`${currentYear}년 ${currentMonth}월`}
 					// 스와이프로 월 변경 가능
 					enableSwipeMonths={true}
 					theme={customTheme}
@@ -256,9 +246,12 @@ export default function CalendarScreen({ navigation }) {
 						onModal();
 					}}
 					onMonthChange={(month) => {
+						setCalendarDate(month.dateString);
 						setCurrentYear(month.year);
 						setCurrentMonth(month.month);
 					}}
+					current={calendarDate}
+					key={calendarDate}
 				/>
 			</View>
 			<SchedulePreview

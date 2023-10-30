@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 
 export default function StackNavigator() {
 	return (
-		<Stack.Navigator initialRouteName="진입화면">
+		<Stack.Navigator initialRouteName="홈">
 			<Stack.Screen
 				name="홈"
 				component={HomeScreen}
