@@ -6,6 +6,7 @@ import {
 	StyleSheet,
 	Animated,
 	TouchableOpacity,
+	Image
 } from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -13,6 +14,7 @@ import axiosInstance from '../../util/Interceptor';
 import { TextInput } from 'react-native-gesture-handler';
 import { Header } from 'react-native/Libraries/NewAppScreen';
 import axios from 'axios';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function FamilyInsertScreen({ navigation }) {
 	const rotateValue = useRef(new Animated.Value(0)).current;
@@ -40,37 +42,55 @@ export default function FamilyInsertScreen({ navigation }) {
 	};
 
 	const handleNicknameButtonPress = async () => {
+		setNicknameViewVisible(false);
 		console.log('저장된 닉네임:', nickName);
 
-		const formData = new FormData();
+		// const formData = new FormData();
 
-		const familyRegisterRequest = {
-			name: familyName,
-			content: familyMessage,
-			nickname: nickName,
-		};
+		// const familyRegisterRequest = {
+		// 	name: familyName,
+		// 	content: familyMessage,
+		// 	nickname: nickName,
+		// };
 
-		const json = JSON.stringify({ familyRegisterRequest });
-		
-		const jsonBlob = new Blob([familyRegisterRequest], { type: "application/json" });
+		// const json = JSON.stringify({ familyRegisterRequest });
 
-		formData.append('familyRegisterRequest', json);
+		// const jsonBlob = new Blob([familyRegisterRequest], { type: "application/json" });
 
-		console.log(formData.getAll('familyRegisterRequest'))
+		// formData.append('familyRegisterRequest', json);
 
-		// axios 요청에 Content-Type을 multipart/form-data로 설정
-		await axiosInstance
-			.post('/family/register', formData, {
-				headers: {'Content-Type': 'multipart/form-data'}
-			})
-			.then((response) => {
-				console.log('저장된 가족의 ID : ', response.data.id);
-				AsyncStorage.setItem('familyId', JSON.stringify(response.data.id));
-				navigation.navigate('홈');
-			})
-			.catch((error) => {
-				console.error('가족 등록 에러: ', error);
-			});
+		// console.log(formData.getAll('familyRegisterRequest'))
+
+		// // axios 요청에 Content-Type을 multipart/form-data로 설정
+		// await axiosInstance
+		// 	.post('/family/register', formData, {
+		// 		headers: {'Content-Type': 'multipart/form-data'}
+		// 	})
+		// 	.then((response) => {
+		// 		console.log('저장된 가족의 ID : ', response.data.id);
+		// 		AsyncStorage.setItem('familyId', JSON.stringify(response.data.id));
+		// 		navigation.navigate('홈');
+		// 	})
+		// 	.catch((error) => {
+		// 		console.error('가족 등록 에러: ', error);
+		// 	});
+	};
+
+	// photo 입력받는 button을 눌렀을 때 실행되는 함수
+	const _handlePhotoBtnPress = async () => {
+		// image library 접근에 대한 허가 필요 없음
+		// ImagePicker를 이용해 Image형식의 파일을 가져온다
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			aspect: [1, 1],
+			quality: 1,
+		});
+
+		// cancelled가 아닐 때 가져온 사진의 주소로 onChangePhoto
+		if (!result.cancelled) {
+			onChangePhoto(result.uri);
+		}
 	};
 
 	useEffect(() => {
@@ -149,7 +169,7 @@ export default function FamilyInsertScreen({ navigation }) {
 							</TouchableOpacity>
 						</View>
 					</View>
-				) : (
+				) : isNicknameViewVisible ? (
 					// 닉네임 입력 View
 					<View style={styles.conditionalContent}>
 						<Text style={styles.familyText}>닉네임 만들기</Text>
@@ -169,6 +189,21 @@ export default function FamilyInsertScreen({ navigation }) {
 								disabled={!nickName}
 							>
 								<Text style={{ color: 'white', fontWeight: 'bold' }}>완료</Text>
+							</TouchableOpacity>
+						</View>
+					</View>
+				) : (
+					<View style={styles.conditionalContent}>
+						<Text style={styles.familyText}>배경사진 업로드</Text>
+						<View style={styles.inputContainer}>
+
+							<TouchableOpacity 
+								onPress={_handlePhotoBtnPress}
+								disabled={!nickName}
+							>
+								<Image source={require('../../assets/gallery.png')} style={{
+									width: 100, height: 100, backgroundColor: 'white', 
+								}} />
 							</TouchableOpacity>
 						</View>
 					</View>
