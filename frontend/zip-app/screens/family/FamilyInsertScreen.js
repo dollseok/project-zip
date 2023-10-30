@@ -44,36 +44,6 @@ export default function FamilyInsertScreen({ navigation }) {
 	const handleNicknameButtonPress = async () => {
 		setNicknameViewVisible(false);
 		console.log('저장된 닉네임:', nickName);
-
-		// const formData = new FormData();
-
-		// const familyRegisterRequest = {
-		// 	name: familyName,
-		// 	content: familyMessage,
-		// 	nickname: nickName,
-		// };
-
-		// const json = JSON.stringify({ familyRegisterRequest });
-
-		// const jsonBlob = new Blob([familyRegisterRequest], { type: "application/json" });
-
-		// formData.append('familyRegisterRequest', json);
-
-		// console.log(formData.getAll('familyRegisterRequest'))
-
-		// // axios 요청에 Content-Type을 multipart/form-data로 설정
-		// await axiosInstance
-		// 	.post('/family/register', formData, {
-		// 		headers: {'Content-Type': 'multipart/form-data'}
-		// 	})
-		// 	.then((response) => {
-		// 		console.log('저장된 가족의 ID : ', response.data.id);
-		// 		AsyncStorage.setItem('familyId', JSON.stringify(response.data.id));
-		// 		navigation.navigate('홈');
-		// 	})
-		// 	.catch((error) => {
-		// 		console.error('가족 등록 에러: ', error);
-		// 	});
 	};
 
 	// photo 입력받는 button을 눌렀을 때 실행되는 함수
@@ -87,10 +57,57 @@ export default function FamilyInsertScreen({ navigation }) {
 			quality: 1,
 		});
 
+		console.log("선택한 이미지 URI : ", result.uri);
 		// cancelled가 아닐 때 가져온 사진의 주소로 onChangePhoto
 		if (!result.cancelled) {
-			onChangePhoto(result.uri);
+			await _uploadImage(result.uri);
+		} else {
+			return null;
 		}
+	};
+
+	const _uploadImage = async (uri) => {
+		// URI로부터 Blob 생성
+		// const response = await fetch(uri);
+		// const blob = await response.blob();
+	
+		// // FormData 생성 및 Blob 추가
+		const formData = new FormData();
+
+		// formData.append('file', {
+		// 	name: 'photo.jpg', 
+		// 	type: 'image/jpeg', // 이미지 타입
+		// 	uri: Platform.OS === 'ios' ? uri.replace('file://', '') : uri,
+		// });
+
+		const familyRegisterRequest = JSON.stringify({
+			name: familyName,
+			content: familyMessage,
+			nickname: nickName,
+		});
+
+		// const jsonBlob = new Blob([familyRegisterRequest], { type: "application/json" });
+		const jsonBlob = new Blob([familyRegisterRequest]);
+
+		console.log(familyRegisterRequest);
+
+		formData.append('familyRegisterRequest', jsonBlob);
+
+		// axios 요청에 Content-Type을 multipart/form-data로 설정
+		await axiosInstance
+			.post('/family/register', formData, {
+				headers: {'Content-Type': 'multipart/form-data'}
+			})
+			.then((response) => {
+				console.log('저장된 가족의 ID : ', response.data.id);
+				AsyncStorage.setItem('familyId', JSON.stringify(response.data.id));
+				navigation.navigate('홈');
+			})
+			.catch((error) => {
+				console.error('가족 등록 에러: ', error);
+			});
+	
+		
 	};
 
 	useEffect(() => {
