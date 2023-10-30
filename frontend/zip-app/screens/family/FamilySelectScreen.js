@@ -87,7 +87,7 @@ export default function FamilySelectScreen({ navigation }) {
 					</>
 				)}
 
-				<TouchableOpacity>
+				<TouchableOpacity onPress={() => navigation.navigate('가족추가')}>
 					<Text style={styles.plusButton}>+</Text>
 				</TouchableOpacity>
 			</View>
