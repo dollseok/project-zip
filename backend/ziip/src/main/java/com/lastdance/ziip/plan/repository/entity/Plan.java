@@ -2,6 +2,7 @@ package com.lastdance.ziip.plan.repository.entity;
 
 import com.lastdance.ziip.global.entity.BaseEntity;
 import com.lastdance.ziip.member.repository.entity.Member;
+import com.lastdance.ziip.plan.dto.request.PlanModifyRequestDto;
 import com.lastdance.ziip.schedule.repository.entity.Schedule;
 import lombok.*;
 
@@ -36,4 +37,9 @@ public class Plan extends BaseEntity {
     private String title;
     // 메모
     private String content;
+
+    public void update(PlanModifyRequestDto planModifyRequestDto, Member member){
+        this.member = member;
+        this.title = planModifyRequestDto.getTitle();
+    }
 }

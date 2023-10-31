@@ -3,8 +3,10 @@ package com.lastdance.ziip.plan.controller;
 import com.lastdance.ziip.global.util.ResponseTemplate;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.member.service.MemberService;
+import com.lastdance.ziip.plan.dto.request.PlanModifyRequestDto;
 import com.lastdance.ziip.plan.dto.request.PlanWriteRequestDto;
 import com.lastdance.ziip.plan.dto.response.PlanDetailResponseDto;
+import com.lastdance.ziip.plan.dto.response.PlanModifyResponseDto;
 import com.lastdance.ziip.plan.dto.response.PlanWriteResponseDto;
 import com.lastdance.ziip.plan.enums.PlanResponseMessage;
 import com.lastdance.ziip.plan.service.PlanService;
@@ -74,5 +76,29 @@ public class PlanController {
                         .result(true)
                         .build(),
                 HttpStatus.OK);
+    }
+
+    @Operation(summary = "계획 수정", description = "계획 수정 API")
+    @PutMapping("/modify")
+    public ResponseEntity<ResponseTemplate<PlanModifyResponseDto>> modifyPlan(HttpServletRequest httpServletRequest,
+                                                                              @RequestBody PlanModifyRequestDto planModifyRequestDto){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null){
+            return null;
+        }
+
+        Member member = memberService.findMemberByJwtToken(token);
+
+        PlanModifyResponseDto responseDto = planService.modifyPlan(member, planModifyRequestDto);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<PlanModifyResponseDto> builder()
+                        .msg(PlanResponseMessage.PLAN_MODIFY_SUCCESS.getMessage())
+                        .data(responseDto)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+
     }
 }
