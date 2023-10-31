@@ -45,12 +45,8 @@ public class DiaryController {
         }
 
         Member findMember = memberService.findMemberByJwtToken(token);
-        log.info("findMember 출력");
-        log.info(findMember.toString());
 
         DiaryWriteResponseDto diaryWriteResponseDto = diaryService.writeDiary(findMember, diaryWriteRequestDto, files);
-        log.info("diaryWriteResponseDto 출력");
-        log.info(diaryWriteResponseDto.toString());
 
         return new ResponseEntity<>(
                 ResponseTemplate.<DiaryWriteResponseDto>builder()
