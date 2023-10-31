@@ -3,8 +3,10 @@ package com.lastdance.ziip.plan.controller;
 import com.lastdance.ziip.global.util.ResponseTemplate;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.member.service.MemberService;
+import com.lastdance.ziip.plan.dto.request.PlanDeleteRequestDto;
 import com.lastdance.ziip.plan.dto.request.PlanModifyRequestDto;
 import com.lastdance.ziip.plan.dto.request.PlanWriteRequestDto;
+import com.lastdance.ziip.plan.dto.response.PlanDeleteResponseDto;
 import com.lastdance.ziip.plan.dto.response.PlanDetailResponseDto;
 import com.lastdance.ziip.plan.dto.response.PlanModifyResponseDto;
 import com.lastdance.ziip.plan.dto.response.PlanWriteResponseDto;
@@ -101,4 +103,29 @@ public class PlanController {
                 HttpStatus.OK);
 
     }
+
+
+    @Operation(summary = "계획 삭제", description = "계획 삭제 API")
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseTemplate<PlanDeleteResponseDto>> deletePlan(HttpServletRequest httpServletRequest,
+                                                                              @RequestBody PlanDeleteRequestDto planDeleteRequestDto){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null){
+            return null;
+        }
+
+        Member member = memberService.findMemberByJwtToken(token);
+
+        PlanDeleteResponseDto responseDto = planService.deletePlan(member, planDeleteRequestDto);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<PlanDeleteResponseDto> builder()
+                        .msg(PlanResponseMessage.PLAN_DELETE_SUCCESS.getMessage())
+                        .data(responseDto)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+    }
+
 }

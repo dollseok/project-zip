@@ -3,8 +3,10 @@ package com.lastdance.ziip.plan.service;
 import com.lastdance.ziip.member.exception.validator.MemberCheckValidator;
 import com.lastdance.ziip.member.repository.MemberRepository;
 import com.lastdance.ziip.member.repository.entity.Member;
+import com.lastdance.ziip.plan.dto.request.PlanDeleteRequestDto;
 import com.lastdance.ziip.plan.dto.request.PlanModifyRequestDto;
 import com.lastdance.ziip.plan.dto.request.PlanWriteRequestDto;
+import com.lastdance.ziip.plan.dto.response.PlanDeleteResponseDto;
 import com.lastdance.ziip.plan.dto.response.PlanDetailResponseDto;
 import com.lastdance.ziip.plan.dto.response.PlanModifyResponseDto;
 import com.lastdance.ziip.plan.dto.response.PlanWriteResponseDto;
@@ -99,6 +101,26 @@ public class PlanServiceImpl implements PlanService{
                 .build();
 
         return planModifyResponseDto;
+    }
+
+    @Override
+    public PlanDeleteResponseDto deletePlan(Member member, PlanDeleteRequestDto planDeleteRequestDto) {
+
+        Optional<Plan> tmpPlan = planRepository.findById(planDeleteRequestDto.getPlanId());
+        planValidator.checkPlanExist(tmpPlan);
+        Plan plan = tmpPlan.get();
+
+//        Optional<Member> tmpMember = memberRepository.findById(planDeleteRequestDto.getMemberId());
+//        memberValidator.checkMemberExist(tmpMember);
+        planValidator.checkPlanManager(plan, member.getId());
+
+        planRepository.delete(plan);
+
+        PlanDeleteResponseDto planDeleteResponseDto = PlanDeleteResponseDto.builder()
+                .memberId(member.getId())
+                .build();
+
+        return planDeleteResponseDto;
     }
 
 
