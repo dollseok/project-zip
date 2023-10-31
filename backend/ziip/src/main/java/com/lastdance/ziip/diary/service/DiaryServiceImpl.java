@@ -60,7 +60,12 @@ public class DiaryServiceImpl implements DiaryService{
 
             files.stream().forEach(
                 file -> {
-                    String fileUrl = s3Uploader.upload(file, "diary");
+                    String fileUrl = null;
+                    try {
+                        fileUrl = s3Uploader.upload(file, "diary");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     String OriginalName = file.getOriginalFilename();
 
                     // 일기 사진 빌드

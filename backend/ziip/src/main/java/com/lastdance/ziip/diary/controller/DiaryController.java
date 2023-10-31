@@ -36,8 +36,8 @@ public class DiaryController {
     @PostMapping("/write")
     public ResponseEntity<ResponseTemplate<DiaryWriteResponseDto>> diaryWrite(
             HttpServletRequest httpServletRequest,
-            @RequestBody DiaryWriteRequestDto diaryWriteRequestDto,
-            @RequestParam(value="files") List<MultipartFile> files) {
+            @RequestPart(value="diaryWriteRequest") DiaryWriteRequestDto diaryWriteRequestDto,
+            @RequestPart(value="files") List<MultipartFile> files) {
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) {
