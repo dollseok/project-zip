@@ -1,18 +1,16 @@
 import Axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const axiosInstance = Axios.create({
-	// baseURL: 'http://10.0.2.2:9090/api',
-	// baseURL: 'http://localhost:9090/api',
-	baseURL: 'https://lastdance.kr/api',
-	timeout: 5000,
+const axiosFileInstance = Axios.create({
+	baseURL: 'http://localhost:9090/api',
+	// baseURL: 'https://lastdance.kr/api',
+	// timeout: 5000,
 });
 
-axiosInstance.interceptors.request.use(
+axiosFileInstance.interceptors.request.use(
 	async (config) => {
 		const accessToken = await AsyncStorage.getItem('accessToken');
-		config.headers['Content-Type'] = 'application/json; charset=utf-8';
-		// config.headers['Content-Type'] = 'multipart/form-data';
+		config.headers['Content-Type'] = 'multipart/form-data';
 		config.headers['Authorization'] = accessToken;
 		return config;
 	},
@@ -21,7 +19,7 @@ axiosInstance.interceptors.request.use(
 	},
 );
 
-axiosInstance.interceptors.response.use(
+axiosFileInstance.interceptors.response.use(
 	(response) => {
 		// console.log("response");
 		return response;
@@ -35,7 +33,10 @@ axiosInstance.interceptors.response.use(
 				const response = await postRefreshToken();
 				const newAccessToken = response.headers['authorization'];
 				// console.log(newAccessToken, "newAccessToken");
-				await AsyncStorage.setItem('accessToken', response.headers['authorization']);
+				await AsyncStorage.setItem(
+					'accessToken',
+					response.headers['authorization'],
+				);
 				await AsyncStorage.setItem(
 					'refreshToken',
 					response.headers['authorization-refresh'],
@@ -55,4 +56,4 @@ axiosInstance.interceptors.response.use(
 	},
 );
 
-export default axiosInstance;
+export default axiosFileInstance;

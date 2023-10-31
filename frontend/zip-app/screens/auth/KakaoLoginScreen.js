@@ -23,8 +23,8 @@ export default function KakaoLoginScreen({ navigation }) {
 	};
 
 	const requestToken = async (code) => {
-		const requestTokenUrl = 'http://10.0.2.2:9090/api/members/kakao/login';
-		// const requestTokenUrl = 'http://localhost:9090/api/members/kakao/login';
+		// const requestTokenUrl = 'http://10.0.2.2:9090/api/members/kakao/login';
+		const requestTokenUrl = 'https://lastdance.kr/api/members/kakao/login';
 
 		try {
 			const body = {

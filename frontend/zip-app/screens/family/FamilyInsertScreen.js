@@ -6,14 +6,12 @@ import {
 	StyleSheet,
 	Animated,
 	TouchableOpacity,
-	Image
+	Image,
 } from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axiosInstance from '../../util/Interceptor';
+import axiosFileInstance from '../../util/FileInterceptor';
 import { TextInput } from 'react-native-gesture-handler';
-import { Header } from 'react-native/Libraries/NewAppScreen';
-import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function FamilyInsertScreen({ navigation }) {
@@ -57,7 +55,7 @@ export default function FamilyInsertScreen({ navigation }) {
 			quality: 1,
 		});
 
-		console.log("선택한 이미지 URI : ", result.uri);
+		console.log('선택한 이미지 URI : ', result.uri);
 		// cancelled가 아닐 때 가져온 사진의 주소로 onChangePhoto
 		if (!result.cancelled) {
 			await _uploadImage(result.uri);
@@ -67,37 +65,19 @@ export default function FamilyInsertScreen({ navigation }) {
 	};
 
 	const _uploadImage = async (uri) => {
-		// URI로부터 Blob 생성
-		// const response = await fetch(uri);
-		// const blob = await response.blob();
-	
-		// // FormData 생성 및 Blob 추가
 		const formData = new FormData();
 
-		// formData.append('file', {
-		// 	name: 'photo.jpg', 
-		// 	type: 'image/jpeg', // 이미지 타입
-		// 	uri: Platform.OS === 'ios' ? uri.replace('file://', '') : uri,
-		// });
-
-		const familyRegisterRequest = JSON.stringify({
+		const familyRegisterRequest = {
 			name: familyName,
 			content: familyMessage,
-			nickname: nickName,
-		});
+			nickname: nickName
+		};
 
-		// const jsonBlob = new Blob([familyRegisterRequest], { type: "application/json" });
-		const jsonBlob = new Blob([familyRegisterRequest]);
+		formData.append('familyRegisterRequest', JSON.stringify(familyRegisterRequest));
+		formData.append('file', new Blob(), '../../assets/family.png');
 
-		console.log(familyRegisterRequest);
-
-		formData.append('familyRegisterRequest', jsonBlob);
-
-		// axios 요청에 Content-Type을 multipart/form-data로 설정
-		await axiosInstance
-			.post('/family/register', formData, {
-				headers: {'Content-Type': 'multipart/form-data'}
-			})
+		await axiosFileInstance
+			.post('/family/register', formData)
 			.then((response) => {
 				console.log('저장된 가족의 ID : ', response.data.id);
 				AsyncStorage.setItem('familyId', JSON.stringify(response.data.id));
@@ -106,8 +86,6 @@ export default function FamilyInsertScreen({ navigation }) {
 			.catch((error) => {
 				console.error('가족 등록 에러: ', error);
 			});
-	
-		
 	};
 
 	useEffect(() => {
@@ -213,14 +191,18 @@ export default function FamilyInsertScreen({ navigation }) {
 					<View style={styles.conditionalContent}>
 						<Text style={styles.familyText}>배경사진 업로드</Text>
 						<View style={styles.inputContainer}>
-
-							<TouchableOpacity 
+							<TouchableOpacity
 								onPress={_handlePhotoBtnPress}
 								disabled={!nickName}
 							>
-								<Image source={require('../../assets/gallery.png')} style={{
-									width: 100, height: 100, backgroundColor: 'white', 
-								}} />
+								<Image
+									source={require('../../assets/gallery.png')}
+									style={{
+										width: 100,
+										height: 100,
+										backgroundColor: 'white',
+									}}
+								/>
 							</TouchableOpacity>
 						</View>
 					</View>

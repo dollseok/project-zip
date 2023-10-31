@@ -53,8 +53,8 @@ export default function FamilySelectScreen({ navigation }) {
 	useEffect(() => {
 		async function fetchData() {
 			axiosInstance.get(`/family/list`).then((response) => {
-				setFamilyList(response.data.familyList);
-				console.log(response.data);
+				setFamilyList(response.data.data.familyListDetailResponseDtoList);
+				console.log(response.data.data.familyListDetailResponseDtoList);
 			});
 		}
 
@@ -75,8 +75,8 @@ export default function FamilySelectScreen({ navigation }) {
 					<FlatList
 						data={familyList}
 						renderItem={({ item }) => (
-							<TouchableOpacity onPress={() => navigateToFamilySelection(item.familyId)}>
-								<Text style={styles.familyText}>{item.familyName}</Text>
+							<TouchableOpacity onPress={() => navigateToFamilySelection(item.id)}>
+								<Text style={styles.familyText}>{item.name}</Text>
 							</TouchableOpacity>
 						)}
 					/>
@@ -111,12 +111,12 @@ const styles = StyleSheet.create({
 	conditionalContent: {
 		justifyContent: 'center',
 		alignItems: 'center',
-		marginTop: 200,
+		marginTop: 150,
 	},
 	familyText: {
 		fontSize: 30,
 		fontWeight: 'bold',
-		marginTop: 20,
+		marginTop: 20
 	},
 	plusButton: {
 		fontSize: 30,
