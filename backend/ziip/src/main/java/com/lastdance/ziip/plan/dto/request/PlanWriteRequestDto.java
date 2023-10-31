@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class PlanWriteRequestDto {
-    private long scheduleId;
-    private long memberId;
+    private Long scheduleId;
+    private Long memberId;
     private String title;
     private String content;
 }
