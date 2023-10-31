@@ -98,7 +98,7 @@ export default function FamilyMainScreen({ route }) {
 
 	return (
 		<ImageBackground
-			// source={{ uri: family.familyProfileImgUrl }}
+			source={{ uri: family.familyProfileImgUrl }}
 			style={styles.container}
 			resizeMode="cover"
 		>

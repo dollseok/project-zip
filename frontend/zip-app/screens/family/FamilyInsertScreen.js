@@ -56,6 +56,8 @@ export default function FamilyInsertScreen({ navigation }) {
 		});
 
 		console.log('선택한 이미지 URI : ', result.uri);
+		console.log('선택한 이미지 데이터 타입 : ', typeof result);
+		console.log('선택한 이미지 데이터 구조 : ', JSON.stringify(result, null, 2));
 		// cancelled가 아닐 때 가져온 사진의 주소로 onChangePhoto
 		if (!result.cancelled) {
 			await _uploadImage(result.uri);
@@ -65,6 +67,11 @@ export default function FamilyInsertScreen({ navigation }) {
 	};
 
 	const _uploadImage = async (uri) => {
+
+		const response = await fetch(uri);
+		const file = await response.blob();
+		console.log("파일 : ", file._data);
+
 		const formData = new FormData();
 
 		const familyRegisterRequest = {
@@ -73,20 +80,25 @@ export default function FamilyInsertScreen({ navigation }) {
 			nickname: nickName
 		};
 
+		// const segments = uri.split('/'); // '/' 문자를 기준으로 URI를 분할
+		// const fileName = segments[segments.length - 1]; // 배열의 마지막 요소가 파일 이름
+		
 		formData.append('familyRegisterRequest', JSON.stringify(familyRegisterRequest));
-		formData.append('file', new Blob(), '../../assets/family.png');
+		formData.append('file', file._data);
 
 		await axiosFileInstance
 			.post('/family/register', formData)
 			.then((response) => {
-				console.log('저장된 가족의 ID : ', response.data.id);
-				AsyncStorage.setItem('familyId', JSON.stringify(response.data.id));
+				console.log(response.data);
+				console.log('저장된 가족의 ID : ', response.data.data.id);
+				AsyncStorage.setItem('familyId', JSON.stringify(response.data.data.id));
 				navigation.navigate('홈');
 			})
 			.catch((error) => {
 				console.error('가족 등록 에러: ', error);
 			});
 	};
+
 
 	useEffect(() => {
 		const animate = () => {
