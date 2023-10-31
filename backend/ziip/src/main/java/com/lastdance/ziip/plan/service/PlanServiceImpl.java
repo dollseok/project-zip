@@ -1,11 +1,16 @@
 package com.lastdance.ziip.plan.service;
 
+import com.lastdance.ziip.member.exception.validator.MemberCheckValidator;
+import com.lastdance.ziip.member.repository.MemberRepository;
 import com.lastdance.ziip.member.repository.entity.Member;
+import com.lastdance.ziip.plan.dto.request.PlanDeleteRequestDto;
+import com.lastdance.ziip.plan.dto.request.PlanModifyRequestDto;
 import com.lastdance.ziip.plan.dto.request.PlanWriteRequestDto;
+import com.lastdance.ziip.plan.dto.response.PlanDeleteResponseDto;
 import com.lastdance.ziip.plan.dto.response.PlanDetailResponseDto;
+import com.lastdance.ziip.plan.dto.response.PlanModifyResponseDto;
 import com.lastdance.ziip.plan.dto.response.PlanWriteResponseDto;
 import com.lastdance.ziip.plan.enums.Code;
-import com.lastdance.ziip.plan.enums.Status;
 import com.lastdance.ziip.plan.exception.validator.PlanValidator;
 import com.lastdance.ziip.plan.repository.PlanRepository;
 import com.lastdance.ziip.plan.repository.StatusCodeRepository;
@@ -29,7 +34,10 @@ public class PlanServiceImpl implements PlanService{
     private final PlanRepository planRepository;
     private final ScheduleRepository scheduleRepository;
     private final StatusCodeRepository statusCodeRepository;
+    private final MemberRepository memberRepository;
+
     private final PlanValidator planValidator;
+    private final MemberCheckValidator memberValidator;
 
     @Override
     public PlanWriteResponseDto postPlan(Member member, PlanWriteRequestDto planWriteRequestDto) {
@@ -73,4 +81,45 @@ public class PlanServiceImpl implements PlanService{
 
         return planDetailResponseDto;
     }
+
+    @Override
+    public PlanModifyResponseDto modifyPlan(Member member, PlanModifyRequestDto planModifyRequestDto) {
+
+        Optional<Plan> tmpPlan = planRepository.findById(planModifyRequestDto.getPlanId());
+        planValidator.checkPlanExist(tmpPlan);
+
+        Optional<Member> tmpMember = memberRepository.findById(planModifyRequestDto.getMemberId());
+        memberValidator.checkMemberExist(tmpMember);
+
+        tmpPlan.get().update(planModifyRequestDto, tmpMember.get());
+        Plan plan = tmpPlan.get();
+
+        planRepository.save(plan);
+
+        PlanModifyResponseDto planModifyResponseDto = PlanModifyResponseDto.builder()
+                .planId(planModifyRequestDto.getPlanId())
+                .build();
+
+        return planModifyResponseDto;
+    }
+
+    @Override
+    public PlanDeleteResponseDto deletePlan(Member member, PlanDeleteRequestDto planDeleteRequestDto) {
+
+        Optional<Plan> tmpPlan = planRepository.findById(planDeleteRequestDto.getPlanId());
+        planValidator.checkPlanExist(tmpPlan);
+        Plan plan = tmpPlan.get();
+
+        planValidator.checkPlanManager(plan, member.getId());
+
+        planRepository.delete(plan);
+
+        PlanDeleteResponseDto planDeleteResponseDto = PlanDeleteResponseDto.builder()
+                .memberId(member.getId())
+                .build();
+
+        return planDeleteResponseDto;
+    }
+
+
 }
