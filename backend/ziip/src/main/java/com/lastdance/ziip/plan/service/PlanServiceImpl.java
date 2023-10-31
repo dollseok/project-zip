@@ -110,8 +110,6 @@ public class PlanServiceImpl implements PlanService{
         planValidator.checkPlanExist(tmpPlan);
         Plan plan = tmpPlan.get();
 
-//        Optional<Member> tmpMember = memberRepository.findById(planDeleteRequestDto.getMemberId());
-//        memberValidator.checkMemberExist(tmpMember);
         planValidator.checkPlanManager(plan, member.getId());
 
         planRepository.delete(plan);
