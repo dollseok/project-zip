@@ -2,9 +2,11 @@ package com.lastdance.ziip.plan.service;
 
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.plan.dto.request.PlanWriteRequestDto;
+import com.lastdance.ziip.plan.dto.response.PlanDetailResponseDto;
 import com.lastdance.ziip.plan.dto.response.PlanWriteResponseDto;
 import com.lastdance.ziip.plan.enums.Code;
 import com.lastdance.ziip.plan.enums.Status;
+import com.lastdance.ziip.plan.exception.validator.PlanValidator;
 import com.lastdance.ziip.plan.repository.PlanRepository;
 import com.lastdance.ziip.plan.repository.StatusCodeRepository;
 import com.lastdance.ziip.plan.repository.entity.Plan;
@@ -27,6 +29,7 @@ public class PlanServiceImpl implements PlanService{
     private final PlanRepository planRepository;
     private final ScheduleRepository scheduleRepository;
     private final StatusCodeRepository statusCodeRepository;
+    private final PlanValidator planValidator;
 
     @Override
     public PlanWriteResponseDto postPlan(Member member, PlanWriteRequestDto planWriteRequestDto) {
@@ -49,5 +52,25 @@ public class PlanServiceImpl implements PlanService{
                 .build();
 
         return planWriteResponseDto;
+    }
+
+    @Override
+    public PlanDetailResponseDto getPlanDetail(Member member, Long planId) {
+
+        Optional<Plan> tmpPlan = planRepository.findById(planId);
+
+        planValidator.checkPlanExist(tmpPlan);
+
+        Plan plan = tmpPlan.get();
+
+        PlanDetailResponseDto planDetailResponseDto = PlanDetailResponseDto.builder()
+                .planId(planId)
+                .memberId(plan.getMember().getId())
+                .content(plan.getContent())
+                .createdAt(plan.getCreatedAt())
+                .updatedAt(plan.getUpdatedAt())
+                .build();
+
+        return planDetailResponseDto;
     }
 }
