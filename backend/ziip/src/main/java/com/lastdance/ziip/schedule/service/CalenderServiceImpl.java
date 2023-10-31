@@ -3,20 +3,23 @@ package com.lastdance.ziip.schedule.service;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.plan.repository.PlanRepository;
 import com.lastdance.ziip.plan.repository.entity.Plan;
-import com.lastdance.ziip.schedule.dto.response.CalenderYearPlanResponseDto;
-import com.lastdance.ziip.schedule.dto.response.CalenderYearResponseDto;
-import com.lastdance.ziip.schedule.dto.response.CalenderYearScheduleResponseDto;
+import com.lastdance.ziip.schedule.dto.request.CalenderDayRequestDto;
+import com.lastdance.ziip.schedule.dto.response.*;
 import com.lastdance.ziip.schedule.repository.ScheduleRepository;
 import com.lastdance.ziip.schedule.repository.entity.QSchedule;
 import com.lastdance.ziip.schedule.repository.entity.Schedule;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.DateFormatter;
+import java.text.DateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,6 +57,43 @@ public class CalenderServiceImpl implements CalenderService {
                 .build();
 
         return calenderYearResponseDto;
+    }
+
+    @Override
+    public CalenderDayResponseDto dayCalender(Member findMember, CalenderDayRequestDto calenderDayRequestDto) {
+        String[] datePart = calenderDayRequestDto.getTodayDate().split("-");
+
+        String year = datePart[0];
+        String month = datePart[1];
+        String day = datePart[2];
+
+        List<Schedule> schedule = scheduleRepository.findAllByStartDate(calenderDayRequestDto.getTodayDateAsLocalDate());
+        List<CalenderDayScheduleResponseDto> calenderDayScheduleResponseDtoList = new ArrayList<>();
+
+        // 해당하는 날짜의 스케줄 조회
+        for (Schedule schedule1 : schedule) {
+            List<Plan> plans = planRepository.findAllBySchedule(Optional.ofNullable(schedule1));
+
+            // 해당하는 스케줄의 플랜 조회
+            for (Plan plan : plans) {
+            CalenderDayScheduleResponseDto calenderDayScheduleResponseDto = CalenderDayScheduleResponseDto.builder()
+                    .planId(plan.getId())
+                    .name(plan.getTitle())
+                    .build();
+
+            calenderDayScheduleResponseDtoList.add(calenderDayScheduleResponseDto);
+            }
+        }
+
+
+
+
+
+        CalenderDayResponseDto calenderDayResponseDto = CalenderDayResponseDto.builder()
+                .calenderDayScheduleResponseDtoList(calenderDayScheduleResponseDtoList)
+                .build();
+
+        return calenderDayResponseDto;
     }
 
 
