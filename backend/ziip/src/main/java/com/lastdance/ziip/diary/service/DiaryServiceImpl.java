@@ -1,8 +1,8 @@
 package com.lastdance.ziip.diary.service;
 
-import com.lastdance.ziip.diary.dto.DiaryDto;
-import com.lastdance.ziip.diary.dto.DiaryPhotoDto;
 import com.lastdance.ziip.diary.dto.request.DiaryWriteRequestDto;
+import com.lastdance.ziip.diary.dto.response.DiaryListDetailResponseDto;
+import com.lastdance.ziip.diary.dto.response.DiaryListResponseDto;
 import com.lastdance.ziip.diary.dto.response.DiaryWriteResponseDto;
 import com.lastdance.ziip.diary.repository.DiaryPhotoRepository;
 import com.lastdance.ziip.diary.repository.DiaryRepository;
@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -88,6 +89,26 @@ public class DiaryServiceImpl implements DiaryService{
                 .build();
 
         return diaryWriteResponseDto;
+    };
+
+    @Override
+    public DiaryListResponseDto listDiary(Member findMember, long familyId) {
+
+        List<Diary> diaries = diaryRepository.findAllByFamilyId(familyId);
+
+        List<DiaryListDetailResponseDto> diaryListDetailResponseDtos= diaries.stream()
+                .map(d -> DiaryListDetailResponseDto.builder()
+                    .diaryId(d.getId())
+                    .nickname(findMember.getName())
+                    .title(d.getTitle())
+                    .createdAt(d.getCreatedAt())
+                    .emotionId(d.getEmotion().getId())
+                    .build())
+                .collect(Collectors.toList());
+
+        return DiaryListResponseDto.builder()
+                .diaryListDetailResponseList(diaryListDetailResponseDtos)
+                .build();
     };
 
 }
