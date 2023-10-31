@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { useState } from 'react';
-import PickYearMonth from '../../components/PickYearMonth';
 
 export default function DiaryScreen() {
 	const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // 초기 년도 설정
@@ -16,7 +15,6 @@ export default function DiaryScreen() {
 
 	return (
 		<View style={styles.container}>
-			<PickYearMonth />
 			<View style={styles.diaryList}>
 				<Text>일기 리스트</Text>
 			</View>

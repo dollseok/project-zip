@@ -11,8 +11,8 @@ import {
 	PanResponder,
 } from 'react-native';
 
-export default function SchedulePreview(props) {
-	const { modalVisible, setModalVisible, selectedDate, navigation } = props;
+export default function ScheduleCreate(props) {
+	const { createModalVisible, setCreateModalVisible } = props;
 	const screenHeight = Dimensions.get('screen').height;
 	const panY = useRef(new Animated.Value(screenHeight)).current;
 	const translateY = panY.interpolate({
@@ -50,22 +50,22 @@ export default function SchedulePreview(props) {
 	).current;
 
 	useEffect(() => {
-		if (props.modalVisible) {
+		if (props.createModalVisible) {
 			resetSchedulePreview.start();
 		} else {
 			closeSchedulePreview.start();
 		}
-	}, [props.modalVisible]);
+	}, [props.createModalVisible]);
 
 	const closeModal = () => {
 		closeSchedulePreview.start(() => {
-			setModalVisible(false);
+			setCreateModalVisible(false);
 		});
 	};
 
 	return (
 		<Modal
-			visible={modalVisible}
+			visible={createModalVisible}
 			animationType={'fade'}
 			transparent
 			statusBarTranslucent
@@ -82,29 +82,30 @@ export default function SchedulePreview(props) {
 					{...panResponders.panHandlers}
 				>
 					{/* 일정 미리보기  */}
-					<View style={styles.previewHeader}>
-						<Text style={styles.previewDateFont}>
-							{selectedDate.split('-')[2]}
-						</Text>
-						<Text style={styles.dateUnitFont}>일</Text>
-						<TouchableOpacity
-							onPress={() => {
-								navigation.navigate('일정', {
-									dateInfo: selectedDate,
-								});
-							}}
-						>
-							<Text>자세히 보기</Text>
-						</TouchableOpacity>
-					</View>
-					<View style={styles.previewContent}>
-						<View>
-							<Text style={styles.contentTitleFont}>일정</Text>
+					<View style={styles.createFormContainer}>
+						<View style={styles.buttonContainer}>
+							<Text>취소</Text>
+							<Text>완료</Text>
 						</View>
-						<Text>10월 가족 여행</Text>
-						<Text>아부지 환갑</Text>
+						<View style={styles.contentContainer}>
+							<Text>제목 인풋</Text>
+							<Text>위치 인풋</Text>
+							<View style={styles.selectDate}>
+								<View style={styles.selectStartDate}>
+									<Text>시작일 라벨</Text>
+									<Text>2023.09.18</Text>
+								</View>
+								<View style={styles.selectEndDate}>
+									<Text>종료일 라벨</Text>
+									<Text>2023.09.18</Text>
+								</View>
+							</View>
+						</View>
 					</View>
 				</Animated.View>
+				<TouchableWithoutFeedback onPress={closeModal}>
+					<View style={styles.background} />
+				</TouchableWithoutFeedback>
 			</View>
 		</Modal>
 	);
@@ -120,11 +121,11 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	bottomSheetContainer: {
-		height: 300,
+		height: 400,
 		justifyContent: 'center',
 		// alignItems: 'center',
 		backgroundColor: 'white',
-		borderRadius: 15,
+		borderRadius: 20,
 		marginHorizontal: 15,
 		marginBottom: 15,
 		padding: 20,

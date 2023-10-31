@@ -104,38 +104,29 @@ const customTheme = {
 };
 
 export default function CalendarScreen({ navigation }) {
-	const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // 초기 년도 설정
-	const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // 초기 월 설정 (1은 1월을 의미)
-
+	// 보여줄 달력의 연월 정보
+	const [calendarDate, setCalendarDate] = useState(
+		format(new Date(), 'yyyy-MM-dd'),
+	);
+	const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+	const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
+	// 연월 선택창 모달 설정
 	const [isModalVisible, setisModalVisible] = useState(false);
 	const showPickerModal = () => {
 		setisModalVisible(true);
 	};
-
 	const hidePickerModal = () => {
 		setisModalVisible(false);
 	};
-
-	const [calendarKey, setCalendarKey] = useState(1);
-	const [calendarDate, setCalendarDate] = useState(
-		format(new Date(), 'yyyy-MM-dd'),
-	);
-
-	const handleYearChange = (year) => {
-		setSelectedYear(year);
-		updateCalendarDate(year, selectedMonth);
+	// 연월 선택했을 경우 실행될 함수
+	const handleDatePickerChange = (selectedYear, selectedMonth) => {
+		setCalendarDate(`${selectedYear}-${selectedMonth}-01`);
+		setCurrentYear(selectedYear);
+		setCurrentMonth(selectedMonth);
+		hidePickerModal();
 	};
 
-	const handleMonthChange = (month) => {
-		setSelectedMonth(month);
-		updateCalendarDate(selectedYear, month);
-	};
-
-	const updateCalendarDate = (year, month) => {
-		const formattedDate = `${year}-${month.toString().padStart(2, '0')}-01`;
-		setCalendarDate(formattedDate);
-	};
-
+	// 일정 리스트 예시 데이터
 	const posts = [
 		{
 			scheduleId: 1,
@@ -167,6 +158,7 @@ export default function CalendarScreen({ navigation }) {
 		},
 	];
 
+	// 일정이 있는 경우 달력에 dot 표시
 	const markedDates = posts.reduce((acc, current) => {
 		const formattedDate = format(new Date(current.startDate), 'yyyy-MM-dd');
 		acc[formattedDate] = { marked: true };
@@ -185,20 +177,10 @@ export default function CalendarScreen({ navigation }) {
 		},
 	};
 
-	const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-	const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
-
-	// 일정 미리보기 팝업
+	// 일정 미리보기 팝업 설정
 	const [modalVisible, setModalVisible] = useState(false);
 	const onModal = () => {
 		setModalVisible(true);
-	};
-
-	const handleDatePickerChange = (selectedYear, selectedMonth) => {
-		setCalendarDate(`${selectedYear}-${selectedMonth}-01`);
-		setCurrentYear(selectedYear);
-		setCurrentMonth(selectedMonth);
-		hidePickerModal();
 	};
 
 	return (
@@ -214,7 +196,7 @@ export default function CalendarScreen({ navigation }) {
 					<Text>날짜 선택</Text>
 				</TouchableOpacity>
 				<Modal visible={isModalVisible} animationType="slide">
-					<View>
+					<View style={styles.pickerContainer}>
 						<DatePicker
 							mode="monthYear"
 							selectorStartingYear={2020}
@@ -223,9 +205,6 @@ export default function CalendarScreen({ navigation }) {
 								handleDatePickerChange(year, month);
 							}}
 						/>
-						<TouchableOpacity onPress={hidePickerModal}>
-							<Text>Done</Text>
-						</TouchableOpacity>
 					</View>
 				</Modal>
 			</View>
@@ -296,4 +275,5 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: '100%',
 	},
+	pickerContainer: {},
 });

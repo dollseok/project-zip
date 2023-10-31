@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useState, useEffect } from 'react';
 
 import ScheduleList from '../components/schedule/ScheduleList';
-
+import ScheduleCreate from '../components/schedule/ScheduleCreate';
 import { AntDesign } from '@expo/vector-icons';
 
 export default function ScheduleScreen({ route, navigation }) {
@@ -18,6 +18,12 @@ export default function ScheduleScreen({ route, navigation }) {
 		setCurrentMonth(dateInfo.split('-')[1]);
 	}, []);
 
+	// 일정 등록 모달 설정
+	const [createModalVisible, setCreateModalVisible] = useState(false);
+	const onModal = () => {
+		setCreateModalVisible(true);
+	};
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.dateContainer}>
@@ -31,11 +37,15 @@ export default function ScheduleScreen({ route, navigation }) {
 				</View>
 			</View>
 			{/* 일정 추가 버튼 */}
-			<TouchableOpacity style={styles.addBtnContainer}>
+			<TouchableOpacity style={styles.addBtnContainer} onPress={onModal}>
 				<AntDesign name="plus" size={24} color="black" />
 			</TouchableOpacity>
 			{/* 일정 리스트 */}
 			<ScheduleList></ScheduleList>
+			<ScheduleCreate
+				createModalVisible={createModalVisible}
+				setCreateModalVisible={setCreateModalVisible}
+			/>
 		</View>
 	);
 }
