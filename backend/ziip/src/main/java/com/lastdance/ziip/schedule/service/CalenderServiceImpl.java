@@ -1,5 +1,7 @@
 package com.lastdance.ziip.schedule.service;
 
+import com.lastdance.ziip.diary.repository.DiaryRepository;
+import com.lastdance.ziip.diary.repository.entity.Diary;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.plan.repository.PlanRepository;
 import com.lastdance.ziip.plan.repository.entity.Plan;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.swing.text.DateFormatter;
 import java.text.DateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +39,7 @@ public class CalenderServiceImpl implements CalenderService {
     private final ScheduleRepository scheduleRepository;
     private final JPAQueryFactory jpaQueryFactory;
     private final PlanRepository planRepository;
+    private final DiaryRepository diaryRepository;
 
     public CalenderYearResponseDto yearCalender(Member findMember, int year) {
         LocalDate startOfYear = LocalDate.of(year, 1, 1);
@@ -84,6 +88,14 @@ public class CalenderServiceImpl implements CalenderService {
             calenderDayScheduleResponseDtoList.add(calenderDayScheduleResponseDto);
             }
         }
+
+        // 해당 일자의 다이어리 조회
+        LocalDate inputDate = LocalDate.parse(calenderDayRequestDto.getTodayDate());
+        LocalDateTime startOfDay = inputDate.atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+
+        //List<Diary> diaries = diaryRepository.findAllByCreatedAtBetween(startOfDay, endOfDay);
+
 
 
 
