@@ -3,8 +3,11 @@ package com.lastdance.ziip.plan.controller;
 import com.lastdance.ziip.global.util.ResponseTemplate;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.member.service.MemberService;
+import com.lastdance.ziip.plan.dto.request.PlanDeleteRequestDto;
+import com.lastdance.ziip.plan.dto.request.PlanModifyRequestDto;
+import com.lastdance.ziip.plan.dto.request.PlanStatusModifyRequestDto;
 import com.lastdance.ziip.plan.dto.request.PlanWriteRequestDto;
-import com.lastdance.ziip.plan.dto.response.PlanWriteResponseDto;
+import com.lastdance.ziip.plan.dto.response.*;
 import com.lastdance.ziip.plan.enums.PlanResponseMessage;
 import com.lastdance.ziip.plan.service.PlanService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,10 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,5 +54,99 @@ public class PlanController {
                         .result(true)
                         .build(),
                 HttpStatus.OK);
+    }
+
+    @Operation(summary = "계획 상세 조회", description = "계획 상세 조회 API")
+    @GetMapping("/detail")
+    public ResponseEntity<ResponseTemplate<PlanDetailResponseDto>> getPlanDetail(HttpServletRequest httpServletRequest,
+                                                            @RequestParam(name = "planId") long planId){
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null){
+            return null;
+        }
+
+        Member member = memberService.findMemberByJwtToken(token);
+
+        PlanDetailResponseDto responseDto = planService.getPlanDetail(member, planId);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<PlanDetailResponseDto> builder()
+                        .msg(PlanResponseMessage.PLAN_DETAIL_SUCCESS.getMessage())
+                        .data(responseDto)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+    }
+
+    @Operation(summary = "계획 수정", description = "계획 수정 API")
+    @PutMapping("/modify")
+    public ResponseEntity<ResponseTemplate<PlanModifyResponseDto>> modifyPlan(HttpServletRequest httpServletRequest,
+                                                                              @RequestBody PlanModifyRequestDto planModifyRequestDto){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null){
+            return null;
+        }
+
+        Member member = memberService.findMemberByJwtToken(token);
+
+        PlanModifyResponseDto responseDto = planService.modifyPlan(member, planModifyRequestDto);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<PlanModifyResponseDto> builder()
+                        .msg(PlanResponseMessage.PLAN_MODIFY_SUCCESS.getMessage())
+                        .data(responseDto)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+
+    }
+
+
+    @Operation(summary = "계획 삭제", description = "계획 삭제 API")
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseTemplate<PlanDeleteResponseDto>> deletePlan(HttpServletRequest httpServletRequest,
+                                                                              @RequestBody PlanDeleteRequestDto planDeleteRequestDto){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null){
+            return null;
+        }
+
+        Member member = memberService.findMemberByJwtToken(token);
+
+        PlanDeleteResponseDto responseDto = planService.deletePlan(member, planDeleteRequestDto);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<PlanDeleteResponseDto> builder()
+                        .msg(PlanResponseMessage.PLAN_DELETE_SUCCESS.getMessage())
+                        .data(responseDto)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+    }
+
+    @Operation(summary = "계획 상태코드 수정", description = "계획 상태코드 수정 API")
+    @PutMapping("/status/modify")
+    public ResponseEntity<ResponseTemplate<PlanStatusModifyResponseDto>> modifyPlanStatus(HttpServletRequest httpServletRequest,
+                                                                                          @RequestBody PlanStatusModifyRequestDto planStatusModifyRequestDto){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null){
+            return null;
+        }
+
+        Member member = memberService.findMemberByJwtToken(token);
+
+        PlanStatusModifyResponseDto responseDto = planService.modifyPlanStatus(member, planStatusModifyRequestDto);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<PlanStatusModifyResponseDto> builder()
+                        .msg(PlanResponseMessage.PLAN_STATUS_MODIFY_SUCCESS.getMessage())
+                        .data(responseDto)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+
     }
 }
