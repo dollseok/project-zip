@@ -20,13 +20,13 @@ export default function ScheduleCreate(props) {
 		outputRange: [0, 0, 1],
 	});
 
-	const resetSchedulePreview = Animated.timing(panY, {
+	const resetScheduleCreate = Animated.timing(panY, {
 		toValue: 0,
 		duration: 300,
 		useNativeDriver: true,
 	});
 
-	const closeSchedulePreview = Animated.timing(panY, {
+	const closeScheduleCreate = Animated.timing(panY, {
 		toValue: screenHeight,
 		duration: 300,
 		useNativeDriver: true,
@@ -43,7 +43,7 @@ export default function ScheduleCreate(props) {
 				if (gestureState.dy > 0 && gestureState.vy > 1.5) {
 					closeModal();
 				} else {
-					resetSchedulePreview.start();
+					resetScheduleCreate.start();
 				}
 			},
 		}),
@@ -51,14 +51,14 @@ export default function ScheduleCreate(props) {
 
 	useEffect(() => {
 		if (props.createModalVisible) {
-			resetSchedulePreview.start();
+			resetScheduleCreate.start();
 		} else {
-			closeSchedulePreview.start();
+			closeScheduleCreate.start();
 		}
 	}, [props.createModalVisible]);
 
 	const closeModal = () => {
-		closeSchedulePreview.start(() => {
+		closeScheduleCreate.start(() => {
 			setCreateModalVisible(false);
 		});
 	};
@@ -81,7 +81,6 @@ export default function ScheduleCreate(props) {
 					}}
 					{...panResponders.panHandlers}
 				>
-					{/* 일정 미리보기  */}
 					<View style={styles.createFormContainer}>
 						<View style={styles.buttonContainer}>
 							<Text>취소</Text>
