@@ -82,28 +82,24 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public ScheduleDetailResponseDto detailSchedule(Member findMember, long scheduleId) {
 
-        Optional<Schedule> schedule = scheduleRepository.findById(scheduleId);
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 스케줄을 찾을 수 없습니다. id번호 : " + scheduleId));
 
-        List<Plan> plans = planRepository.findAllBySchedule(schedule);
-
-        List<ScheduleDetailPlanResponseDto> scheduleDetailPlanResponseDtos = new ArrayList<>();
-
-        for (Plan plan : plans) {
-            ScheduleDetailPlanResponseDto scheduleDetailPlanResponseDto = ScheduleDetailPlanResponseDto.builder()
-                    .scheduleId(plan.getSchedule().getId())
-                    .memberId(plan.getMember().getId())
-                    .statusCode(Long.valueOf(plan.getStatusCode().getCode().getValue()))
-                    .title(plan.getTitle())
-                    .content(plan.getContent())
-                    .build();
-
-            scheduleDetailPlanResponseDtos.add(scheduleDetailPlanResponseDto);
-        }
+        List<ScheduleDetailPlanResponseDto> scheduleDetailPlanResponseDtos =
+                planRepository.findAllBySchedule(Optional.of(schedule)).stream()
+                        .map(plan -> ScheduleDetailPlanResponseDto.builder()
+                                .scheduleId(plan.getSchedule().getId())
+                                .memberId(plan.getMember().getId())
+                                .statusCode(Long.valueOf(plan.getStatusCode().getCode().getValue()))
+                                .title(plan.getTitle())
+                                .content(plan.getContent())
+                                .build())
+                        .collect(Collectors.toList());
 
         ScheduleDetailResponseDto scheduleDetailResponseDto = ScheduleDetailResponseDto.builder()
-                .title(schedule.get().getTitle())
-                .startDate(String.valueOf(schedule.get().getStartDate()))
-                .endDate(String.valueOf(schedule.get().getEndDate()))
+                .title(schedule.getTitle())
+                .startDate(String.valueOf(schedule.getStartDate()))
+                .endDate(String.valueOf(schedule.getEndDate()))
                 .scheduleDetailPlanResponseDtos(scheduleDetailPlanResponseDtos)
                 .build();
 
@@ -129,15 +125,14 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public ScheduleDeleteResponseDto deleteService(Member findMember, ScheduleDeleteRequestDto scheduleDeleteRequestDto) {
 
-        Optional<Schedule> schedule = scheduleRepository.findById(scheduleDeleteRequestDto.getScheduleId());
+        Schedule schedule = scheduleRepository.findById(scheduleDeleteRequestDto.getScheduleId())
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 스케줄을 찾을 수 없습니다. id번호 : " + scheduleDeleteRequestDto.getScheduleId()));
 
-        List<Plan> plans = planRepository.findAllBySchedule(schedule);
 
-        for (Plan plan : plans) {
-            planRepository.delete(plan);
-        }
+        planRepository.findAllBySchedule(Optional.of(schedule)).stream()
+                .forEach(planRepository::delete);
 
-        scheduleRepository.delete(schedule.get());
+        scheduleRepository.delete(schedule);
 
         ScheduleDeleteResponseDto scheduleDeleteResponseDto = ScheduleDeleteResponseDto.builder()
                 .memberId(findMember.getId())
