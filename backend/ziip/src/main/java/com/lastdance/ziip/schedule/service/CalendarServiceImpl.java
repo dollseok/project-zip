@@ -62,68 +62,46 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public CalendarDayResponseDto dayCalendar(Member findMember, CalendarDayRequestDto calendarDayRequestDto) {
+        // 해당하는 날짜의 스케줄 조회 및 스케줄의 플랜 조회
+        List<CalendarDayScheduleResponseDto> calendarDayScheduleResponseDtoList =
+                scheduleRepository.findAllByStartDate(calendarDayRequestDto.getTodayDateAsLocalDate())
+                        .stream()
+                        .flatMap(schedule -> planRepository.findAllBySchedule(Optional.ofNullable(schedule)).stream())
+                        .map(plan -> CalendarDayScheduleResponseDto.builder()
+                                .planId(plan.getId())
+                                .name(plan.getTitle())
+                                .build())
+                        .collect(Collectors.toList());
 
-        List<Schedule> schedule = scheduleRepository.findAllByStartDate(calendarDayRequestDto.getTodayDateAsLocalDate());
-        List<CalendarDayScheduleResponseDto> calendarDayScheduleResponseDtoList = new ArrayList<>();
-
-        // 해당하는 날짜의 스케줄 조회
-        for (Schedule schedule1 : schedule) {
-            List<Plan> plans = planRepository.findAllBySchedule(Optional.ofNullable(schedule1));
-
-            // 해당하는 스케줄의 플랜 조회
-            for (Plan plan : plans) {
-            CalendarDayScheduleResponseDto calendarDayScheduleResponseDto = CalendarDayScheduleResponseDto.builder()
-                    .planId(plan.getId())
-                    .name(plan.getTitle())
-                    .build();
-
-            calendarDayScheduleResponseDtoList.add(calendarDayScheduleResponseDto);
-            }
-        }
-
-        // 해당 일자의 다이어리 조회
         LocalDate inputDate = LocalDate.parse(calendarDayRequestDto.getTodayDate());
         LocalDateTime startOfDay = inputDate.atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1);
 
-        List<Diary> diaries = diaryRepository.findAllByCreatedAtBetween(startOfDay, endOfDay);
+        // 해당 일자의 다이어리 조회 및 다이어리의 코멘트 조회
+        List<CalendarDayDiaryResponseDto> calendarDayDiaryResponseDtos =
+                diaryRepository.findAllByCreatedAtBetween(startOfDay, endOfDay)
+                        .stream()
+                        .map(diary -> {
+                            List<CalendarDayCommentResponseDto> calendarDayCommentResponseDtoList =
+                                    diaryCommentRepository.findAllByDiary(diary)
+                                            .stream()
+                                            .map(diaryComment -> CalendarDayCommentResponseDto.builder()
+                                                    .memberId(diaryComment.getMember().getId())
+                                                    .profileImgUrl(diaryComment.getMember().getProfileImgUrl())
+                                                    .content(diaryComment.getContent())
+                                                    .build())
+                                            .collect(Collectors.toList());
 
-        List<CalendarDayDiaryResponseDto> calendarDayDiaryResponseDtos = new ArrayList<>();
-
-        // 다이어리 리스트
-        for (Diary diary : diaries) {
-
-            List<DiaryComment> diaryComments = diaryCommentRepository.findAllByDiary(diary);
-
-            List<CalendarDayCommentResponseDto> calendarDayCommentResponseDtoList = new ArrayList<>();
-
-            for (DiaryComment diaryComment : diaryComments) {
-                CalendarDayCommentResponseDto calendarDayCommentResponseDto = CalendarDayCommentResponseDto.builder()
-                        .memberId(diaryComment.getMember().getId())
-                        .profileImgUrl(diaryComment.getMember().getProfileImgUrl())
-                        .content(diaryComment.getContent())
-                        .build();
-
-                calendarDayCommentResponseDtoList.add(calendarDayCommentResponseDto);
-            }
-
-
-            CalendarDayDiaryResponseDto calendarDayDiaryResponseDto = CalendarDayDiaryResponseDto.builder()
-                    .diaryId(diary.getId())
-                    .memberId(diary.getMember().getId())
-                    .memberName(diary.getMember().getName())
-                    .title(diary.getTitle())
-                    .content(diary.getContent())
-                    .calendarDayCommentResponseDtoList(calendarDayCommentResponseDtoList)
-                    .build();
-
-            calendarDayDiaryResponseDtos.add(calendarDayDiaryResponseDto);
-        }
-
-
-
-
-
+                            return CalendarDayDiaryResponseDto.builder()
+                                    .diaryId(diary.getId())
+                                    .memberId(diary.getMember().getId())
+                                    .memberName(diary.getMember().getName())
+                                    .title(diary.getTitle())
+                                    .content(diary.getContent())
+                                    .calendarDayCommentResponseDtoList(calendarDayCommentResponseDtoList)
+                                    .build();
+                        })
+                        .collect(Collectors.toList());
 
         CalendarDayResponseDto calendarDayResponseDto = CalendarDayResponseDto.builder()
                 .calendarDayScheduleResponseDtoList(calendarDayScheduleResponseDtoList)
