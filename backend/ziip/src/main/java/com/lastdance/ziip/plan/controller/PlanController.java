@@ -5,11 +5,9 @@ import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.member.service.MemberService;
 import com.lastdance.ziip.plan.dto.request.PlanDeleteRequestDto;
 import com.lastdance.ziip.plan.dto.request.PlanModifyRequestDto;
+import com.lastdance.ziip.plan.dto.request.PlanStatusModifyRequestDto;
 import com.lastdance.ziip.plan.dto.request.PlanWriteRequestDto;
-import com.lastdance.ziip.plan.dto.response.PlanDeleteResponseDto;
-import com.lastdance.ziip.plan.dto.response.PlanDetailResponseDto;
-import com.lastdance.ziip.plan.dto.response.PlanModifyResponseDto;
-import com.lastdance.ziip.plan.dto.response.PlanWriteResponseDto;
+import com.lastdance.ziip.plan.dto.response.*;
 import com.lastdance.ziip.plan.enums.PlanResponseMessage;
 import com.lastdance.ziip.plan.service.PlanService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -128,4 +126,27 @@ public class PlanController {
                 HttpStatus.OK);
     }
 
+    @Operation(summary = "계획 상태코드 수정", description = "계획 상태코드 수정 API")
+    @PutMapping("/status/modify")
+    public ResponseEntity<ResponseTemplate<PlanStatusModifyResponseDto>> modifyPlanStatus(HttpServletRequest httpServletRequest,
+                                                                                          @RequestBody PlanStatusModifyRequestDto planStatusModifyRequestDto){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null){
+            return null;
+        }
+
+        Member member = memberService.findMemberByJwtToken(token);
+
+        PlanStatusModifyResponseDto responseDto = planService.modifyPlanStatus(member, planStatusModifyRequestDto);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<PlanStatusModifyResponseDto> builder()
+                        .msg(PlanResponseMessage.PLAN_STATUS_MODIFY_SUCCESS.getMessage())
+                        .data(responseDto)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+
+    }
 }
