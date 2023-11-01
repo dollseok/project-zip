@@ -99,7 +99,7 @@ public class DiaryServiceImpl implements DiaryService{
         List<DiaryListDetailResponseDto> diaryListDetailResponseDtos= diaries.stream()
                 .map(d -> DiaryListDetailResponseDto.builder()
                     .diaryId(d.getId())
-                    .nickname(findMember.getName())
+                    .nickname(d.getMember().getName())
                     .title(d.getTitle())
                     .createdAt(d.getCreatedAt())
                     .emotionId(d.getEmotion().getId())
