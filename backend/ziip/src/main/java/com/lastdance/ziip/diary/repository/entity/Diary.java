@@ -7,17 +7,14 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import com.lastdance.ziip.member.repository.entity.Member;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString
 public class Diary extends BaseEntity {
 
     @Id @GeneratedValue

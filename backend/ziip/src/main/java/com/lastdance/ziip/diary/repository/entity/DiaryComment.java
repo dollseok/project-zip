@@ -1,5 +1,6 @@
 package com.lastdance.ziip.diary.repository.entity;
 
+import com.lastdance.ziip.diary.dto.request.DiaryCommentModifyRequestDto;
 import com.lastdance.ziip.global.entity.BaseEntity;
 import com.lastdance.ziip.member.repository.entity.Member;
 
@@ -36,5 +37,8 @@ public class DiaryComment extends BaseEntity {
      
     private String content;
 
+    public void updateDiaryComment(DiaryCommentModifyRequestDto diaryCommentModifyRequestDto){
+        this.content = diaryCommentModifyRequestDto.getContent();
+    }
 }
 

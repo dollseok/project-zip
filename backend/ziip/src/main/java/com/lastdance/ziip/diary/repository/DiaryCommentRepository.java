@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface DiaryCommentRepository extends JpaRepository<DiaryComment, Long> {
     List<DiaryComment> findAllByDiary(Diary diary);
+
 }
