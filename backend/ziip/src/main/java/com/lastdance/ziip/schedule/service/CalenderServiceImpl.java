@@ -1,5 +1,6 @@
 package com.lastdance.ziip.schedule.service;
 
+import com.lastdance.ziip.diary.repository.DiaryCommentRepository;
 import com.lastdance.ziip.diary.repository.DiaryRepository;
 import com.lastdance.ziip.diary.repository.entity.Diary;
 import com.lastdance.ziip.diary.repository.entity.DiaryComment;
@@ -41,6 +42,7 @@ public class CalenderServiceImpl implements CalenderService {
     private final JPAQueryFactory jpaQueryFactory;
     private final PlanRepository planRepository;
     private final DiaryRepository diaryRepository;
+    private final DiaryCommentRepository diaryCommentRepository;
 
     public CalenderYearResponseDto yearCalender(Member findMember, int year) {
         LocalDate startOfYear = LocalDate.of(year, 1, 1);
@@ -66,11 +68,6 @@ public class CalenderServiceImpl implements CalenderService {
 
     @Override
     public CalenderDayResponseDto dayCalender(Member findMember, CalenderDayRequestDto calenderDayRequestDto) {
-        String[] datePart = calenderDayRequestDto.getTodayDate().split("-");
-
-        String year = datePart[0];
-        String month = datePart[1];
-        String day = datePart[2];
 
         List<Schedule> schedule = scheduleRepository.findAllByStartDate(calenderDayRequestDto.getTodayDateAsLocalDate());
         List<CalenderDayScheduleResponseDto> calenderDayScheduleResponseDtoList = new ArrayList<>();
@@ -99,10 +96,22 @@ public class CalenderServiceImpl implements CalenderService {
 
         List<CalenderDayDiaryResponseDto> calenderDayDiaryResponseDtos = new ArrayList<>();
 
+        // 다이어리 리스트
         for (Diary diary : diaries) {
 
+            List<DiaryComment> diaryComments = diaryCommentRepository.findAllByDiary(diary);
 
-            List<DiaryComment> diaryComments = new ArrayList<>();
+            List<CalenderDayCommentResponseDto> calenderDayCommentResponseDtoList = new ArrayList<>();
+
+            for (DiaryComment diaryComment : diaryComments) {
+                CalenderDayCommentResponseDto calenderDayCommentResponseDto = CalenderDayCommentResponseDto.builder()
+                        .memberId(diaryComment.getMember().getId())
+                        .profileImgUrl(diaryComment.getMember().getProfileImgUrl())
+                        .content(diaryComment.getContent())
+                        .build();
+
+                calenderDayCommentResponseDtoList.add(calenderDayCommentResponseDto);
+            }
 
 
             CalenderDayDiaryResponseDto calenderDayDiaryResponseDto = CalenderDayDiaryResponseDto.builder()
@@ -111,8 +120,10 @@ public class CalenderServiceImpl implements CalenderService {
                     .memberName(diary.getMember().getName())
                     .title(diary.getTitle())
                     .content(diary.getContent())
-                    .calenderDayCommentResponseDtoList(null) // 이거 채우기
+                    .calenderDayCommentResponseDtoList(calenderDayCommentResponseDtoList)
                     .build();
+
+            calenderDayDiaryResponseDtos.add(calenderDayDiaryResponseDto);
         }
 
 
@@ -122,6 +133,7 @@ public class CalenderServiceImpl implements CalenderService {
 
         CalenderDayResponseDto calenderDayResponseDto = CalenderDayResponseDto.builder()
                 .calenderDayScheduleResponseDtoList(calenderDayScheduleResponseDtoList)
+                .calenderDayDiaryResponseDtos(calenderDayDiaryResponseDtos)
                 .build();
 
         return calenderDayResponseDto;

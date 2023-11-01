@@ -67,10 +67,16 @@ public class CalenderController {
 
         CalenderDayResponseDto calenderDayResponseDto = calenderService.dayCalender(findMember, calenderDayRequestDto);
 
+        String[] datePart = calenderDayRequestDto.getTodayDate().split("-");
+
+        String year = datePart[0];
+        String month = datePart[1];
+        String day = datePart[2];
+
 
         return new ResponseEntity<>(
                 ResponseTemplate.<CalenderDayResponseDto>builder()
-                        .msg(CalenderResponseMessage.CALENDER_DAY_SUCCESS.getMessage())
+                        .msg(year + "년" + month + "월" + day + CalenderResponseMessage.CALENDER_DAY_SUCCESS.getMessage())
                         .data(calenderDayResponseDto)
                         .result(true)
                         .build(),
