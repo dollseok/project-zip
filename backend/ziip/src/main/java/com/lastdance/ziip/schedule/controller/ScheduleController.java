@@ -8,6 +8,7 @@ import com.lastdance.ziip.schedule.dto.request.ScheduleModifyRequestDto;
 import com.lastdance.ziip.schedule.dto.request.ScheduleRegisterRequestDto;
 import com.lastdance.ziip.schedule.dto.response.*;
 import com.lastdance.ziip.schedule.enums.ScheduleResponseMessage;
+import com.lastdance.ziip.schedule.service.CalenderService;
 import com.lastdance.ziip.schedule.service.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
