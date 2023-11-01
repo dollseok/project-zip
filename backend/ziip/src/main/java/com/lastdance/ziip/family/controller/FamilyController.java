@@ -1,6 +1,7 @@
 package com.lastdance.ziip.family.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lastdance.ziip.family.dto.request.FamilyNickNameRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterRequestDto;
@@ -43,8 +44,10 @@ public class FamilyController {
     @PostMapping("/register")
     public ResponseEntity<ResponseTemplate<FamilyRegisterResponseDto>> registFamily(
             HttpServletRequest httpServletRequest,
-            @RequestPart(name = "familyRegisterRequest") FamilyRegisterRequestDto familyRegisterRequest,
+            @RequestPart(name = "familyRegisterRequest") String jsonString,
             @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        FamilyRegisterRequestDto familyRegisterRequest = mapper.readValue(jsonString, FamilyRegisterRequestDto.class);
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) {
