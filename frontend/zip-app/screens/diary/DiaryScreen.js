@@ -81,6 +81,8 @@ export default function DiaryScreen() {
 			{/* 일기 리스트 */}
 			<DiaryList></DiaryList>
 			<DiaryCreate
+				selectedYear={selectedYear}
+				selectedMonth={selectedMonth}
 				createModalVisible={createModalVisible}
 				setCreateModalVisible={setCreateModalVisible}
 			/>
