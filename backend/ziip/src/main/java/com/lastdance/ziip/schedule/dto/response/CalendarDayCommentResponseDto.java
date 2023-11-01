@@ -5,19 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CalenderDayDiaryResponseDto {
+public class CalendarDayCommentResponseDto {
 
-    private Long diaryId;
     private Long memberId;
-    private String memberName;
-    private String title;
+    private String profileImgUrl;
     private String content;
-
-    List<CalenderDayCommentResponseDto> calenderDayCommentResponseDtoList;
 }

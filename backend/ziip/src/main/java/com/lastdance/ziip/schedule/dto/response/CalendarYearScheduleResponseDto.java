@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CalenderYearScheduleResponseDto {
+public class CalendarYearScheduleResponseDto {
 
     private Long scheduleId;
     private Long familyId;
@@ -19,5 +19,5 @@ public class CalenderYearScheduleResponseDto {
     private String title;
     private String startDate;
     private String endDate;
-    private List<CalenderYearPlanResponseDto> calenderYearPlanResponseDtoList;
+    private List<CalendarYearPlanResponseDto> calendarYearPlanResponseDtoList;
 }

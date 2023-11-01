@@ -5,13 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CalenderDayCommentResponseDto {
+public class CalendarYearResponseDto {
 
-    private Long memberId;
-    private String profileImgUrl;
-    private String content;
+    private List<CalendarYearScheduleResponseDto> calendarYearScheduleResponseDtoList;
 }

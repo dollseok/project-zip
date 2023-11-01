@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CalenderDayScheduleResponseDto {
+public class CalendarDayScheduleResponseDto {
 
     private Long planId;
     private String name;

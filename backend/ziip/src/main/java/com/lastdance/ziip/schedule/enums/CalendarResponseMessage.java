@@ -1,14 +1,14 @@
 package com.lastdance.ziip.schedule.enums;
 
-public enum CalenderResponseMessage {
+public enum CalendarResponseMessage {
 
-    CALENDER_YEAR_SUCCESS("년도 조회 성공"),
-    CALENDER_DAY_SUCCESS("일 상세 조회 성공");
+    CALENDAR_YEAR_SUCCESS("년도 조회 성공"),
+    CALENDAR_DAY_SUCCESS("일 상세 조회 성공");
 
     private final String message;
 
 
-    CalenderResponseMessage(String message) {
+    CalendarResponseMessage(String message) {
         this.message = message;
     }
 
