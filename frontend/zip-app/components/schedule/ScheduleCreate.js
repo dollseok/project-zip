@@ -1,8 +1,9 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import {
 	View,
 	StyleSheet,
 	Text,
+	TextInput,
 	Modal,
 	Animated,
 	TouchableOpacity,
@@ -10,8 +11,21 @@ import {
 	Dimensions,
 	PanResponder,
 } from 'react-native';
+import { format } from 'date-fns';
+import DatePicker from 'react-native-date-picker';
 
 export default function ScheduleCreate(props) {
+	// 제목 관련 설정
+	const [scheduleTitle, setScheduleTitle] = useState('');
+
+	// 시작/종료 일자 관련 설정
+	const [startDate, setStartDate] = useState(new Date());
+	const [endDate, setEndDate] = useState(new Date());
+
+	const [openPickStart, setOpenPickStart] = useState(false);
+	const [openPickEnd, setOpenPickEnd] = useState(false);
+
+	// 일정 등록창 모달 설정
 	const { createModalVisible, setCreateModalVisible } = props;
 	const screenHeight = Dimensions.get('screen').height;
 	const panY = useRef(new Animated.Value(screenHeight)).current;
@@ -82,22 +96,86 @@ export default function ScheduleCreate(props) {
 					{...panResponders.panHandlers}
 				>
 					<View style={styles.createFormContainer}>
+						{/* 취소 & 등록 버튼 */}
 						<View style={styles.buttonContainer}>
-							<Text>취소</Text>
-							<Text>완료</Text>
+							{/* 취소 버튼 */}
+							<TouchableOpacity
+								style={styles.cancelButton}
+								onPress={closeModal}
+							>
+								<Text>취소</Text>
+							</TouchableOpacity>
+							{/* 등록 버튼 */}
+							<View style={styles.writeButton}>
+								<Text>완료</Text>
+							</View>
 						</View>
+						{/* 일정 이름 입력 */}
 						<View style={styles.contentContainer}>
-							<Text>제목 인풋</Text>
-							<Text>위치 인풋</Text>
+							<TextInput
+								placeholder="제목"
+								style={styles.titleInput}
+								onChangeText={(text) => {
+									setScheduleTitle(text);
+								}}
+								value={scheduleTitle}
+							/>
+						</View>
+						{/* 일정 시작/종료 일자 선택 */}
+						<View style={styles.selectDateContainer}>
 							<View style={styles.selectDate}>
-								<View style={styles.selectStartDate}>
-									<Text>시작일 라벨</Text>
-									<Text>2023.09.18</Text>
-								</View>
-								<View style={styles.selectEndDate}>
-									<Text>종료일 라벨</Text>
-									<Text>2023.09.18</Text>
-								</View>
+								<Text style={styles.selectDateLabel}>시작일</Text>
+								<TouchableOpacity
+									style={styles.selectDateInput}
+									onPress={() => setOpenPickStart(true)}
+								>
+									<Text>{format(new Date(startDate), 'yyyy.M.d')}</Text>
+								</TouchableOpacity>
+								<DatePicker
+									modal
+									androidVariant="iosClone"
+									mode="date"
+									locale="ko-KR"
+									title={null}
+									confirmText="선택"
+									cancelText="취소"
+									open={openPickStart}
+									date={startDate}
+									onConfirm={(date) => {
+										setOpenPickStart(false);
+										setStartDate(date);
+									}}
+									onCancel={() => {
+										setOpenPickStart(false);
+									}}
+								/>
+							</View>
+							<View style={styles.selectDate}>
+								<Text style={styles.selectDateLabel}>종료일</Text>
+								<TouchableOpacity
+									style={styles.selectDateInput}
+									onPress={() => setOpenPickEnd(true)}
+								>
+									<Text>{format(new Date(endDate), 'yyyy.M.d')}</Text>
+								</TouchableOpacity>
+								<DatePicker
+									modal
+									androidVariant="iosClone"
+									mode="date"
+									locale="ko-KR"
+									title={null}
+									cancelText="취소"
+									confirmText="선택"
+									open={openPickEnd}
+									date={endDate}
+									onConfirm={(date) => {
+										setOpenPickEnd(false);
+										setEndDate(date);
+									}}
+									onCancel={() => {
+										setOpenPickEnd(false);
+									}}
+								/>
 							</View>
 						</View>
 					</View>
@@ -121,34 +199,34 @@ const styles = StyleSheet.create({
 	},
 	bottomSheetContainer: {
 		height: 400,
-		justifyContent: 'center',
-		// alignItems: 'center',
 		backgroundColor: 'white',
 		borderRadius: 20,
 		marginHorizontal: 15,
 		marginBottom: 15,
+	},
+	createFormContainer: {
 		padding: 20,
+		gap: 10,
 	},
-	previewHeader: {
+	buttonContainer: {
 		flexDirection: 'row',
-		width: '100%',
-		height: 60,
-		borderColor: 'black',
+		justifyContent: 'space-between',
+	},
+	titleInput: {
+		marginTop: 20,
+		marginBottom: 10,
+		paddingHorizontal: 10,
+		height: 40,
+
+		borderBottomWidth: 1,
+		borderColor: 'gray',
+	},
+	selectDate: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+	},
+	selectDateInput: {
 		borderWidth: 1,
-	},
-	// 일정 날짜 텍스트
-	previewDateFont: {
-		fontSize: 50,
-		fontWeight: 'bold',
-		textAlignVertical: 'bottom',
-	},
-	// 날짜 단위 텍스트
-	dateUnitFont: {
-		fontSize: 30,
-		fontWeight: 'bold',
-		textAlignVertical: 'bottom',
-	},
-	contentTitleFont: {
-		fontSize: 24,
+		borderColor: 'black',
 	},
 });
