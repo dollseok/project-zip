@@ -39,7 +39,6 @@ public class DiaryController {
      * @param httpServletRequest 로그인한 유저의 Id
      * @param diaryWriteRequestDto memberId, familyId, text, content, emotionId
      * @param files 사진 파일 리스트
-     * @return
      */
 
     @Operation(summary = "일기 작성", description = "일기 작성하기 API, 사진 여러장 등록 가능")
@@ -67,6 +66,11 @@ public class DiaryController {
     }
 
 
+    /**
+     * 일기 리스트 조회
+     * @param httpServletRequest 로그인한 유저의 Id
+     * @param familyId
+     */
     @Operation(summary = "일기 리스트 조회", description = "일기 리스트 조회 API")
     @GetMapping("/list")
     public ResponseEntity<ResponseTemplate<DiaryListResponseDto>> diaryList(
@@ -89,7 +93,6 @@ public class DiaryController {
                         .result(true)
                         .build(), HttpStatus.OK
         );
-
     }
 
 }
