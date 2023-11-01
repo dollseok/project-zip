@@ -10,7 +10,7 @@ public class DiaryCommentModifyRequestDto {
 
     private Long commentId;
     private Long memberId;
-    private Long scheduleId;
+    private Long diaryId;
     private String content;
 
 }
