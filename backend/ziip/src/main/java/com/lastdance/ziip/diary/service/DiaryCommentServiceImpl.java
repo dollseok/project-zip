@@ -1,9 +1,12 @@
 package com.lastdance.ziip.diary.service;
 
+import com.lastdance.ziip.diary.dto.request.DiaryCommentDeleteRequestDto;
 import com.lastdance.ziip.diary.dto.request.DiaryCommentModifyRequestDto;
 import com.lastdance.ziip.diary.dto.request.DiaryCommentWriteRequestDto;
+import com.lastdance.ziip.diary.dto.response.DiaryCommentDeleteResponseDto;
 import com.lastdance.ziip.diary.dto.response.DiaryCommentModifyResponseDto;
 import com.lastdance.ziip.diary.dto.response.DiaryCommentWriteResponseDto;
+import com.lastdance.ziip.diary.exception.validator.DiaryValidator;
 import com.lastdance.ziip.diary.repository.DiaryCommentRepository;
 import com.lastdance.ziip.diary.repository.DiaryRepository;
 import com.lastdance.ziip.diary.repository.entity.Diary;
@@ -29,6 +32,7 @@ public class DiaryCommentServiceImpl implements DiaryCommentService{
 
     private final DiaryRepository diaryRepository;
     private final DiaryCommentRepository diaryCommentRepository;
+    private final DiaryValidator diaryValidator;
 
     @Override
     public DiaryCommentWriteResponseDto writeDiaryComment(Member findMember,
@@ -67,5 +71,23 @@ public class DiaryCommentServiceImpl implements DiaryCommentService{
                 .build();
 
         return  diaryCommentModifyResponseDto;
+    }
+
+    @Override
+    public DiaryCommentDeleteResponseDto deleteDiaryComment(Member findMember, DiaryCommentDeleteRequestDto diaryCommentDeleteRequestDto) {
+
+        Optional<DiaryComment> tmpDiaryComment = diaryCommentRepository.findById(diaryCommentDeleteRequestDto.getCommentId());
+        diaryValidator.checkDiaryCommentExist(tmpDiaryComment);
+        DiaryComment diaryComment = tmpDiaryComment.get();
+
+        diaryValidator.checkDiaryCommentManager(diaryComment, findMember.getId());
+
+        diaryCommentRepository.delete(diaryComment);
+
+        DiaryCommentDeleteResponseDto diaryCommentDeleteResponseDto = DiaryCommentDeleteResponseDto.builder()
+                .commentId(diaryCommentDeleteRequestDto.getCommentId())
+                .build();
+
+        return diaryCommentDeleteResponseDto;
     }
 }

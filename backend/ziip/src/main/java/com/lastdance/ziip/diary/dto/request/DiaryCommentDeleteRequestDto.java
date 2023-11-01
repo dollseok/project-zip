@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class DiaryCommentDeleteRequestDto {
 
     private Long commentId;
-    private Long memberId;
 }
