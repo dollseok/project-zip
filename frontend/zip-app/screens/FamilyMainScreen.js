@@ -62,18 +62,21 @@ export default function FamilyMainScreen({ route }) {
 	useEffect(() => {
 		async function fetchData() {
 			const familyId = await AsyncStorage.getItem('familyId');
+			
+			console.log("선택한 가족 ID : ", familyId);
 
 			axiosInstance
 				.get(`/family/choice?familyId=${familyId}`)
 				.then((response) => {
-					setFamily(response.data.family);
+					console.log("가족 정보 : ", response.data.data);
+					setFamily(response.data.data);
 				});
 
 			axiosInstance
 				.get(`/schedule/list?familyId=${familyId}`)
 				.then((response) => {
-					console.log('일정 : ', response.data.list);
 					setSchedules(response.data.list);
+					console.log('일정 : ', schedules);
 				})
 				.catch((error) => {
 					console.error('There was an error!', error);
@@ -82,8 +85,8 @@ export default function FamilyMainScreen({ route }) {
 			axiosInstance
 				.get(`/diary/list?familyId=${familyId}`)
 				.then((response) => {
-					console.log('일기 : ', response.data.list);
 					setDiaries(response.data.list);
+					console.log('일기 : ', diaries);
 				})
 				.catch((error) => {
 					console.error('There was an error!', error);
