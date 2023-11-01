@@ -2,6 +2,7 @@ package com.lastdance.ziip.schedule.service;
 
 import com.lastdance.ziip.diary.repository.DiaryRepository;
 import com.lastdance.ziip.diary.repository.entity.Diary;
+import com.lastdance.ziip.diary.repository.entity.DiaryComment;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.plan.repository.PlanRepository;
 import com.lastdance.ziip.plan.repository.entity.Plan;
@@ -94,7 +95,25 @@ public class CalenderServiceImpl implements CalenderService {
         LocalDateTime startOfDay = inputDate.atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1);
 
-        //List<Diary> diaries = diaryRepository.findAllByCreatedAtBetween(startOfDay, endOfDay);
+        List<Diary> diaries = diaryRepository.findAllByCreatedAtBetween(startOfDay, endOfDay);
+
+        List<CalenderDayDiaryResponseDto> calenderDayDiaryResponseDtos = new ArrayList<>();
+
+        for (Diary diary : diaries) {
+
+
+            List<DiaryComment> diaryComments = new ArrayList<>();
+
+
+            CalenderDayDiaryResponseDto calenderDayDiaryResponseDto = CalenderDayDiaryResponseDto.builder()
+                    .diaryId(diary.getId())
+                    .memberId(diary.getMember().getId())
+                    .memberName(diary.getMember().getName())
+                    .title(diary.getTitle())
+                    .content(diary.getContent())
+                    .calenderDayCommentResponseDtoList(null) // 이거 채우기
+                    .build();
+        }
 
 
 

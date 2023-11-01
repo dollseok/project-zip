@@ -15,7 +15,7 @@ public class CalenderDayDiaryResponseDto {
 
     private Long diaryId;
     private Long memberId;
-    private Long memberName;
+    private String memberName;
     private String title;
     private String content;
 
