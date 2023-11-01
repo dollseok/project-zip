@@ -11,8 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CalenderDayResponseDto {
+public class CalendarDayResponseDto {
 
-    private List<CalenderDayScheduleResponseDto> calenderDayScheduleResponseDtoList;
-    private List<CalenderDayDiaryResponseDto> calenderDayDiaryResponseDtos;
+    private List<CalendarDayScheduleResponseDto> calendarDayScheduleResponseDtoList;
+    private List<CalendarDayDiaryResponseDto> calendarDayDiaryResponseDtos;
 }

@@ -3,13 +3,11 @@ package com.lastdance.ziip.schedule.controller;
 import com.lastdance.ziip.global.util.ResponseTemplate;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.member.service.MemberService;
-import com.lastdance.ziip.schedule.dto.request.CalenderDayRequestDto;
-import com.lastdance.ziip.schedule.dto.response.CalenderDayResponseDto;
-import com.lastdance.ziip.schedule.dto.response.CalenderYearResponseDto;
-import com.lastdance.ziip.schedule.dto.response.ScheduleRegisterResponseDto;
-import com.lastdance.ziip.schedule.enums.CalenderResponseMessage;
-import com.lastdance.ziip.schedule.enums.ScheduleResponseMessage;
-import com.lastdance.ziip.schedule.service.CalenderService;
+import com.lastdance.ziip.schedule.dto.request.CalendarDayRequestDto;
+import com.lastdance.ziip.schedule.dto.response.CalendarDayResponseDto;
+import com.lastdance.ziip.schedule.dto.response.CalendarYearResponseDto;
+import com.lastdance.ziip.schedule.enums.CalendarResponseMessage;
+import com.lastdance.ziip.schedule.service.CalendarService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,20 +19,20 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Tag(name = "Calender", description = "캘린더 관련 API")
+@Tag(name = "Calendar", description = "캘린더 관련 API")
 @RestController
 @RequiredArgsConstructor
 @EnableWebMvc
 @Slf4j
-@RequestMapping("/api/calender")
-public class CalenderController {
+@RequestMapping("/api/calendar")
+public class CalendarController {
 
     private final MemberService memberService;
-    private final CalenderService calenderService;
+    private final CalendarService calendarService;
 
     @Operation(summary = "년도별 이슈 조회", description = "년도별 이슈 조회 API")
     @GetMapping("/year")
-    public ResponseEntity<ResponseTemplate<CalenderYearResponseDto>> yearCalender(HttpServletRequest httpServletRequest, @RequestParam(name = "year") int year) {
+    public ResponseEntity<ResponseTemplate<CalendarYearResponseDto>> yearCalendar(HttpServletRequest httpServletRequest, @RequestParam(name = "year") int year) {
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) {
@@ -43,12 +41,12 @@ public class CalenderController {
 
         Member findMember = memberService.findMemberByJwtToken(token);
 
-        CalenderYearResponseDto calenderYearResponseDto = calenderService.yearCalender(findMember, year);
+        CalendarYearResponseDto calendarYearResponseDto = calendarService.yearCalendar(findMember, year);
 
         return new ResponseEntity<>(
-                ResponseTemplate.<CalenderYearResponseDto>builder()
-                        .msg(year + CalenderResponseMessage.CALENDER_YEAR_SUCCESS.getMessage())
-                        .data(calenderYearResponseDto)
+                ResponseTemplate.<CalendarYearResponseDto>builder()
+                        .msg(year + CalendarResponseMessage.CALENDAR_YEAR_SUCCESS.getMessage())
+                        .data(calendarYearResponseDto)
                         .result(true)
                         .build(),
                 HttpStatus.OK);
@@ -56,7 +54,7 @@ public class CalenderController {
 
     @Operation(summary = "날짜 일정 조회", description = "날짜별 일정 , 계획 조회 API")
     @GetMapping("/day")
-    public ResponseEntity<ResponseTemplate<CalenderDayResponseDto>> dayCalender(HttpServletRequest httpServletRequest, @RequestBody CalenderDayRequestDto calenderDayRequestDto) {
+    public ResponseEntity<ResponseTemplate<CalendarDayResponseDto>> dayCalendar(HttpServletRequest httpServletRequest, @RequestBody CalendarDayRequestDto calendarDayRequestDto) {
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) {
@@ -65,9 +63,9 @@ public class CalenderController {
 
         Member findMember = memberService.findMemberByJwtToken(token);
 
-        CalenderDayResponseDto calenderDayResponseDto = calenderService.dayCalender(findMember, calenderDayRequestDto);
+        CalendarDayResponseDto calendarDayResponseDto = calendarService.dayCalendar(findMember, calendarDayRequestDto);
 
-        String[] datePart = calenderDayRequestDto.getTodayDate().split("-");
+        String[] datePart = calendarDayRequestDto.getTodayDate().split("-");
 
         String year = datePart[0];
         String month = datePart[1];
@@ -75,9 +73,9 @@ public class CalenderController {
 
 
         return new ResponseEntity<>(
-                ResponseTemplate.<CalenderDayResponseDto>builder()
-                        .msg(year + "년" + month + "월" + day + CalenderResponseMessage.CALENDER_DAY_SUCCESS.getMessage())
-                        .data(calenderDayResponseDto)
+                ResponseTemplate.<CalendarDayResponseDto>builder()
+                        .msg(year + "년" + month + "월" + day + CalendarResponseMessage.CALENDAR_DAY_SUCCESS.getMessage())
+                        .data(calendarDayResponseDto)
                         .result(true)
                         .build(),
                 HttpStatus.OK);

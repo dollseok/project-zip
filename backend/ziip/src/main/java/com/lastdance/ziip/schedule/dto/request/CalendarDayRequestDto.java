@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CalenderDayRequestDto {
+public class CalendarDayRequestDto {
 
     private String todayDate;
 
