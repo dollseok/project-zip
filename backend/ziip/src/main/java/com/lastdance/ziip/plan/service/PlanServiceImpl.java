@@ -5,11 +5,9 @@ import com.lastdance.ziip.member.repository.MemberRepository;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.plan.dto.request.PlanDeleteRequestDto;
 import com.lastdance.ziip.plan.dto.request.PlanModifyRequestDto;
+import com.lastdance.ziip.plan.dto.request.PlanStatusModifyRequestDto;
 import com.lastdance.ziip.plan.dto.request.PlanWriteRequestDto;
-import com.lastdance.ziip.plan.dto.response.PlanDeleteResponseDto;
-import com.lastdance.ziip.plan.dto.response.PlanDetailResponseDto;
-import com.lastdance.ziip.plan.dto.response.PlanModifyResponseDto;
-import com.lastdance.ziip.plan.dto.response.PlanWriteResponseDto;
+import com.lastdance.ziip.plan.dto.response.*;
 import com.lastdance.ziip.plan.enums.Code;
 import com.lastdance.ziip.plan.exception.validator.PlanValidator;
 import com.lastdance.ziip.plan.repository.PlanRepository;
@@ -119,6 +117,31 @@ public class PlanServiceImpl implements PlanService{
                 .build();
 
         return planDeleteResponseDto;
+    }
+
+    @Override
+    public PlanStatusModifyResponseDto modifyPlanStatus(Member member, PlanStatusModifyRequestDto planStatusModifyRequestDto) {
+
+        Optional<Plan> tmpPlan = planRepository.findById(planStatusModifyRequestDto.getPlanId());
+        planValidator.checkPlanExist(tmpPlan);
+        Plan plan = tmpPlan.get();
+
+        StatusCode statusCode = null;
+        long code = planStatusModifyRequestDto.getCode();
+
+        if(code == 0) statusCode = statusCodeRepository.findByCode(Code.Pending);
+        else if(code == 1) statusCode = statusCodeRepository.findByCode(Code.InProgress);
+        else if(code == 2) statusCode = statusCodeRepository.findByCode(Code.Completed);
+
+        plan.updateStatusCode(statusCode);
+
+        planRepository.save(plan);
+
+        PlanStatusModifyResponseDto planStatusModifyResponseDto = PlanStatusModifyResponseDto.builder()
+                .planId(planStatusModifyRequestDto.getPlanId())
+                .build();
+
+        return planStatusModifyResponseDto;
     }
 
 

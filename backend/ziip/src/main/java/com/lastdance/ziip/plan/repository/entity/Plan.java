@@ -42,4 +42,8 @@ public class Plan extends BaseEntity {
         this.member = member;
         this.title = planModifyRequestDto.getTitle();
     }
+
+    public void updateStatusCode(StatusCode statusCode){
+        this.statusCode = statusCode;
+    }
 }
