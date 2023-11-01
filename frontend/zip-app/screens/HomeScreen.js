@@ -51,7 +51,7 @@ export default function HomeScreen() {
 					borderColor: 'white', // 경계선 안보이게
 				},
 				tabBarActiveTintColor: 'black', // 탭 활성화 아이콘 색상
-				tabBarInactiveTintColor: 'rgba(0, 0, 0, 0.2)', // 탭 비활성화 아이콘 색상
+				tabBarInactiveTintColor: 'rgba(0, 0, 0, 0.15)', // 탭 비활성화 아이콘 색상
 				tabBarIcon: ({ focused, color, size }) => {
 					let iconName;
 
@@ -67,7 +67,7 @@ export default function HomeScreen() {
 						iconName = 'home';
 					}
 
-					return <Ionicons name={iconName} size={30} color={color} />;
+					return <Ionicons name={iconName} size={28} color={color} />;
 				},
 			})}
 		>
