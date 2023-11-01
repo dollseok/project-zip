@@ -1,7 +1,9 @@
 package com.lastdance.ziip.diary.controller;
 
+import com.lastdance.ziip.diary.dto.request.DiaryCommentDeleteRequestDto;
 import com.lastdance.ziip.diary.dto.request.DiaryCommentModifyRequestDto;
 import com.lastdance.ziip.diary.dto.request.DiaryCommentWriteRequestDto;
+import com.lastdance.ziip.diary.dto.response.DiaryCommentDeleteResponseDto;
 import com.lastdance.ziip.diary.dto.response.DiaryCommentModifyResponseDto;
 import com.lastdance.ziip.diary.dto.response.DiaryCommentWriteResponseDto;
 import com.lastdance.ziip.diary.enums.DiaryResponseMessage;
@@ -85,5 +87,24 @@ public class DiaryCommentController {
                     .build(), HttpStatus.OK);
     }
 
+    @Operation(summary = "일기 댓글 삭제", description = "일기 댓글 삭제 API")
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseTemplate<DiaryCommentDeleteResponseDto>> deleteDiaryComment(
+            HttpServletRequest httpServletRequest,
+            @RequestBody DiaryCommentDeleteRequestDto diaryCommentDeleteRequestDto){
 
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null){ return null; }
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        DiaryCommentDeleteResponseDto diaryCommentDeleteResponseDto= diaryCommentService.deleteDiaryComment(findMember, diaryCommentDeleteRequestDto);
+
+        return new ResponseEntity<>(
+            ResponseTemplate.<DiaryCommentDeleteResponseDto>builder()
+                    .msg(DiaryResponseMessage.DIARY_COMMENT_DELETE_SUCCESS.getMessage())
+                    .data(diaryCommentDeleteResponseDto)
+                    .result(true)
+                    .build(), HttpStatus.OK);
+    }
 }
