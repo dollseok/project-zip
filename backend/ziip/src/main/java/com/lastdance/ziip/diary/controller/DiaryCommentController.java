@@ -1,6 +1,8 @@
 package com.lastdance.ziip.diary.controller;
 
+import com.lastdance.ziip.diary.dto.request.DiaryCommentModifyRequestDto;
 import com.lastdance.ziip.diary.dto.request.DiaryCommentWriteRequestDto;
+import com.lastdance.ziip.diary.dto.response.DiaryCommentModifyResponseDto;
 import com.lastdance.ziip.diary.dto.response.DiaryCommentWriteResponseDto;
 import com.lastdance.ziip.diary.enums.DiaryResponseMessage;
 import com.lastdance.ziip.diary.service.DiaryCommentService;
@@ -14,10 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +32,11 @@ public class DiaryCommentController {
     private final MemberService memberService;
     private final DiaryCommentService diaryCommentService;
 
+    /**
+     * 일기 댓글 작성
+     * @param httpServletRequest 로그인한 유저의 Id
+     * @param diaryCommentWriteRequestDto memberId, diaryId, content
+     */
     @Operation(summary = "일기 댓글 작성", description = "일기 댓글 작성 API")
     @PostMapping("/write")
     public ResponseEntity<ResponseTemplate<DiaryCommentWriteResponseDto>> diaryCommentWrite(
@@ -55,4 +59,31 @@ public class DiaryCommentController {
                         .result(true)
                         .build(), HttpStatus.OK);
     }
+
+
+    @Operation(summary = "일기 댓글 수정", description = "일기 댓글 수정 API")
+    @PutMapping("/modify")
+    public ResponseEntity<ResponseTemplate<DiaryCommentModifyResponseDto>> modifyDiaryComment(
+            HttpServletRequest httpServletRequest,
+            @RequestBody DiaryCommentModifyRequestDto diaryCommentModifyRequestDto
+            ){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) {
+            return null;
+        }
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        DiaryCommentModifyResponseDto diaryCommentModifyResponseDto = diaryCommentService.modifyDiaryComment(findMember, diaryCommentModifyRequestDto);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<DiaryCommentModifyResponseDto>builder()
+                    .msg(DiaryResponseMessage.DIARY_COMMENT_MODIFY_SUCCESS.getMessage())
+                    .data(diaryCommentModifyResponseDto)
+                    .result(true)
+                    .build(), HttpStatus.OK);
+    }
+
+
 }
