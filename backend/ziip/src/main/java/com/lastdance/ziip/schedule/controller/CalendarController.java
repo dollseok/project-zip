@@ -54,7 +54,7 @@ public class CalendarController {
 
     @Operation(summary = "날짜 일정 조회", description = "날짜별 일정 , 계획 조회 API")
     @GetMapping("/day")
-    public ResponseEntity<ResponseTemplate<CalendarDayResponseDto>> dayCalender(HttpServletRequest httpServletRequest, @RequestBody CalendarDayRequestDto calendarDayRequestDto) {
+    public ResponseEntity<ResponseTemplate<CalendarDayResponseDto>> dayCalendar(HttpServletRequest httpServletRequest, @RequestBody CalendarDayRequestDto calendarDayRequestDto) {
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) {
