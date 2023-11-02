@@ -63,6 +63,11 @@ public class DiaryCommentController {
     }
 
 
+    /**
+     * 일기 댓글 수정
+     * @param httpServletRequest
+     * @param diaryCommentModifyRequestDto commentId, memberId , diaryId, content
+     */
     @Operation(summary = "일기 댓글 수정", description = "일기 댓글 수정 API")
     @PutMapping("/modify")
     public ResponseEntity<ResponseTemplate<DiaryCommentModifyResponseDto>> modifyDiaryComment(
@@ -87,6 +92,11 @@ public class DiaryCommentController {
                     .build(), HttpStatus.OK);
     }
 
+    /**
+     * 일기 댓글 삭제
+     * @param httpServletRequest
+     * @param diaryCommentDeleteRequestDto commentId
+     */
     @Operation(summary = "일기 댓글 삭제", description = "일기 댓글 삭제 API")
     @DeleteMapping("/delete")
     public ResponseEntity<ResponseTemplate<DiaryCommentDeleteResponseDto>> deleteDiaryComment(

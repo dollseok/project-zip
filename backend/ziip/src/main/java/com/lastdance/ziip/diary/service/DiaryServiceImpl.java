@@ -1,9 +1,9 @@
 package com.lastdance.ziip.diary.service;
 
 import com.lastdance.ziip.diary.dto.request.DiaryWriteRequestDto;
-import com.lastdance.ziip.diary.dto.response.DiaryListDetailResponseDto;
-import com.lastdance.ziip.diary.dto.response.DiaryListResponseDto;
-import com.lastdance.ziip.diary.dto.response.DiaryWriteResponseDto;
+import com.lastdance.ziip.diary.dto.response.*;
+import com.lastdance.ziip.diary.exception.validator.DiaryValidator;
+import com.lastdance.ziip.diary.repository.DiaryCommentRepository;
 import com.lastdance.ziip.diary.repository.DiaryPhotoRepository;
 import com.lastdance.ziip.diary.repository.DiaryRepository;
 import com.lastdance.ziip.diary.repository.EmotionRepository;
@@ -35,7 +35,9 @@ public class DiaryServiceImpl implements DiaryService{
     private final EmotionRepository emotionRepository;
     private final DiaryRepository diaryRepository;
     private final DiaryPhotoRepository diaryPhotoRepository;
+    private final DiaryCommentRepository diaryCommentRepository;
     private final S3Uploader s3Uploader;
+    private final DiaryValidator diaryValidator;
 
     @Override
     public DiaryWriteResponseDto writeDiary(Member findMember,
@@ -109,6 +111,50 @@ public class DiaryServiceImpl implements DiaryService{
         return DiaryListResponseDto.builder()
                 .diaryListDetailResponseList(diaryListDetailResponseDtos)
                 .build();
-    };
+    }
+
+    @Override
+    public DiaryDetailResponseDto getDiaryDetail(Member findMember, Long diaryId) {
+
+        Optional<Diary> tmpDiary = diaryRepository.findById(diaryId);
+        diaryValidator.checkDiaryExist(tmpDiary);
+        Diary diary = tmpDiary.get();
+
+        System.out.println(diary);
+
+        // 일기 사진 리스트
+        List<DiaryDetailPhotoResponseDto> diaryDetailPhotoResponseDtos =
+                diaryPhotoRepository.findAllByDiary(diary)
+                        .stream()
+                        .map(diaryPhoto -> DiaryDetailPhotoResponseDto.builder()
+                                .imgUrl(diaryPhoto.getImgUrl())
+                                .build())
+                        .collect(Collectors.toList());
+
+        // 댓글 리스트
+        List<DiaryDetailCommentResponseDto> diaryDetailCommentResponseDtos =
+                diaryCommentRepository.findAllByDiary(diary)
+                        .stream()
+                        .map(diaryComment -> DiaryDetailCommentResponseDto.builder()
+                                .commentId(diaryComment.getId())
+                                .name(diaryComment.getMember().getName())
+                                .content(diaryComment.getContent())
+                                .createdAt(diaryComment.getCreatedAt())
+                                .updatedAt(diaryComment.getUpdatedAt())
+                                .build())
+                        .collect(Collectors.toList());
+
+        return DiaryDetailResponseDto.builder()
+                .diaryId(diary.getId())
+                .name(diary.getMember().getName())
+                .title(diary.getTitle())
+                .content(diary.getContent())
+                .createdAt(diary.getCreatedAt())
+                .diaryPhotos(diaryDetailPhotoResponseDtos)
+                .diaryComments(diaryDetailCommentResponseDtos)
+                .build();
+    }
+
+    ;
 
 }

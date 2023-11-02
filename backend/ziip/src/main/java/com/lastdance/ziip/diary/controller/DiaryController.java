@@ -1,6 +1,7 @@
 package com.lastdance.ziip.diary.controller;
 
 import com.lastdance.ziip.diary.dto.request.DiaryWriteRequestDto;
+import com.lastdance.ziip.diary.dto.response.DiaryDetailResponseDto;
 import com.lastdance.ziip.diary.dto.response.DiaryListResponseDto;
 import com.lastdance.ziip.diary.dto.response.DiaryWriteResponseDto;
 import com.lastdance.ziip.diary.enums.DiaryResponseMessage;
@@ -95,4 +96,28 @@ public class DiaryController {
         );
     }
 
+
+    @Operation(summary = "일기 상세 조회", description = "일기 상세 조회 API, 댓글까지 한번에 조회")
+    @GetMapping("/detail")
+    public ResponseEntity<ResponseTemplate<DiaryDetailResponseDto>> diaryDetail(
+            HttpServletRequest httpServletRequest,
+            @RequestParam(name = "diaryId") Long diaryId){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) {
+            return null;
+        }
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        DiaryDetailResponseDto diaryDetailResponseDto = diaryService.getDiaryDetail(findMember, diaryId);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<DiaryDetailResponseDto>builder()
+                        .msg(DiaryResponseMessage.DIARY_DETAIL_SUCCESS.getMessage())
+                        .data(diaryDetailResponseDto)
+                        .result(true)
+                        .build(),HttpStatus.OK
+        );
+
+    }
 }
