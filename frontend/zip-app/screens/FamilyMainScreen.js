@@ -20,11 +20,12 @@ export default function FamilyMainScreen({ route }) {
 	const [diaries, setDiaries] = useState([]);
 	const [image, setImage] = useState([]);
 	const [isEditMode, setIsEditMode] = useState(false); // 편집 모드 상태
-	const [isFamilyNameEditMode, setIsFamilyNameEditMode] = useState(false); // 가족 이름 편집 모드 상태	
+	const [isFamilyNameEditMode, setIsFamilyNameEditMode] = useState(false); // 가족 이름 편집 모드 상태
 	const [isFamilyContentEditMode, setIsFamilyContentEditMode] = useState(false); // 가족 이름 편집 모드 상태
 	const [backgroundImageUri, setBackgroundImageUri] = useState(null);
 	const [modifiedFamilyName, setModifiedFamilyName] = useState([]);
 	const [modifiedFamilyContent, setModifiedFamilyContent] = useState([]);
+	const [familyUpdated, setFamilyUpdated] = useState(false);
 
 	// photo 입력받는 button을 눌렀을 때 실행되는 함수
 	const _handlePhotoBtnPress = async () => {
@@ -49,22 +50,23 @@ export default function FamilyMainScreen({ route }) {
 	};
 
 	const _uploadImage = async (uri) => {
-
 		const uriParts = uri.split('.');
 		const fileType = uriParts[uriParts.length - 1];
 
 		setImage({
 			uri: uri,
-			name: `photo.${fileType}`,
-			type: `image/${fileType}`,
+			// name: `photo.${fileType}`,
+			name: `photo.jpeg`,
+			// type: `image/${fileType}`,
+			type: `image/jpeg`,
 		});
 
-		console.log("수정할 배경 이미지 : ", image);
+		console.log('수정할 배경 이미지 : ', image);
 		setBackgroundImageUri(uri);
 	};
 
-	const modifyFamily = async () =>  {
-		console.log("modifyFamily 함수 시작!");
+	const modifyFamily = async () => {
+		console.log('modifyFamily 함수 시작!');
 
 		const formData = new FormData();
 
@@ -74,16 +76,14 @@ export default function FamilyMainScreen({ route }) {
 			content: modifiedFamilyContent,
 		};
 
-		formData.append(
-			'familyModifyRequest',
-			JSON.stringify(familyModifyRequest),
-		);
-
+		formData.append('familyModifyRequest', JSON.stringify(familyModifyRequest));
 
 		formData.append('file', {
-			uri: image.uri,
-			name: `photo.${image.fileType}`,
-			type: `image/${image.fileType}`,
+			uri: backgroundImageUri,
+			// name: `photo.${fileType}`,
+			name: `photo.jpeg`,
+			// type: `image/${fileType}`,
+			type: `image/jpeg`,
 		});
 
 		await axiosFileInstance
@@ -91,13 +91,16 @@ export default function FamilyMainScreen({ route }) {
 			.then((response) => {
 				console.log(response.data);
 				console.log('수정된 가족의 ID : ', response.data.data.familyId);
-				AsyncStorage.setItem('familyId', JSON.stringify(response.data.data.familyId));
-				// navigation.navigate('홈');
+				AsyncStorage.setItem(
+					'familyId',
+					JSON.stringify(response.data.data.familyId),
+				);
+				setFamilyUpdated(true); // 성공적으로 가족 정보가 수정되었다는 표시
 			})
 			.catch((error) => {
 				console.error('가족 등록 에러: ', error);
 			});
-	}
+	};
 
 	// onChangePhoto 함수 정의
 	const onChangePhoto = (photoUri) => {
@@ -131,11 +134,13 @@ export default function FamilyMainScreen({ route }) {
 				.then((response) => {
 					console.log('가족 정보 : ', response.data.data);
 					setFamily(response.data.data);
-
+					setModifiedFamilyName(response.data.data.familyName);
+					setModifiedFamilyContent(response.data.data.familyContent);
 					if (response.data.data.familyProfileImgUrl == null) {
-						setBackgroundImageUri('https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png');
-					}
-					else {
+						setBackgroundImageUri(
+							'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png',
+						);
+					} else {
 						setBackgroundImageUri(response.data.data.familyProfileImgUrl);
 					}
 				});
@@ -162,7 +167,12 @@ export default function FamilyMainScreen({ route }) {
 		}
 
 		fetchData();
-	}, []);
+
+		// 데이터 가져오기 작업이 끝난 후 familyUpdated를 다시 false로 설정
+		if (familyUpdated) {
+			setFamilyUpdated(false);
+		}
+	}, [familyUpdated]);
 
 	return (
 		<ImageBackground
