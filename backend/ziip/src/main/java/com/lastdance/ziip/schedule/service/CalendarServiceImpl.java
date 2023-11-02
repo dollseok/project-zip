@@ -136,7 +136,6 @@ public class CalendarServiceImpl implements CalendarService {
                 .memberId(plan.getMember().getId())
                 .statusCode(plan.getStatusCode().getId())
                 .title(plan.getTitle())
-                .content(plan.getContent())
                 .build();
     }
 
