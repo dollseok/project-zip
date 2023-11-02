@@ -15,15 +15,15 @@ import { format } from 'date-fns';
 import DatePicker from 'react-native-date-picker';
 
 export default function ScheduleCreate(props) {
-	// 제목 관련 설정
-	const [scheduleTitle, setScheduleTitle] = useState('');
+	// 일정 등록에 필요한 데이터
+	// axios 헤더에 accesstoken
+	// 가족 Id
+	const [scheduleTitle, setScheduleTitle] = useState(''); // 제목
+	const [startDate, setStartDate] = useState(new Date()); // 시작일
+	const [endDate, setEndDate] = useState(new Date()); // 종료일
 
-	// 시작/종료 일자 관련 설정
-	const [startDate, setStartDate] = useState(new Date());
-	const [endDate, setEndDate] = useState(new Date());
-
-	const [openPickStart, setOpenPickStart] = useState(false);
-	const [openPickEnd, setOpenPickEnd] = useState(false);
+	const [openPickStart, setOpenPickStart] = useState(false); // 시작일 모달 보여줄지 여부
+	const [openPickEnd, setOpenPickEnd] = useState(false); // 종료일 모달 보여줄지 여부
 
 	// 일정 등록창 모달 설정
 	const { createModalVisible, setCreateModalVisible } = props;

@@ -9,6 +9,8 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import { useState } from 'react';
+import PlanList from './plan/PlanList';
+import { Ionicons } from '@expo/vector-icons';
 
 // if (
 // 	Platform.OS === 'android' &&
@@ -28,10 +30,7 @@ export default function ScheduleItem({ schedule }) {
 	};
 
 	return (
-		<TouchableOpacity
-			style={[styles.eachItem, expanded ? styles.expandedItem : null]}
-			onPress={toggleExpanded}
-		>
+		<View style={[styles.eachItem, expanded ? styles.expandedItem : null]}>
 			<View
 				style={[
 					styles.eachSchedule,
@@ -40,8 +39,21 @@ export default function ScheduleItem({ schedule }) {
 				]}
 			>
 				{/* 일정 정보 */}
-				{expanded ? <Text>일정</Text> : null}
-				<View style={styles.scheduleInfo}>
+				{/* 일정 소제목과 수정 버튼 */}
+				{expanded ? (
+					<View style={styles.scheduleHeader}>
+						<View style={styles.scheduleSubTitle}>
+							<Text>일정</Text>
+						</View>
+						<TouchableOpacity>
+							<Text>수정</Text>
+						</TouchableOpacity>
+					</View>
+				) : null}
+				<TouchableOpacity
+					style={styles.scheduleInfo}
+					onPress={() => toggleExpanded()}
+				>
 					{/* 일자 */}
 					<View style={styles.scheduleDay}>
 						<View style={styles.dayText}>
@@ -57,33 +69,24 @@ export default function ScheduleItem({ schedule }) {
 					</View>
 					{/* 준비 상태 */}
 					<View style={styles.ready}>
-						<Text>준비중</Text>
-						<Text>준비완료</Text>
+						<View
+							style={{ flexDirection: 'row', gap: 3, alignItems: 'center' }}
+						>
+							<Ionicons name="checkbox-outline" size={16} color="black" />
+							<Text>준비중</Text>
+						</View>
+						<View
+							style={{ flexDirection: 'row', gap: 3, alignItems: 'center' }}
+						>
+							<Ionicons name="checkbox-outline" size={16} color="black" />
+							<Text>준비완료</Text>
+						</View>
 					</View>
-				</View>
+				</TouchableOpacity>
 				{/* 계획 목록 */}
-				{expanded ? (
-					<View style={styles.planInfo}>
-						{schedule.plan ? (
-							<FlatList
-								data={schedule.plan}
-								keyExtractor={(item) => item.planId.toString()}
-								renderItem={({ item }) => (
-									<View>
-										<Text>{item.title}</Text>
-										<Text>{item.planId}</Text>
-									</View>
-								)}
-							/>
-						) : (
-							<View>
-								<Text>아직 등록된 할 일이 없습니다.</Text>
-							</View>
-						)}
-					</View>
-				) : null}
+				{expanded ? <PlanList plan={schedule.plan} /> : null}
 			</View>
-		</TouchableOpacity>
+		</View>
 	);
 }
 
@@ -106,7 +109,7 @@ const styles = StyleSheet.create({
 	},
 	// 확장 되었을 때 스타일
 	expandedItem: {
-		height: 200,
+		height: 400,
 	},
 	shadowProps: {
 		// ios
@@ -124,6 +127,10 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'baseline',
 		gap: 3,
+	},
+	scheduleHeader: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
 	},
 	scheduleDay: {
 		flexDirection: 'row',
