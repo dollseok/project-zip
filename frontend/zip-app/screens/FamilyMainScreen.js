@@ -394,15 +394,27 @@ export default function FamilyMainScreen({ route }) {
 						style={[styles.modalContainer, { transform: [{ translateY }] }]}
 					>
 						<TouchableOpacity
-							style={{ marginTop: 30 }}
+							style={{ backgroundColor: 'black', paddingVertical: 20, paddingHorizontal: 100,
+							justifyContent: 'center', // 여기에 추가
+							alignItems: 'center',
+						 }}
 							onPress={() => _handlePhotoBtnPress('Background')}
 						>
-							<Text>앨범에서 사진 선택하기</Text>
+							<Text style={{}}>앨범에서 사진 선택하기</Text>
 						</TouchableOpacity>
-						<View style={{ borderBottomColor: 'black'}}>
-						</View>
+						<View
+							style={{
+								// borderBottomColor: 'grey',
+								backgroundColor: 'gray',
+								paddingHorizontal: '100%',
+								height: 1
+								// borderBottomWidth: 1,
+								// marginHorizontal: 20, // 좌우 마진을 조정하여 선의 길이를 조절
+							}}
+						/>
+
 						<TouchableOpacity
-							style={{}}
+							style={{ paddingVertical: 20, paddingHorizontal: 100 }}
 							onPress={() => _handlePhotoBtnPress('Background')}
 						>
 							<Text>기본 이미지로 변경하기</Text>
@@ -494,7 +506,7 @@ const styles = StyleSheet.create({
 		borderTopRightRadius: 20,
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		padding: 20,
+		// padding: 20,
 	},
 });
 
