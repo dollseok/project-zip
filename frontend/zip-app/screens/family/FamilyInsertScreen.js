@@ -47,44 +47,55 @@ export default function FamilyInsertScreen({ navigation }) {
 	// photo 입력받는 button을 눌렀을 때 실행되는 함수
 	const _handlePhotoBtnPress = async () => {
 		// image library 접근에 대한 허가 필요 없음
-		// ImagePicker를 이용해 Image형식의 파일을 가져온다
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			aspect: [1, 1],
-			quality: 1,
-		});
+		// 사용자의 갤러리 접근 권한 요청
+		const permissionResult =
+			await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-		console.log('선택한 이미지 URI : ', result.uri);
-		console.log('선택한 이미지 데이터 타입 : ', typeof result);
-		console.log('선택한 이미지 데이터 구조 : ', JSON.stringify(result, null, 2));
-		// cancelled가 아닐 때 가져온 사진의 주소로 onChangePhoto
-		if (!result.cancelled) {
-			await _uploadImage(result.uri);
-		} else {
-			return null;
+		if (permissionResult.granted === false) {
+			alert('갤러리 접근 권한이 필요합니다.');
+			return;
 		}
+
+		// 이미지 피커 런칭
+		const pickerResult = await ImagePicker.launchImageLibraryAsync();
+		if (pickerResult.cancelled === true) {
+			return;
+		}
+
+		// 선택된 이미지의 URI
+		const uri = pickerResult.uri;
+		return _uploadImage(uri);
 	};
 
 	const _uploadImage = async (uri) => {
-
-		const response = await fetch(uri);
-		const file = await response.blob();
-		console.log("파일 : ", file._data);
-
 		const formData = new FormData();
+
+		const uriParts = uri.split('.');
+		const fileType = uriParts[uriParts.length - 1];
 
 		const familyRegisterRequest = {
 			name: familyName,
 			content: familyMessage,
-			nickname: nickName
+			nickname: nickName,
 		};
 
-		// const segments = uri.split('/'); // '/' 문자를 기준으로 URI를 분할
-		// const fileName = segments[segments.length - 1]; // 배열의 마지막 요소가 파일 이름
+		formData.append(
+			'familyRegisterRequest',
+			JSON.stringify(familyRegisterRequest),
+		);
+
+		if (uri !== 'x') {
+			const uriParts = uri.split('.');
+			const fileType = uriParts[uriParts.length - 1];
 		
-		formData.append('familyRegisterRequest', JSON.stringify(familyRegisterRequest));
-		formData.append('file', file._data);
+			formData.append('file', {
+			  uri: uri,
+			  name: `photo.${fileType}`,
+			  type: `image/${fileType}`,
+			});
+		} else {
+			formData.append('file', null);
+		}
 
 		await axiosFileInstance
 			.post('/family/register', formData)
@@ -98,7 +109,6 @@ export default function FamilyInsertScreen({ navigation }) {
 				console.error('가족 등록 에러: ', error);
 			});
 	};
-
 
 	useEffect(() => {
 		const animate = () => {
@@ -202,7 +212,7 @@ export default function FamilyInsertScreen({ navigation }) {
 				) : (
 					<View style={styles.conditionalContent}>
 						<Text style={styles.familyText}>배경사진 업로드</Text>
-						<View style={styles.inputContainer}>
+						<View style={[styles.imageContainer, { alignItems: 'center' }]}>
 							<TouchableOpacity
 								onPress={_handlePhotoBtnPress}
 								disabled={!nickName}
@@ -215,6 +225,19 @@ export default function FamilyInsertScreen({ navigation }) {
 										backgroundColor: 'white',
 									}}
 								/>
+							</TouchableOpacity>
+							<TouchableOpacity
+								onPress={() => _uploadImage('x')}
+								style={[
+									styles.button,
+									{ marginTop: 30, backgroundColor: 'black' },
+								]}
+							>
+								<Text
+									style={{ color: 'white', fontWeight: 'bold', padding: 10 }}
+								>
+									이미지 생략
+								</Text>
 							</TouchableOpacity>
 						</View>
 					</View>
@@ -248,6 +271,11 @@ const styles = StyleSheet.create({
 	},
 	inputContainer: {
 		flexDirection: 'row',
+		alignItems: 'center',
+		marginTop: 30,
+	},
+	imageContainer: {
+		flexDirection: 'column',
 		alignItems: 'center',
 		marginTop: 30,
 	},
