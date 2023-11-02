@@ -20,6 +20,12 @@ public class DiaryValidator {
         }
     }
 
+    public void checkDiaryManager(Diary diary, Long memberId) {
+        if (diary.getMember().getId() != memberId) {
+            throw new NoMatchingManager("해당 일기의 작성자가 아닙니다.");
+        }
+    }
+
     public void checkDiaryCommentExist(Optional<DiaryComment> diaryComment){
         if (diaryComment.isEmpty()){
             throw new NoExistDiary("해당 댓글이 존재하지 않습니다.");
@@ -28,7 +34,7 @@ public class DiaryValidator {
 
     public void checkDiaryCommentManager(DiaryComment diaryComment, Long memberId) {
         if (diaryComment.getMember().getId() != memberId) {
-            throw new NoMatchingManager("해당 일기의 작성자가 아닙니다.");
+            throw new NoMatchingManager("해당 댓글의 작성자가 아닙니다.");
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.lastdance.ziip.diary.controller;
 
+import com.lastdance.ziip.diary.dto.request.DiaryDeleteRequestDto;
 import com.lastdance.ziip.diary.dto.request.DiaryWriteRequestDto;
+import com.lastdance.ziip.diary.dto.response.DiaryDeleteResponseDto;
 import com.lastdance.ziip.diary.dto.response.DiaryDetailResponseDto;
 import com.lastdance.ziip.diary.dto.response.DiaryListResponseDto;
 import com.lastdance.ziip.diary.dto.response.DiaryWriteResponseDto;
@@ -96,7 +98,11 @@ public class DiaryController {
         );
     }
 
-
+    /**
+     * 일기 상세 조회
+     * @param httpServletRequest 로그인한 유저의 Id
+     * @param diaryId
+     */
     @Operation(summary = "일기 상세 조회", description = "일기 상세 조회 API, 댓글까지 한번에 조회")
     @GetMapping("/detail")
     public ResponseEntity<ResponseTemplate<DiaryDetailResponseDto>> diaryDetail(
@@ -118,6 +124,29 @@ public class DiaryController {
                         .result(true)
                         .build(),HttpStatus.OK
         );
-
     }
+
+
+    @Operation(summary = "일기 삭제", description = "일기 삭제 API")
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseTemplate<DiaryDeleteResponseDto>> diaryDelete(
+            HttpServletRequest httpServletRequest,
+            @RequestBody DiaryDeleteRequestDto diaryDeleteRequestDto){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) {
+            return null;
+        }
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        DiaryDeleteResponseDto diaryDeleteResponseDto = diaryService.deleteDiary(findMember, diaryDeleteRequestDto);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<DiaryDeleteResponseDto>builder()
+                        .msg(DiaryResponseMessage.DIARY_DELETE_SUCCESS.getMessage())
+                        .data(diaryDeleteResponseDto)
+                        .result(true)
+                        .build(), HttpStatus.OK);
+    }
+
 }
