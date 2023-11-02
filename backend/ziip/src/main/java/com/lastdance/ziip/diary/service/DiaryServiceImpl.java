@@ -1,5 +1,6 @@
 package com.lastdance.ziip.diary.service;
 
+import com.lastdance.ziip.diary.dto.request.DiaryDeleteRequestDto;
 import com.lastdance.ziip.diary.dto.request.DiaryWriteRequestDto;
 import com.lastdance.ziip.diary.dto.response.*;
 import com.lastdance.ziip.diary.exception.validator.DiaryValidator;
@@ -120,8 +121,6 @@ public class DiaryServiceImpl implements DiaryService{
         diaryValidator.checkDiaryExist(tmpDiary);
         Diary diary = tmpDiary.get();
 
-        System.out.println(diary);
-
         // 일기 사진 리스트
         List<DiaryDetailPhotoResponseDto> diaryDetailPhotoResponseDtos =
                 diaryPhotoRepository.findAllByDiary(diary)
@@ -155,6 +154,22 @@ public class DiaryServiceImpl implements DiaryService{
                 .build();
     }
 
-    ;
+    @Override
+    public DiaryDeleteResponseDto deleteDiary(Member findMember, DiaryDeleteRequestDto diaryDeleteRequestDto) {
+
+        Optional<Diary> tmpDiary = diaryRepository.findById(diaryDeleteRequestDto.getDiaryId());
+        diaryValidator.checkDiaryExist(tmpDiary);
+        Diary diary = tmpDiary.get();
+
+        diaryValidator.checkDiaryManager(diary, findMember.getId());
+
+        diaryRepository.delete(diary);
+
+        DiaryDeleteResponseDto diaryDeleteResponseDto = DiaryDeleteResponseDto.builder()
+                .diaryId(diary.getId())
+                .build();
+
+        return diaryDeleteResponseDto;
+    }
 
 }
