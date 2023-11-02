@@ -62,6 +62,7 @@ export default function DiaryScreen() {
 					</TouchableOpacity>
 				</View>
 			</View>
+			{/* 연월 선택 모달 */}
 			<Modal visible={isModalVisible} animationType="slide">
 				<View style={styles.pickerContainer}>
 					<DatePicker
@@ -111,8 +112,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		gap: 11,
-		// borderColor: 'black',
-		// borderWidth: 1,
 	},
 	selectDateBtn: {
 		paddingLeft: 15,
