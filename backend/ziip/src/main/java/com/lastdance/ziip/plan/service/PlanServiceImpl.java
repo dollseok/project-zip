@@ -48,7 +48,6 @@ public class PlanServiceImpl implements PlanService{
                 .member(member)
                 .statusCode(statusCode)
                 .title(planWriteRequestDto.getTitle())
-                .content(planWriteRequestDto.getContent())
                 .build();
 
         Plan savedPlan = planRepository.save(plan);
