@@ -2,7 +2,7 @@ import { WebView } from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, View, Text, Button } from 'react-native';
 import axios from 'axios';
-import {REST_API_KEY, REDIRECT_URI} from '@env';
+import { REST_API_KEY, REDIRECT_URI } from '@env';
 
 // const REDIRECT_URI = 'https://auth.expo.io/@hyeongseoklee/zip-app'
 // const REDIRECT_URI = 'http://172.20.10.3:8081/auth/kakao/callback';
@@ -34,8 +34,8 @@ export default function KakaoLoginScreen({ navigation }) {
 
 			console.log(response.headers);
 
-			const accessToken = response.headers["authorization"];
-			const refreshToken = response.headers["authorization-refresh"];
+			const accessToken = response.headers['authorization'];
+			const refreshToken = response.headers['authorization-refresh'];
 
 			if (accessToken) {
 				// AsyncStorage에 accessToken 저장

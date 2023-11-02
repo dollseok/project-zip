@@ -84,11 +84,18 @@ export default function FamilyInsertScreen({ navigation }) {
 			JSON.stringify(familyRegisterRequest),
 		);
 
-		formData.append('file', {
-			uri: uri,
-			name: `photo.${fileType}`,
-			type: `image/${fileType}`,
-		});
+		if (uri !== 'x') {
+			const uriParts = uri.split('.');
+			const fileType = uriParts[uriParts.length - 1];
+		
+			formData.append('file', {
+			  uri: uri,
+			  name: `photo.${fileType}`,
+			  type: `image/${fileType}`,
+			});
+		} else {
+			formData.append('file', null);
+		}
 
 		await axiosFileInstance
 			.post('/family/register', formData)
@@ -205,7 +212,7 @@ export default function FamilyInsertScreen({ navigation }) {
 				) : (
 					<View style={styles.conditionalContent}>
 						<Text style={styles.familyText}>배경사진 업로드</Text>
-						<View style={styles.inputContainer}>
+						<View style={[styles.imageContainer, { alignItems: 'center' }]}>
 							<TouchableOpacity
 								onPress={_handlePhotoBtnPress}
 								disabled={!nickName}
@@ -218,6 +225,19 @@ export default function FamilyInsertScreen({ navigation }) {
 										backgroundColor: 'white',
 									}}
 								/>
+							</TouchableOpacity>
+							<TouchableOpacity
+								onPress={() => _uploadImage('x')}
+								style={[
+									styles.button,
+									{ marginTop: 30, backgroundColor: 'black' },
+								]}
+							>
+								<Text
+									style={{ color: 'white', fontWeight: 'bold', padding: 10 }}
+								>
+									이미지 생략
+								</Text>
 							</TouchableOpacity>
 						</View>
 					</View>
@@ -251,6 +271,11 @@ const styles = StyleSheet.create({
 	},
 	inputContainer: {
 		flexDirection: 'row',
+		alignItems: 'center',
+		marginTop: 30,
+	},
+	imageContainer: {
+		flexDirection: 'column',
 		alignItems: 'center',
 		marginTop: 30,
 	},

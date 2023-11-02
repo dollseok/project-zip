@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../util/Interceptor';
+import axiosFileInstance from '../util/FileInterceptor';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function FamilyMainScreen({ route }) {
@@ -19,8 +20,11 @@ export default function FamilyMainScreen({ route }) {
 	const [diaries, setDiaries] = useState([]);
 	const [image, setImage] = useState([]);
 	const [isEditMode, setIsEditMode] = useState(false); // 편집 모드 상태
-	const [isFamilyNameEditMode, setIsFamilyNameEditMode] = useState(false); // 가족 이름 편집 모드 상태
+	const [isFamilyNameEditMode, setIsFamilyNameEditMode] = useState(false); // 가족 이름 편집 모드 상태	
 	const [isFamilyContentEditMode, setIsFamilyContentEditMode] = useState(false); // 가족 이름 편집 모드 상태
+	const [backgroundImageUri, setBackgroundImageUri] = useState(null);
+	const [modifiedFamilyName, setModifiedFamilyName] = useState([]);
+	const [modifiedFamilyContent, setModifiedFamilyContent] = useState([]);
 
 	// photo 입력받는 button을 눌렀을 때 실행되는 함수
 	const _handlePhotoBtnPress = async () => {
@@ -45,16 +49,9 @@ export default function FamilyMainScreen({ route }) {
 	};
 
 	const _uploadImage = async (uri) => {
-		const formData = new FormData();
 
 		const uriParts = uri.split('.');
 		const fileType = uriParts[uriParts.length - 1];
-
-		// formData.append('file', {
-		// 	uri: uri,
-		// 	name: `photo.${fileType}`,
-		// 	type: `image/${fileType}`,
-		// });
 
 		setImage({
 			uri: uri,
@@ -62,19 +59,45 @@ export default function FamilyMainScreen({ route }) {
 			type: `image/${fileType}`,
 		});
 
-		console.log("수정할 배경 이미지 : ", formData.getAll('file'));
-		// await axiosFileInstance
-		// 	.post('/family/register', formData)
-		// 	.then((response) => {
-		// 		console.log(response.data);
-		// 		console.log('저장된 가족의 ID : ', response.data.data.id);
-		// 		AsyncStorage.setItem('familyId', JSON.stringify(response.data.data.id));
-		// 		navigation.navigate('홈');
-		// 	})
-		// 	.catch((error) => {
-		// 		console.error('가족 등록 에러: ', error);
-		// 	});
+		console.log("수정할 배경 이미지 : ", image);
+		setBackgroundImageUri(uri);
 	};
+
+	const modifyFamily = async () =>  {
+		console.log("modifyFamily 함수 시작!");
+
+		const formData = new FormData();
+
+		const familyModifyRequest = {
+			id: family.familyId,
+			name: modifiedFamilyName,
+			content: modifiedFamilyContent,
+		};
+
+		formData.append(
+			'familyModifyRequest',
+			JSON.stringify(familyModifyRequest),
+		);
+
+
+		formData.append('file', {
+			uri: image.uri,
+			name: `photo.${image.fileType}`,
+			type: `image/${image.fileType}`,
+		});
+
+		await axiosFileInstance
+			.post('/family/modify', formData)
+			.then((response) => {
+				console.log(response.data);
+				console.log('수정된 가족의 ID : ', response.data.data.familyId);
+				AsyncStorage.setItem('familyId', JSON.stringify(response.data.data.familyId));
+				// navigation.navigate('홈');
+			})
+			.catch((error) => {
+				console.error('가족 등록 에러: ', error);
+			});
+	}
 
 	// onChangePhoto 함수 정의
 	const onChangePhoto = (photoUri) => {
@@ -108,6 +131,13 @@ export default function FamilyMainScreen({ route }) {
 				.then((response) => {
 					console.log('가족 정보 : ', response.data.data);
 					setFamily(response.data.data);
+
+					if (response.data.data.familyProfileImgUrl == null) {
+						setBackgroundImageUri('https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png');
+					}
+					else {
+						setBackgroundImageUri(response.data.data.familyProfileImgUrl);
+					}
 				});
 
 			axiosInstance
@@ -136,7 +166,7 @@ export default function FamilyMainScreen({ route }) {
 
 	return (
 		<ImageBackground
-			source={{ uri: family.familyProfileImgUrl }}
+			source={{ uri: backgroundImageUri }}
 			style={styles.container}
 			resizeMode="cover"
 		>
@@ -148,6 +178,7 @@ export default function FamilyMainScreen({ route }) {
 						</TouchableOpacity>
 						<TouchableOpacity
 							onPress={() => {
+								modifyFamily();
 								setIsEditMode(false);
 								setIsFamilyNameEditMode(false);
 								setIsFamilyContentEditMode(false);
@@ -188,7 +219,7 @@ export default function FamilyMainScreen({ route }) {
 						defaultValue={family.familyName}
 						editable={isFamilyNameEditMode} // 편집 모드가 활성화되면 편집 가능하게 설정
 						onChangeText={(text) => {
-							// 텍스트 변경을 처리하는 코드
+							setModifiedFamilyName(text);
 						}}
 						autoFocus={isFamilyNameEditMode} // 편집 모드가 활성화되면 자동으로 포커스를 설정하여 키보드를 나타나게 함
 					/>
@@ -230,7 +261,7 @@ export default function FamilyMainScreen({ route }) {
 						defaultValue={family.familyContent}
 						editable={isFamilyContentEditMode} // 편집 모드가 활성화되면 편집 가능하게 설정
 						onChangeText={(text) => {
-							// 텍스트 변경을 처리하는 코드
+							setModifiedFamilyContent(text);
 						}}
 						autoFocus={isFamilyContentEditMode} // 편집 모드가 활성화되면 자동으로 포커스를 설정하여 키보드를 나타나게 함
 					/>
