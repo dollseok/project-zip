@@ -48,7 +48,6 @@ public class PlanServiceImpl implements PlanService{
                 .member(member)
                 .statusCode(statusCode)
                 .title(planWriteRequestDto.getTitle())
-                .content(planWriteRequestDto.getContent())
                 .build();
 
         Plan savedPlan = planRepository.save(plan);
@@ -72,7 +71,7 @@ public class PlanServiceImpl implements PlanService{
         PlanDetailResponseDto planDetailResponseDto = PlanDetailResponseDto.builder()
                 .planId(planId)
                 .memberId(plan.getMember().getId())
-                .content(plan.getContent())
+//                .content(plan.getContent())
                 .createdAt(plan.getCreatedAt())
                 .updatedAt(plan.getUpdatedAt())
                 .build();

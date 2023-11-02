@@ -13,5 +13,4 @@ public class PlanWriteRequestDto {
     private Long scheduleId;
     private Long memberId;
     private String title;
-    private String content;
 }
