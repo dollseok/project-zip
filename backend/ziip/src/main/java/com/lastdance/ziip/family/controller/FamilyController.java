@@ -51,8 +51,6 @@ public class FamilyController {
         ObjectMapper mapper = new ObjectMapper();
         FamilyRegisterRequestDto familyRegisterRequest = mapper.readValue(jsonString, FamilyRegisterRequestDto.class);
 
-        System.out.println(file.getName());
-
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) {
             return null;
@@ -168,7 +166,7 @@ public class FamilyController {
     }
 
     @Operation(summary = "가족 정보 수정", description = "가족의 정보 수정하는 API")
-    @GetMapping("/modify")
+    @PostMapping("/modify")
     public ResponseEntity<ResponseTemplate<FamilyModifyResponseDto>> modifyFamily(
         HttpServletRequest httpServletRequest,
         @RequestPart(name = "familyModifyRequest") String jsonString,

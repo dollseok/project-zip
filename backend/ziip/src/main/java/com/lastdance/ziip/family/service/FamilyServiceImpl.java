@@ -48,7 +48,7 @@ public class FamilyServiceImpl implements FamilyService {
         String code = String.valueOf(UUID.randomUUID());
 
         // 이미지 등록 안했을 때
-        if(file.isEmpty()){
+        if(file == null){
             Family family = Family.builder()
                     .name(familyRegisterRequest.getName())
                     .content(familyRegisterRequest.getContent())
