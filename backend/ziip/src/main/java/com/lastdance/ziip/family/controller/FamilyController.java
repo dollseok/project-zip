@@ -2,11 +2,13 @@ package com.lastdance.ziip.family.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lastdance.ziip.family.dto.request.FamilyModifyReqeustDto;
 import com.lastdance.ziip.family.dto.request.FamilyNickNameRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterRequestDto;
 import com.lastdance.ziip.family.dto.response.FamilyChoiceResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyListResponseDto;
+import com.lastdance.ziip.family.dto.response.FamilyModifyResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyNickNameResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterAcceptResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterResponseDto;
@@ -161,6 +163,34 @@ public class FamilyController {
                         .result(true)
                         .build(),
                 HttpStatus.OK);
+    }
+
+    @Operation(summary = "가족 정보 수정", description = "가족의 정보 수정하는 API")
+    @PostMapping("/modify")
+    public ResponseEntity<ResponseTemplate<FamilyModifyResponseDto>> modifyFamily(
+        HttpServletRequest httpServletRequest,
+        @RequestPart(name = "familyModifyRequest") String jsonString,
+        @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        FamilyModifyReqeustDto familyRegisterRequest = mapper.readValue(jsonString, FamilyModifyReqeustDto.class);
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) {
+            return null;
+        }
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        FamilyModifyResponseDto familyModifyResponse = familyService.modifyFamily(findMember, familyRegisterRequest, file);
+
+        return new ResponseEntity<>(
+            ResponseTemplate.<FamilyModifyResponseDto>builder()
+                .msg(FamilyResponseMessage.FAMILY_MODIFY_SUCCESS.getMessage())
+                .data(familyModifyResponse)
+                .result(true)
+                .build(),
+            HttpStatus.OK);
     }
 
 

@@ -1,11 +1,13 @@
 package com.lastdance.ziip.family.service;
 
+import com.lastdance.ziip.family.dto.request.FamilyModifyReqeustDto;
 import com.lastdance.ziip.family.dto.request.FamilyNickNameRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterRequestDto;
 import com.lastdance.ziip.family.dto.response.FamilyChoiceResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyListDetailResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyListResponseDto;
+import com.lastdance.ziip.family.dto.response.FamilyModifyResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyNickNameResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterAcceptResponseDto;
 import com.lastdance.ziip.family.dto.response.FamilyRegisterResponseDto;
@@ -46,7 +48,7 @@ public class FamilyServiceImpl implements FamilyService {
         String code = String.valueOf(UUID.randomUUID());
 
         // 이미지 등록 안했을 때
-        if(file.isEmpty()){
+        if(file == null){
             Family family = Family.builder()
                     .name(familyRegisterRequest.getName())
                     .content(familyRegisterRequest.getContent())
@@ -179,6 +181,34 @@ public class FamilyServiceImpl implements FamilyService {
                 .build();
 
         return familyChoiceResponseDto;
+    }
+
+    @Override
+    public FamilyModifyResponseDto modifyFamily(Member findMember, FamilyModifyReqeustDto familyModifyReqeustDto,
+        MultipartFile file) throws IOException {
+
+        String fileUrl = s3Uploader.upload(file, "family");
+        String originalName = file.getOriginalFilename();
+
+        FileDto newfileDto = FileDto.builder()
+            .fileOriginalName(originalName)
+            .filePath(fileUrl)
+            .build();
+
+        Optional<Family> family = familyRepository.findById(familyModifyReqeustDto.getId());
+
+        Family modifiedFamily = Family.builder()
+            .id(family.get().getId())
+            .name(familyModifyReqeustDto.getName())
+            .content(familyModifyReqeustDto.getContent())
+            .code(family.get().getCode())
+            .profileImgName(newfileDto.getFileOriginalName())
+            .profileImgUrl(newfileDto.getFilePath())
+            .build();
+
+        familyRepository.save(modifiedFamily);
+
+        return new FamilyModifyResponseDto(modifiedFamily.getId());
     }
 
 }
