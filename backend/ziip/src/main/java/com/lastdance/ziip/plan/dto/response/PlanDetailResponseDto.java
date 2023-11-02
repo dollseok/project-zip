@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class PlanDetailResponseDto {
     private Long planId;
     private Long memberId;
-    private String content;
+//    private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

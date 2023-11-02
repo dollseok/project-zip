@@ -36,7 +36,7 @@ public class Plan extends BaseEntity {
     // 제목
     private String title;
     // 메모
-    private String content;
+//    private String content;
 
     public void update(PlanModifyRequestDto planModifyRequestDto, Member member){
         this.member = member;
