@@ -20,11 +20,11 @@ export default function FamilySelectScreen({ navigation }) {
 		outputRange: ['-15deg', '0deg'],
 	});
 
-  const navigateToFamilySelection = (familyId) => {
-    console.log("선택한 가족 ID : ", familyId);
-	AsyncStorage.setItem('familyId', JSON.stringify(familyId));
-    navigation.navigate("홈");
-  };
+	const navigateToFamilySelection = (familyId) => {
+		console.log('선택한 가족 ID : ', familyId);
+		AsyncStorage.setItem('familyId', JSON.stringify(familyId));
+		navigation.navigate('홈');
+	};
 
 	useEffect(() => {
 		const animate = () => {
@@ -68,14 +68,41 @@ export default function FamilySelectScreen({ navigation }) {
 			>
 				zip
 			</Animated.Text>
+			{/* 
+			flex: 1,
+    // Align child to the right
+    justifyContent: 'flex-end', */}
 
 			<View style={styles.conditionalContent}>
+				<View
+					style={[
+						{ alignSelf: 'stretch', alignSelf: 'flex-end', marginRight: 20 },
+					]}
+				>
+					<TouchableOpacity
+						style={[
+							{
+								backgroundColor: '#000', // 검은색 배경
+								paddingHorizontal: 20,
+								paddingVertical: 10,
+								borderRadius: 20,
+							},
+						]}
+						onPress={() => {
+							navigation.navigate('가족코드 입력');
+						}}
+					>
+						<Text style={[{ color: '#FFF', }]}>초대코드 입력</Text>
+					</TouchableOpacity>
+				</View>
 				{familyList && familyList.length > 0 ? (
 					// familyList가 있는 경우
 					<FlatList
 						data={familyList}
 						renderItem={({ item }) => (
-							<TouchableOpacity onPress={() => navigateToFamilySelection(item.id)}>
+							<TouchableOpacity
+								onPress={() => navigateToFamilySelection(item.id)}
+							>
 								<Text style={styles.familyText}>{item.name}</Text>
 							</TouchableOpacity>
 						)}
@@ -116,7 +143,7 @@ const styles = StyleSheet.create({
 	familyText: {
 		fontSize: 30,
 		fontWeight: 'bold',
-		marginTop: 20
+		marginTop: 20,
 	},
 	plusButton: {
 		fontSize: 30,
