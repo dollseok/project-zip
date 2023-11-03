@@ -5,6 +5,7 @@ import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.member.service.MemberService;
 import com.lastdance.ziip.schedule.dto.request.CalendarDayRequestDto;
 import com.lastdance.ziip.schedule.dto.response.CalendarDayResponseDto;
+import com.lastdance.ziip.schedule.dto.response.CalendarMonthResponseDto;
 import com.lastdance.ziip.schedule.dto.response.CalendarYearResponseDto;
 import com.lastdance.ziip.schedule.enums.CalendarResponseMessage;
 import com.lastdance.ziip.schedule.service.CalendarService;
@@ -80,4 +81,30 @@ public class CalendarController {
                         .build(),
                 HttpStatus.OK);
     }
+
+    @Operation(summary = "월별 일정 조회", description = "월별 일정 , 계획, 일기 조회 API")
+    @GetMapping("/month")
+    public ResponseEntity<ResponseTemplate<CalendarMonthResponseDto>> monthCalendar(HttpServletRequest httpServletRequest, @RequestParam(name = "year") int year, @RequestParam(name = "month") int month) {
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) {
+            return null;
+        }
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        CalendarMonthResponseDto calendarMonthResponseDto = calendarService.monthCalendar(findMember, year, month);
+
+
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<CalendarMonthResponseDto>builder()
+                        .msg(year + "년" + month + "월" + " " +  CalendarResponseMessage.CALENDAR_MONTH_SUCCESS.getMessage())
+                        .data(calendarMonthResponseDto)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+    }
+
+
 }

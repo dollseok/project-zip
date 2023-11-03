@@ -4,6 +4,7 @@ import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.schedule.repository.entity.Schedule;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +15,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Query
     List<Schedule> findAllByFamily(Optional<Family> family);
 
     List<Schedule> findAllByStartDate(LocalDate todayDateAsLocalDate);
+
+    List<Schedule> findAllByStartDateBetween(LocalDate startDate, LocalDate endDate);
+
 }
