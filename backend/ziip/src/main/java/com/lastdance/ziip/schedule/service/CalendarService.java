@@ -9,7 +9,7 @@ import com.lastdance.ziip.schedule.dto.response.CalendarYearResponseDto;
 public interface CalendarService {
     CalendarYearResponseDto yearCalendar(Member findMember, int year);
 
-    CalendarDayResponseDto dayCalendar(Member findMember, CalendarDayRequestDto calendarDayRequestDto);
+    CalendarDayResponseDto dayCalendar(Member findMember, String todayDate);
 
     CalendarMonthResponseDto monthCalendar(Member findMember, int year, int month);
 }

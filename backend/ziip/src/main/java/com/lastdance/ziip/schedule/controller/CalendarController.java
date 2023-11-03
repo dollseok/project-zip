@@ -55,7 +55,7 @@ public class CalendarController {
 
     @Operation(summary = "날짜 일정 조회", description = "날짜별 일정 , 계획 조회 API")
     @GetMapping("/day")
-    public ResponseEntity<ResponseTemplate<CalendarDayResponseDto>> dayCalendar(HttpServletRequest httpServletRequest, @RequestBody CalendarDayRequestDto calendarDayRequestDto) {
+    public ResponseEntity<ResponseTemplate<CalendarDayResponseDto>> dayCalendar(HttpServletRequest httpServletRequest, @RequestParam(name = "todayDate") String todayDate ) {
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) {
@@ -64,9 +64,9 @@ public class CalendarController {
 
         Member findMember = memberService.findMemberByJwtToken(token);
 
-        CalendarDayResponseDto calendarDayResponseDto = calendarService.dayCalendar(findMember, calendarDayRequestDto);
+        CalendarDayResponseDto calendarDayResponseDto = calendarService.dayCalendar(findMember, todayDate);
 
-        String[] datePart = calendarDayRequestDto.getTodayDate().split("-");
+        String[] datePart = todayDate.split("-");
 
         String year = datePart[0];
         String month = datePart[1];
