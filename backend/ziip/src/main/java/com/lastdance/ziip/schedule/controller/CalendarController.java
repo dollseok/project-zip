@@ -93,13 +93,13 @@ public class CalendarController {
 
         Member findMember = memberService.findMemberByJwtToken(token);
 
-        CalendarMonthResponseDto calendarMonthResponseDto = calendarService.dayCalendar(findMember, calendarDayRequestDto);
+        CalendarMonthResponseDto calendarMonthResponseDto = calendarService.monthCalendar(findMember, year, month);
 
 
 
         return new ResponseEntity<>(
                 ResponseTemplate.<CalendarMonthResponseDto>builder()
-                        .msg(year + "년" + month + "월" + CalendarResponseMessage.CALENDAR_MONTH_SUCCESS.getMessage())
+                        .msg(year + "년" + month + "월" + " " +  CalendarResponseMessage.CALENDAR_MONTH_SUCCESS.getMessage())
                         .data(calendarMonthResponseDto)
                         .result(true)
                         .build(),

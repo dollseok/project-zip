@@ -111,6 +111,57 @@ public class CalendarServiceImpl implements CalendarService {
         return calendarDayResponseDto;
     }
 
+    @Override
+    public CalendarMonthResponseDto monthCalendar(Member findMember, int year, int month) {
+        // 해당 월의 시작 날짜와 마지막 날짜 계산
+        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        LocalDate endOfMonth = startOfMonth.plusMonths(1).minusDays(1);
+
+        // 해당 월의 스케줄 조회 및 스케줄의 플랜 조회
+        List<CalendarMonthScheduleResponseDto> calendarMonthScheduleResponseDtoList =
+                scheduleRepository.findAllByStartDateBetween(startOfMonth, endOfMonth)
+                        .stream()
+                        .flatMap(schedule -> planRepository.findAllBySchedule(schedule).stream())
+                        .map(plan -> CalendarMonthScheduleResponseDto.builder()
+                                .planId(plan.getId())
+                                .name(plan.getTitle())
+                                .build())
+                        .collect(Collectors.toList());
+
+        // 해당 월의 다이어리 조회 및 다이어리의 코멘트 조회
+        List<CalendarMonthDiaryResponseDto> calendarMonthDiaryResponseDtos =
+                diaryRepository.findAllByCreatedAtBetween(startOfMonth.atStartOfDay(), endOfMonth.atTime(23, 59, 59))
+                        .stream()
+                        .map(diary -> {
+                            List<CalendarMonthCommentResponseDto> calendarMonthCommentResponseDtoList =
+                                    diaryCommentRepository.findAllByDiary(diary)
+                                            .stream()
+                                            .map(diaryComment -> CalendarMonthCommentResponseDto.builder()
+                                                    .memberId(diaryComment.getMember().getId())
+                                                    .profileImgUrl(diaryComment.getMember().getProfileImgUrl())
+                                                    .content(diaryComment.getContent())
+                                                    .build())
+                                            .collect(Collectors.toList());
+
+                            return CalendarMonthDiaryResponseDto.builder()
+                                    .diaryId(diary.getId())
+                                    .memberId(diary.getMember().getId())
+                                    .memberName(diary.getMember().getName())
+                                    .title(diary.getTitle())
+                                    .content(diary.getContent())
+                                    .calendarMonthCommentResponseDtoList(calendarMonthCommentResponseDtoList)
+                                    .build();
+                        })
+                        .collect(Collectors.toList());
+
+        // Build response
+        CalendarMonthResponseDto calendarMonthResponseDto = CalendarMonthResponseDto.builder()
+                .calendarMonthScheduleResponseDtoList(calendarMonthScheduleResponseDtoList)
+                .calendarMonthDiaryResponseDtos(calendarMonthDiaryResponseDtos)
+                .build();
+
+        return calendarMonthResponseDto;
+    }
 
     private CalendarYearScheduleResponseDto toDto(Schedule schedule) {
 

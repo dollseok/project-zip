@@ -10,4 +10,8 @@ import java.util.Optional;
 public interface PlanRepository extends JpaRepository<Plan, Long> {
 
     List<Plan> findAllBySchedule(Optional<Schedule> schedule);
+
+    List<Plan> findAllBySchedule(Schedule schedule);
 }
+
+
