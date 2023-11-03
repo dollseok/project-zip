@@ -58,6 +58,9 @@ public class FamilyController {
 
         Member findMember = memberService.findMemberByJwtToken(token);
 
+        System.out.println("회원 정보 : " + familyRegisterRequest.toString());
+        System.out.println("회원 이름 : " + findMember.getName());
+
         FamilyRegisterResponseDto familyRegisterResponseDto = familyService.registFamily(findMember,
                 familyRegisterRequest, file);
 

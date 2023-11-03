@@ -1,6 +1,7 @@
 package com.lastdance.ziip.member.service;
 
 import com.lastdance.ziip.diary.repository.DiaryRepository;
+import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.global.auth.jwt.JwtTokenProvider;
 import com.lastdance.ziip.global.auth.oauth2.kakao.KakaoMemberDto;
 import com.lastdance.ziip.global.auth.oauth2.kakao.KakaoOAuth2;
@@ -331,8 +332,49 @@ public class MemberServiceImpl implements MemberService {
                 .message("사용자 정보를 수정하였습니다")
                 .data(newMember)
                 .build();
+    }
 
+    @Transactional
+    public BaseResponseDto updateMemberProfileImage(Member findMember, MultipartFile file) throws IOException {
 
+        if (file == null) {
+            Member modifyMember = Member.builder()
+                .id(findMember.getId())
+                .email(findMember.getEmail())
+                .gender(findMember.getGender())
+                .name("")
+                .profileImgName(null)
+                .profileImgUrl(null)
+                .socialId(findMember.getSocialId())
+                .socialType(SocialType.KAKAO)
+                .role(Role.USER)
+                .build();
+
+            Member saveMember = memberRepository.save(modifyMember);
+        } else {
+            String fileUrl = s3Uploader.upload(file, "member");
+            String originalName = file.getOriginalFilename();
+
+            Member modifyMember = Member.builder()
+                .id(findMember.getId())
+                .email(findMember.getEmail())
+                .gender(findMember.getGender())
+                .name("")
+                .profileImgName(originalName)
+                .profileImgUrl(fileUrl)
+                .socialId(findMember.getSocialId())
+                .socialType(SocialType.KAKAO)
+                .role(Role.USER)
+                .build();
+
+            Member saveMember = memberRepository.save(modifyMember);
+        }
+
+        return BaseResponseDto.builder()
+            .success(true)
+            .message("사용자 프로필 사진을 수정하였습니다")
+            .data(findMember.getId())
+            .build();
     }
 
     @Transactional
