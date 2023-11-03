@@ -14,4 +14,6 @@ public interface FamilyMemberRepository extends JpaRepository<FamilyMember, Long
     FamilyMember findByMemberAndFamily(Member findMember, Long familyId);
 
     FamilyMember findByMemberAndFamilyId(Member findMember, Long familyId);
+
+    List<FamilyMember> findByFamily(Family family);
 }

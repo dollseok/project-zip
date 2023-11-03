@@ -4,13 +4,7 @@ import com.lastdance.ziip.family.dto.request.FamilyModifyReqeustDto;
 import com.lastdance.ziip.family.dto.request.FamilyNickNameRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterRequestDto;
-import com.lastdance.ziip.family.dto.response.FamilyChoiceResponseDto;
-import com.lastdance.ziip.family.dto.response.FamilyListDetailResponseDto;
-import com.lastdance.ziip.family.dto.response.FamilyListResponseDto;
-import com.lastdance.ziip.family.dto.response.FamilyModifyResponseDto;
-import com.lastdance.ziip.family.dto.response.FamilyNickNameResponseDto;
-import com.lastdance.ziip.family.dto.response.FamilyRegisterAcceptResponseDto;
-import com.lastdance.ziip.family.dto.response.FamilyRegisterResponseDto;
+import com.lastdance.ziip.family.dto.response.*;
 import com.lastdance.ziip.family.exception.MemberAlreadyRegisteredInFamilyException;
 import com.lastdance.ziip.family.repository.FamilyMemberRepository;
 import com.lastdance.ziip.family.repository.FamilyRepository;
@@ -209,6 +203,24 @@ public class FamilyServiceImpl implements FamilyService {
         familyRepository.save(modifiedFamily);
 
         return new FamilyModifyResponseDto(modifiedFamily.getId());
+    }
+
+    @Override
+    public FamilyMemberResponseDto getFamilyMember(Member findMember, long familyId) {
+
+        Optional<Family> family = familyRepository.findById(familyId);
+        List<FamilyMember> familyMemberList = familyMemberRepository.findByFamily(family.get());
+
+        List<FamilyMemberDetailResponseDto> familyMemberDetailResponseDtoList = familyMemberList.stream()
+                .map(familyMember -> FamilyMemberDetailResponseDto.builder()
+                        .memberId(familyMember.getMember().getId())
+                        .nickname(familyMember.getNickname())
+                        .build())
+                .collect(Collectors.toList());
+
+        return FamilyMemberResponseDto.builder()
+                .familyMemberDetailResponseDtoList(familyMemberDetailResponseDtoList)
+                .build();
     }
 
 }
