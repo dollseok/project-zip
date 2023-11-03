@@ -23,6 +23,7 @@ public interface MemberService {
     BaseResponseDto updateMemberInfo(Long memberId, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto, Member findMember, MultipartFile file) throws IOException;
 
     BaseResponseDto updateNickname(String nickname, Member findMember);
+    BaseResponseDto updateMemberProfileImage(Member findMember, MultipartFile file) throws IOException;
 
     BaseResponseDto validNickname(String nickname, Member findMember);
 //

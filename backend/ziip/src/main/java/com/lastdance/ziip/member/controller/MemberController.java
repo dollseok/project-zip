@@ -110,9 +110,9 @@ public class MemberController {
             , HttpServletRequest httpServletRequest) throws IOException {
 
         if (memberInfoUpdateRequestDto != null) {
-
             memberInfoUpdateRequestDto.setFile(file);
         }
+
         String token = httpServletRequest.getHeader("Authorization");
         Member findMember = memberService.findMemberByJwtToken(token);
 
@@ -187,6 +187,17 @@ public class MemberController {
                         .data(memberAllInfoResponse)
                         .build(),
                 HttpStatus.OK);
+    }
+
+    @Operation(summary = "멤버 프로필사진만 수정", description = "프로필사진 수정")
+    @PutMapping("/profile")
+    private BaseResponseDto updateMemberProfileImage(@RequestParam(value = "file", required = false) MultipartFile file
+        , HttpServletRequest httpServletRequest) throws IOException {
+
+        String token = httpServletRequest.getHeader("Authorization");
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        return memberService.updateMemberProfileImage(findMember, file);
     }
 
 
