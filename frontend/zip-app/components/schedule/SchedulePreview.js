@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import {
 	View,
 	StyleSheet,
@@ -10,9 +10,31 @@ import {
 	Dimensions,
 	PanResponder,
 } from 'react-native';
+import axiosInstance from '../../util/Interceptor';
 
 export default function SchedulePreview(props) {
 	const { modalVisible, setModalVisible, selectedDate, navigation } = props;
+	console.log('캘린더에서 선택한 날짜: ', selectedDate);
+	// 선택한 날의 일정 정보
+	const [todaySchedule, setTodaySchedule] = useState([]);
+
+	// const getTodaySchedule = (today) => {
+	// 	console.log('선택한 날짜: ', today);
+	// 	axiosInstance
+	// 		.get(`/calendar/day`, {
+	// 			todayDate: today,
+	// 		})
+	// 		.then((res) => {
+	// 			console.log('선택한 날의 일정 정보', res);
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 		});
+	// };
+
+	// getTodaySchedule(selectedDate);
+
+	// 모달 관련 설정
 	const screenHeight = Dimensions.get('screen').height;
 	const panY = useRef(new Animated.Value(screenHeight)).current;
 	const translateY = panY.interpolate({

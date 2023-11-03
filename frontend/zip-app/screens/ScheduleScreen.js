@@ -89,7 +89,7 @@ export default function ScheduleScreen({ route, navigation }) {
 				<AntDesign name="plus" size={24} color="black" />
 			</TouchableOpacity>
 			{/* 일정 리스트 */}
-			<ScheduleList></ScheduleList>
+			<ScheduleList />
 			<ScheduleCreate
 				createModalVisible={createModalVisible}
 				setCreateModalVisible={setCreateModalVisible}

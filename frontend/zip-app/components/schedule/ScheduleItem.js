@@ -11,6 +11,7 @@ import {
 import { useState } from 'react';
 import PlanList from './plan/PlanList';
 import { Ionicons } from '@expo/vector-icons';
+import axiosInstance from '../../util/Interceptor';
 
 // if (
 // 	Platform.OS === 'android' &&
@@ -20,6 +21,26 @@ import { Ionicons } from '@expo/vector-icons';
 // }
 
 export default function ScheduleItem({ schedule }) {
+	// 스케줄 아이디를 가지고 상세 데이터를 가져와야 함.
+	const scheduleId = schedule.scheduleId;
+
+	const getScheduleDetail = (scheduleId) => {
+		axiosInstance
+			.get(`/schedule/detail`, {
+				params: {
+					scheduleId,
+				},
+			})
+			.then((res) => {
+				console.log(res.data.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	getScheduleDetail(scheduleId);
+
 	const scheduleDay = schedule.startDate.split('-')[2];
 	// 일정 아이템이 확장되었는지 여부
 	const [expanded, setExpanded] = useState(false);
@@ -64,7 +85,7 @@ export default function ScheduleItem({ schedule }) {
 					{/* 제목 */}
 					<View style={styles.scheduleTitle}>
 						<Text style={{ fontSize: 20, fontWeight: '600' }}>
-							{schedule.title}
+							{schedule.name}
 						</Text>
 					</View>
 					{/* 준비 상태 */}

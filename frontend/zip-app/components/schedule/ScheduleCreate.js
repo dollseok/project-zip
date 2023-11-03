@@ -39,8 +39,8 @@ export default function ScheduleCreate(props) {
 	const [endDate, setEndDate] = useState(new Date()); // 종료일
 
 	// 일정 등록
-	const createSchedule = () => {
-		getFamilyId();
+	const createSchedule = async () => {
+		await getFamilyId();
 		const scheduleStart = format(new Date(startDate), 'yyyy-MM-dd');
 		const scheduleEnd = format(new Date(endDate), 'yyyy-MM-dd');
 		console.log('가족 Id: ', familyId);
@@ -48,19 +48,19 @@ export default function ScheduleCreate(props) {
 		console.log('일정 시작일: ', format(new Date(startDate), 'yyyy-MM-dd'));
 		console.log('일정 종료일: ', format(new Date(endDate), 'yyyy-MM-dd'));
 
-		axiosInstance
-			.post(`/schedule/register`, {
-				familyId: familyId,
-				title: scheduleTitle,
-				startDate: scheduleStart,
-				endDate: scheduleEnd,
-			})
-			.then((res) => {
-				console.log(res.data);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+		// axiosInstance
+		// 	.post(`/schedule/register`, {
+		// 		familyId: familyId,
+		// 		title: scheduleTitle,
+		// 		startDate: scheduleStart,
+		// 		endDate: scheduleEnd,
+		// 	})
+		// 	.then((res) => {
+		// 		console.log(res.data);
+		// 	})
+		// 	.catch((err) => {
+		// 		console.log(err);
+		// 	});
 	};
 
 	// 시작일 종료일 모달 오픈 여부
