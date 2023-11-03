@@ -13,15 +13,57 @@ import {
 } from 'react-native';
 import { format } from 'date-fns';
 import DatePicker from 'react-native-date-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axiosInstance from '../../util/Interceptor';
 
 export default function ScheduleCreate(props) {
 	// 일정 등록에 필요한 데이터
-	// axios 헤더에 accesstoken
-	// 가족 Id
+	const [familyId, setFamilyId] = useState(); // 가족 Id
+	const getFamilyId = async () => {
+		try {
+			const data = await AsyncStorage.getItem('familyId');
+			if (data !== null) {
+				const parsedData = JSON.parse(data);
+				setFamilyId(parsedData); // familyId 변수에 할당
+				// console.log('가족 ID: ', familyId);
+			} else {
+				console.log('데이터를 찾을 수 없습니다.');
+			}
+		} catch (error) {
+			console.error('데이터를 가져오는 중 오류 발생: ', error);
+		}
+	};
+
 	const [scheduleTitle, setScheduleTitle] = useState(''); // 제목
 	const [startDate, setStartDate] = useState(new Date()); // 시작일
 	const [endDate, setEndDate] = useState(new Date()); // 종료일
 
+	// 일정 등록
+	const createSchedule = () => {
+		getFamilyId();
+		const scheduleStart = format(new Date(startDate), 'yyyy-MM-dd');
+		const scheduleEnd = format(new Date(endDate), 'yyyy-MM-dd');
+		console.log('가족 Id: ', familyId);
+		console.log('일정 제목: ', scheduleTitle);
+		console.log('일정 시작일: ', format(new Date(startDate), 'yyyy-MM-dd'));
+		console.log('일정 종료일: ', format(new Date(endDate), 'yyyy-MM-dd'));
+
+		axiosInstance
+			.post(`/schedule/register`, {
+				familyId: familyId,
+				title: scheduleTitle,
+				startDate: scheduleStart,
+				endDate: scheduleEnd,
+			})
+			.then((res) => {
+				console.log(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	// 시작일 종료일 모달 오픈 여부
 	const [openPickStart, setOpenPickStart] = useState(false); // 시작일 모달 보여줄지 여부
 	const [openPickEnd, setOpenPickEnd] = useState(false); // 종료일 모달 보여줄지 여부
 
@@ -106,9 +148,12 @@ export default function ScheduleCreate(props) {
 								<Text>취소</Text>
 							</TouchableOpacity>
 							{/* 등록 버튼 */}
-							<View style={styles.writeButton}>
+							<TouchableOpacity
+								style={styles.writeButton}
+								onPress={createSchedule}
+							>
 								<Text>완료</Text>
-							</View>
+							</TouchableOpacity>
 						</View>
 						{/* 일정 이름 입력 */}
 						<View style={styles.contentContainer}>
