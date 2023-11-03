@@ -6,12 +6,7 @@ import com.lastdance.ziip.family.dto.request.FamilyModifyReqeustDto;
 import com.lastdance.ziip.family.dto.request.FamilyNickNameRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequestDto;
 import com.lastdance.ziip.family.dto.request.FamilyRegisterRequestDto;
-import com.lastdance.ziip.family.dto.response.FamilyChoiceResponseDto;
-import com.lastdance.ziip.family.dto.response.FamilyListResponseDto;
-import com.lastdance.ziip.family.dto.response.FamilyModifyResponseDto;
-import com.lastdance.ziip.family.dto.response.FamilyNickNameResponseDto;
-import com.lastdance.ziip.family.dto.response.FamilyRegisterAcceptResponseDto;
-import com.lastdance.ziip.family.dto.response.FamilyRegisterResponseDto;
+import com.lastdance.ziip.family.dto.response.*;
 import com.lastdance.ziip.family.enums.FamilyResponseMessage;
 import com.lastdance.ziip.family.exception.MemberAlreadyRegisteredInFamilyException;
 import com.lastdance.ziip.family.service.FamilyService;
@@ -203,6 +198,29 @@ public class FamilyController {
                         .result(false)
                         .build(),
                 HttpStatus.BAD_REQUEST);
+    }
+
+
+    @Operation(summary = "가족 멤버 리스트 조회", description = "가족 멤버 리스트 조회 API")
+    @GetMapping("/member")
+    public ResponseEntity<ResponseTemplate<FamilyMemberResponseDto>> getFamilyMember(HttpServletRequest httpServletRequest,
+                                                                                     @RequestParam(name = "familyId") long familyId){
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null){
+            return null;
+        }
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        FamilyMemberResponseDto responseDto = familyService.getFamilyMember(findMember, familyId);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<FamilyMemberResponseDto> builder()
+                        .msg(FamilyResponseMessage.FAMILY_MEMBER_SECCESS.getMessage())
+                        .data(responseDto)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
     }
 
 
