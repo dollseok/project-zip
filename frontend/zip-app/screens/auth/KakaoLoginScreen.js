@@ -47,6 +47,8 @@ export default function KakaoLoginScreen({ navigation }) {
 				await AsyncStorage.setItem('refreshToken', refreshToken);
 			}
 
+			console.log(response.data);
+
 			await navigation.navigate('가족선택');
 		} catch (e) {
 			console.log(e);

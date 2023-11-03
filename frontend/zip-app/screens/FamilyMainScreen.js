@@ -24,12 +24,17 @@ export default function FamilyMainScreen({ route }) {
 	const [isEditMode, setIsEditMode] = useState(false); // 편집 모드 상태
 	const [isFamilyNameEditMode, setIsFamilyNameEditMode] = useState(false); // 가족 이름 편집 모드 상태
 	const [isFamilyContentEditMode, setIsFamilyContentEditMode] = useState(false); // 가족 이름 편집 모드 상태
-	// const [BackgroudOrProfile, setBackgroudOrProfile] = useState(false);
 	const [backgroundImageUri, setBackgroundImageUri] = useState(null);
 	const [modifiedFamilyName, setModifiedFamilyName] = useState([]);
 	const [modifiedFamilyContent, setModifiedFamilyContent] = useState([]);
+
+	const [member, setMember] = useState([]);
+
+	const [memberUpdated, setMemberUpdated] = useState(false);
 	const [familyUpdated, setFamilyUpdated] = useState(false);
+
 	const [memberProfileImgUrl, setMemberProfileImgUrl] = useState();
+	const [basicImg, setBasicImg] = useState();
 
 	// 이미지 변경 모달창 관련 변수
 	const [modalVisible, setModalVisible] = useState(false);
@@ -56,9 +61,21 @@ export default function FamilyMainScreen({ route }) {
 		});
 	};
 
+	const handleBasicImg = async () => {
+		if (basicImg == 'Profile') {
+			setMemberProfileImgUrl(
+				'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png',
+			);
+		} else {
+			setBackgroundImageUri(
+				'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png',
+			);
+		}
+	};
+
 	// photo 입력받는 button을 눌렀을 때 실행되는 함수
 	const _handlePhotoBtnPress = async (BackgroudOrProfile) => {
-		console.log(BackgroudOrProfile);
+		console.log('변경할 요소 : ', BackgroudOrProfile);
 		// 사용자의 갤러리 접근 권한 요청
 		const permissionResult =
 			await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -90,7 +107,7 @@ export default function FamilyMainScreen({ route }) {
 		});
 
 		console.log('수정할 이미지 : ', image);
-		if (BackgroudOrProfile == 'Backgrond') {
+		if (BackgroudOrProfile == 'Background') {
 			setBackgroundImageUri(uri);
 		} else {
 			setMemberProfileImgUrl(uri);
@@ -129,6 +146,24 @@ export default function FamilyMainScreen({ route }) {
 			})
 			.catch((error) => {
 				console.error('가족 등록 에러: ', error);
+			});
+
+		const formData2 = new FormData();
+
+		formData2.append('file', {
+			uri: memberProfileImgUrl,
+			name: `photo.jpeg`,
+			type: `image/jpeg`,
+		});
+
+		await axiosFileInstance
+			.put(`/members/profile`, formData2)
+			.then((response) => {
+				console.log('수정 응답 데이터 : ', response.data);
+				setMemberUpdated(true); // 성공적으로 가족 정보가 수정되었다는 표시
+			})
+			.catch((error) => {
+				console.error('회원 프로필 사진 수정 에러: ', error);
 			});
 	};
 
@@ -203,6 +238,16 @@ export default function FamilyMainScreen({ route }) {
 				.catch((error) => {
 					console.error('There was an error!', error);
 				});
+
+			axiosInstance
+				.get(`/diary/list?familyId=${familyId}`)
+				.then((response) => {
+					setDiaries(response.data.list);
+					console.log('일기 : ', diaries);
+				})
+				.catch((error) => {
+					console.error('There was an error!', error);
+				});
 		}
 
 		fetchData();
@@ -211,7 +256,11 @@ export default function FamilyMainScreen({ route }) {
 		if (familyUpdated) {
 			setFamilyUpdated(false);
 		}
-	}, [familyUpdated]);
+
+		if (memberUpdated) {
+			setMemberUpdated(false);
+		}
+	}, [familyUpdated, memberUpdated]);
 
 	return (
 		<ImageBackground
@@ -224,7 +273,7 @@ export default function FamilyMainScreen({ route }) {
 					<>
 						<TouchableOpacity
 							onPress={() => {
-								// _handlePhotoBtnPress('Background');
+								setBasicImg('Background');
 								showButtons();
 							}}
 						>
@@ -343,7 +392,8 @@ export default function FamilyMainScreen({ route }) {
 			{isEditMode && (
 				<TouchableOpacity
 					onPress={() => {
-						_handlePhotoBtnPress('Profile');
+						setBasicImg('Profile');
+						showButtons();
 					}}
 					style={memberStyles.button}
 				>
@@ -394,11 +444,17 @@ export default function FamilyMainScreen({ route }) {
 						style={[styles.modalContainer, { transform: [{ translateY }] }]}
 					>
 						<TouchableOpacity
-							style={{ backgroundColor: 'black', paddingVertical: 20, paddingHorizontal: 100,
-							justifyContent: 'center', // 여기에 추가
-							alignItems: 'center',
-						 }}
-							onPress={() => _handlePhotoBtnPress('Background')}
+							style={{
+								paddingVertical: 20,
+								paddingHorizontal: 100,
+								justifyContent: 'center', // 여기에 추가
+								alignItems: 'center',
+							}}
+							onPress={() =>
+								_handlePhotoBtnPress(
+									basicImg == 'Background' ? 'Background' : 'Profile',
+								)
+							}
 						>
 							<Text style={{}}>앨범에서 사진 선택하기</Text>
 						</TouchableOpacity>
@@ -407,7 +463,7 @@ export default function FamilyMainScreen({ route }) {
 								// borderBottomColor: 'grey',
 								backgroundColor: 'gray',
 								paddingHorizontal: '100%',
-								height: 1
+								height: 1,
 								// borderBottomWidth: 1,
 								// marginHorizontal: 20, // 좌우 마진을 조정하여 선의 길이를 조절
 							}}
@@ -415,7 +471,7 @@ export default function FamilyMainScreen({ route }) {
 
 						<TouchableOpacity
 							style={{ paddingVertical: 20, paddingHorizontal: 100 }}
-							onPress={() => _handlePhotoBtnPress('Background')}
+							onPress={() => handleBasicImg()}
 						>
 							<Text>기본 이미지로 변경하기</Text>
 						</TouchableOpacity>
