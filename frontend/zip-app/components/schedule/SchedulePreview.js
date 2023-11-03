@@ -18,21 +18,21 @@ export default function SchedulePreview(props) {
 	// 선택한 날의 일정 정보
 	const [todaySchedule, setTodaySchedule] = useState([]);
 
-	// const getTodaySchedule = (today) => {
-	// 	console.log('선택한 날짜: ', today);
-	// 	axiosInstance
-	// 		.get(`/calendar/day`, {
-	// 			todayDate: today,
-	// 		})
-	// 		.then((res) => {
-	// 			console.log('선택한 날의 일정 정보', res);
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log(err);
-	// 		});
-	// };
+	const getTodaySchedule = (today) => {
+		console.log('선택한 날짜: ', today);
+		axiosInstance
+			.get(`/calendar/day`, {
+				todayDate: today,
+			})
+			.then((res) => {
+				console.log('선택한 날의 일정 정보', res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
-	// getTodaySchedule(selectedDate);
+	getTodaySchedule(selectedDate);
 
 	// 모달 관련 설정
 	const screenHeight = Dimensions.get('screen').height;

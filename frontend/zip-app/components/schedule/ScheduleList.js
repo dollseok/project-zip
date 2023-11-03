@@ -7,24 +7,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function ScheduleList() {
 	const [schedules, setSchedules] = useState([]);
 
-	// // 가족 Id
-	// const [familyId, setFamilyId] = useState();
-	// const getFamilyId = async () => {
-	// 	try {
-	// 		const data = await AsyncStorage.getItem('familyId');
-	// 		if (data !== null) {
-	// 			console.log(data);
-	// 			const parsedData = JSON.parse(data);
-	// 			setFamilyId(parsedData); // familyId 변수에 할당
-	// 			console.log('가족 ID: ', familyId);
-	// 		} else {
-	// 			console.log('데이터를 찾을 수 없습니다.');
-	// 		}
-	// 	} catch (error) {
-	// 		console.error('데이터를 가져오는 중 오류 발생: ', error);
-	// 	}
-	// };
-
 	const getScheduleList = async () => {
 		const familyId = await AsyncStorage.getItem('familyId');
 		console.log('가족 ID: ', familyId);
@@ -57,6 +39,7 @@ export default function ScheduleList() {
 
 	return (
 		<View style={styles.scheduleList}>
+			{!schedules ? <Text>아직 등록된 일정이 없습니다</Text> : <></>}
 			{schedules.map((schedule) => {
 				return (
 					<ScheduleItem

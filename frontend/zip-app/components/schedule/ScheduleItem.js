@@ -9,6 +9,7 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import { useState } from 'react';
+import ScheduleUpdate from './ScheduleUpdate';
 import PlanList from './plan/PlanList';
 import { Ionicons } from '@expo/vector-icons';
 import axiosInstance from '../../util/Interceptor';
@@ -41,6 +42,12 @@ export default function ScheduleItem({ schedule }) {
 
 	getScheduleDetail(scheduleId);
 
+	// 일정 수정 모달 설정
+	const [updateModalVisible, setUpdateModalVisible] = useState(false);
+	const onModal = () => {
+		setUpdateModalVisible(true);
+	};
+
 	const scheduleDay = schedule.startDate.split('-')[2];
 	// 일정 아이템이 확장되었는지 여부
 	const [expanded, setExpanded] = useState(false);
@@ -66,7 +73,7 @@ export default function ScheduleItem({ schedule }) {
 						<View style={styles.scheduleSubTitle}>
 							<Text>일정</Text>
 						</View>
-						<TouchableOpacity>
+						<TouchableOpacity onPress={onModal}>
 							<Text>수정</Text>
 						</TouchableOpacity>
 					</View>
@@ -107,6 +114,11 @@ export default function ScheduleItem({ schedule }) {
 				{/* 계획 목록 */}
 				{expanded ? <PlanList plan={schedule.plan} /> : null}
 			</View>
+			<ScheduleUpdate
+				schedule={schedule}
+				updateModalVisible={updateModalVisible}
+				setUpdateModalVisible={setUpdateModalVisible}
+			/>
 		</View>
 	);
 }
