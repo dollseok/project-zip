@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -61,10 +62,10 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public CalendarDayResponseDto dayCalendar(Member findMember, CalendarDayRequestDto calendarDayRequestDto) {
+    public CalendarDayResponseDto dayCalendar(Member findMember, String todayDate) {
         // 해당하는 날짜의 스케줄 조회 및 스케줄의 플랜 조회
         List<CalendarDayScheduleResponseDto> calendarDayScheduleResponseDtoList =
-                scheduleRepository.findAllByStartDate(calendarDayRequestDto.getTodayDateAsLocalDate())
+                scheduleRepository.findAllByStartDate(getTodayDateAsLocalDate(todayDate))
                         .stream()
                         .flatMap(schedule -> planRepository.findAllBySchedule(Optional.ofNullable(schedule)).stream())
                         .map(plan -> CalendarDayScheduleResponseDto.builder()
@@ -73,7 +74,7 @@ public class CalendarServiceImpl implements CalendarService {
                                 .build())
                         .collect(Collectors.toList());
 
-        LocalDate inputDate = LocalDate.parse(calendarDayRequestDto.getTodayDate());
+        LocalDate inputDate = LocalDate.parse(todayDate);
         LocalDateTime startOfDay = inputDate.atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1);
 
@@ -188,6 +189,11 @@ public class CalendarServiceImpl implements CalendarService {
                 .statusCode(plan.getStatusCode().getId())
                 .title(plan.getTitle())
                 .build();
+    }
+
+    public LocalDate getTodayDateAsLocalDate(String todayDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(todayDate, formatter);
     }
 
 
