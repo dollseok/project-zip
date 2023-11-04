@@ -2,10 +2,7 @@ package com.lastdance.ziip.family.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lastdance.ziip.family.dto.request.FamilyModifyReqeustDto;
-import com.lastdance.ziip.family.dto.request.FamilyNickNameRequestDto;
-import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequestDto;
-import com.lastdance.ziip.family.dto.request.FamilyRegisterRequestDto;
+import com.lastdance.ziip.family.dto.request.*;
 import com.lastdance.ziip.family.dto.response.*;
 import com.lastdance.ziip.family.enums.FamilyResponseMessage;
 import com.lastdance.ziip.family.exception.MemberAlreadyRegisteredInFamilyException;
@@ -226,5 +223,23 @@ public class FamilyController {
                 HttpStatus.OK);
     }
 
+    @PostMapping("/check")
+    public ResponseEntity<ResponseTemplate<FamilyCheckCodeResponseDto>> checkFamilyCode(HttpServletRequest httpServletRequest,
+                                                                                        @RequestBody FamilyCheckCodeRequestDto familyCheckCodeRequestDto){
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null){
+            return null;
+        }
 
+        Member findMember = memberService.findMemberByJwtToken(token);
+        FamilyCheckCodeResponseDto responseDto = familyService.checkFamilyCode(findMember, familyCheckCodeRequestDto);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<FamilyCheckCodeResponseDto> builder()
+                        .msg(FamilyResponseMessage.FAMILY_CHECK_SUCCESS.getMessage())
+                        .data(responseDto)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+    }
 }

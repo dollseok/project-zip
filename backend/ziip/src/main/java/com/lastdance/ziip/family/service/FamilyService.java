@@ -1,9 +1,6 @@
 package com.lastdance.ziip.family.service;
 
-import com.lastdance.ziip.family.dto.request.FamilyModifyReqeustDto;
-import com.lastdance.ziip.family.dto.request.FamilyNickNameRequestDto;
-import com.lastdance.ziip.family.dto.request.FamilyRegisterAcceptRequestDto;
-import com.lastdance.ziip.family.dto.request.FamilyRegisterRequestDto;
+import com.lastdance.ziip.family.dto.request.*;
 import com.lastdance.ziip.family.dto.response.*;
 import com.lastdance.ziip.member.repository.entity.Member;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,4 +20,5 @@ public interface FamilyService {
     FamilyChoiceResponseDto choiceFamily(Member findMember, long familyId);
     FamilyModifyResponseDto modifyFamily(Member findMember, FamilyModifyReqeustDto familyModifyReqeustDto, MultipartFile file) throws IOException;
     FamilyMemberResponseDto getFamilyMember(Member findMember, long familyId);
+    FamilyCheckCodeResponseDto checkFamilyCode(Member findMember, FamilyCheckCodeRequestDto familyCheckCodeRequestDto);
 }
