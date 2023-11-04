@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import React, { useRef, useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
-import { Webview } from 'react-native-webview';
 
 export default function IntroScreen({ navigation }) {
 	const rotateValue = useRef(new Animated.Value(0)).current; // 초기 값 0
@@ -115,9 +114,9 @@ const styles = StyleSheet.create({
 		backgroundColor: 'transparent',
 	},
 	icon: {
-		width: 24, 
-		height: 24, 
-		marginRight: 40, 
+		width: 24,
+		height: 24,
+		marginRight: 40,
 	},
 	outlinedButtonText: {
 		fontSize: 18,
