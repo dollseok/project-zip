@@ -61,4 +61,4 @@ oauth2:
     state: test
   kakao:
     client-id: ${KAKAO_CLIENT_ID}
-    redirect-uri: https://auth.expo.io/@hyeongseoklee/zip-app
+    redirect-uri: https://auth.expo.io/@hyeongseoklee/zip-app/auth/kakao/callback

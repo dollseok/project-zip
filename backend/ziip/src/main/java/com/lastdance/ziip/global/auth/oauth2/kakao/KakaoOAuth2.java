@@ -76,8 +76,10 @@ public class KakaoOAuth2 {
         String email = kakaoAccount.getString("email");
         //String nickname = body.getJSONObject("properties").getString("nickname");
         //String profilePhoto = profile.getString("profile_image_url");
-        String gender = kakaoAccount.getString("gender");
-        String birth = kakaoAccount.getString("age_range");
+//        String gender = kakaoAccount.getString("gender");
+        String gender = "male";
+        String birth = "20~29";
+//        String birth = kakaoAccount.getString("age_range");
 
 
         return KakaoMemberDto.builder()
