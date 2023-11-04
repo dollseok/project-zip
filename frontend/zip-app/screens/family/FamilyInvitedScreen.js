@@ -18,7 +18,6 @@ export default function FamilyInvitedScreen({ navigation }) {
 	const rotateValue = useRef(new Animated.Value(0)).current;
     const [familyCode, setFamilyCode] = useState('');
 	const [nickName, setNickname] = useState('');
-    const [isfamilyCodeViewVisible, setfamilyCodeViewVisible] = useState(true);
 
 	const rotateAnimation = rotateValue.interpolate({
 		inputRange: [0, 1],
