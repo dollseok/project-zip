@@ -103,7 +103,7 @@ export default function FamilyInsertScreen({ navigation }) {
 				console.log(response.data);
 				console.log('저장된 가족의 ID : ', response.data.data.id);
 				AsyncStorage.setItem('familyId', JSON.stringify(response.data.data.id));
-				navigation.navigate('홈');
+				navigation.navigate('초대할 가족 폰 번호 입력');
 			})
 			.catch((error) => {
 				console.error('가족 등록 에러: ', error);
