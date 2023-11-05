@@ -232,7 +232,7 @@ public class FamilyServiceImpl implements FamilyService {
 
         FamilyMember existingFamilyMember = familyMemberRepository.findByMemberAndFamily(findMember, family);
         if (existingFamilyMember != null) {
-            throw new MemberAlreadyRegisteredInFamilyException("해당 멤버는 이미 이 가족에 등록되어 있습니다.");
+            result = false;
         }
 
         FamilyCheckCodeResponseDto familyCheckCodeResponseDto = FamilyCheckCodeResponseDto.builder()
