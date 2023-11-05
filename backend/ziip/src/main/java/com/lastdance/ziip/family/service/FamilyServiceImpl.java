@@ -10,18 +10,22 @@ import com.lastdance.ziip.family.repository.entity.FamilyMember;
 import com.lastdance.ziip.global.awsS3.S3Uploader;
 import com.lastdance.ziip.member.dto.FileDto;
 import com.lastdance.ziip.member.repository.entity.Member;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.nurigo.sdk.NurigoApp;
+import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.service.DefaultMessageService;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +33,20 @@ import java.util.UUID;
 @Slf4j
 public class FamilyServiceImpl implements FamilyService {
 
+
+    @Value("${coolsms.api.key}")
+    private String smsApiKey;
+
+    @Value("${coolsms.api.secret}")
+    private String smsApiSecretKey;
+
+    @Value("${coolsms.api.phone}")
+    private String smsSendPhoneNumber;
+
     private final FamilyRepository familyRepository;
     private final FamilyMemberRepository familyMemberRepository;
     private final S3Uploader s3Uploader;
+
 
     @Override
     public FamilyRegisterResponseDto registFamily(Member findMember, FamilyRegisterRequestDto familyRegisterRequest, MultipartFile file) throws IOException {
@@ -239,5 +254,40 @@ public class FamilyServiceImpl implements FamilyService {
                 .result(result)
                 .build();
         return familyCheckCodeResponseDto;
+    }
+
+    @Override
+    public FamilyInviteResponseDto inviteFamily(Member findMember, FamilyInviteRequestDto familyInviteRequestDto) {
+        Optional<Family> family = familyRepository.findById(familyInviteRequestDto.getFamilyId());
+
+        List<String> sendPhoneNumberList = familyInviteRequestDto.getPhoneNumber();
+
+        // 메시지로 보내야할 가족 코드
+        DefaultMessageService messageService =  NurigoApp.INSTANCE.initialize(smsApiKey, smsApiSecretKey, "https://api.coolsms.co.kr");
+
+        ArrayList<Message> message = new ArrayList<>();
+
+        for (int i = 0 ; i < sendPhoneNumberList.size() ; i++) {
+            message.get(i).setFrom(smsSendPhoneNumber);
+            message.get(i).setTo(sendPhoneNumberList.get(i));
+            message.get(i).setText("집으로 초대합니다. 가족코드 : " + family.get().getCode());
+        }
+
+        try {
+            // send 메소드로 ArrayList<Message> 객체를 넣어도 동작합니다!
+            messageService.send(message);
+        } catch (NurigoMessageNotReceivedException exception) {
+            // 발송에 실패한 메시지 목록을 확인할 수 있습니다!
+            System.out.println(exception.getFailedMessageList());
+            System.out.println(exception.getMessage());
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+        }
+
+        FamilyInviteResponseDto familyInviteResponseDto = FamilyInviteResponseDto.builder()
+                .familyId(family.get().getId())
+                .build();
+
+        return familyInviteResponseDto;
     }
 }

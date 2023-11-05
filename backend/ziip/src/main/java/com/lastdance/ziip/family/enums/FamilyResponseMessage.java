@@ -9,7 +9,8 @@ public enum FamilyResponseMessage {
     FAMILY_CHOICE_SUCCESS("가족 선택 성공"),
     FAMILY_MODIFY_SUCCESS("가족 정보 수정 성공"),
     FAMILY_MEMBER_SECCESS("가족 멤버 조회 성공"),
-    FAMILY_CHECK_SUCCESS("가족 코드 체크 성공");
+    FAMILY_CHECK_SUCCESS("가족 코드 체크 성공"),
+    FAMILY_INVITE_SUCCESS("가족 초대 성공");
     private final String message;
 
 

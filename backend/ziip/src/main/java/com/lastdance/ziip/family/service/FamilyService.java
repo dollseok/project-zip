@@ -21,4 +21,5 @@ public interface FamilyService {
     FamilyModifyResponseDto modifyFamily(Member findMember, FamilyModifyReqeustDto familyModifyReqeustDto, MultipartFile file) throws IOException;
     FamilyMemberResponseDto getFamilyMember(Member findMember, long familyId);
     FamilyCheckCodeResponseDto checkFamilyCode(Member findMember, FamilyCheckCodeRequestDto familyCheckCodeRequestDto);
+    FamilyInviteResponseDto inviteFamily(Member findMember, FamilyInviteRequestDto familyInviteRequestDto);
 }

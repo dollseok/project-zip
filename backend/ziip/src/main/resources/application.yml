@@ -45,6 +45,12 @@ logging:
         util:
           EC2MetadataUtils: ERROR
 
+coolsms:
+  api:
+    key: ${COOLSMS_API_KEY}
+    secret: ${COOLSMS_API_SECRET_KEY}
+    phone: ${COOLSMS_SEND_PHONE_NUMBER}
+
 jwt:
   secretKey: ${JWT_SECRET_KEY}
   access:

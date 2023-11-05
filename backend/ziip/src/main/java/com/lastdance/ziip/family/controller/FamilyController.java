@@ -242,4 +242,26 @@ public class FamilyController {
                         .build(),
                 HttpStatus.OK);
     }
+
+    @Operation(summary = "가족 초대 메시지 전송", description = "가족 초대 메시지 전송 API")
+    @PostMapping("/message")
+    public ResponseEntity<ResponseTemplate<FamilyInviteResponseDto>> getFamilyCode(HttpServletRequest httpServletRequest,
+                                                                                   @RequestBody FamilyInviteRequestDto familyInviteRequestDto){
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null){
+            return null;
+        }
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        FamilyInviteResponseDto responseDto = familyService.inviteFamily(findMember, familyInviteRequestDto);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<FamilyInviteResponseDto> builder()
+                        .msg(FamilyResponseMessage.FAMILY_INVITE_SUCCESS.getMessage())
+                        .data(responseDto)
+                        .result(true)
+                        .build(),
+                HttpStatus.OK);
+    }
 }
