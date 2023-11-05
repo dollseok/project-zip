@@ -193,7 +193,7 @@ export default function FamilyInsertScreen({ navigation }) {
 						<View style={styles.inputContainer}>
 							<TextInput
 								style={styles.inputText}
-								placeholder="닉네임을 설정하세요"
+								placeholder="닉네임을 입력하세요"
 								onChangeText={(text) => setNickname(text)}
 								value={nickName}
 							/>
