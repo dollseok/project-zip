@@ -3,8 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const axiosInstance = Axios.create({
 	// baseURL: 'http://10.0.2.2:9090/api',
-	baseURL: 'http://localhost:9090/api',
-	// baseURL: 'https://lastdance.kr/api',
+	// baseURL: 'http://localhost:9090/api',
+	baseURL: 'https://lastdance.kr/api',
 	timeout: 5000,
 });
 
