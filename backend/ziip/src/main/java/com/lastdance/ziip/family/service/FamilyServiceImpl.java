@@ -265,17 +265,19 @@ public class FamilyServiceImpl implements FamilyService {
         // 메시지로 보내야할 가족 코드
         DefaultMessageService messageService =  NurigoApp.INSTANCE.initialize(smsApiKey, smsApiSecretKey, "https://api.coolsms.co.kr");
 
-        ArrayList<Message> message = new ArrayList<>();
+        ArrayList<Message> messageList = new ArrayList<>();
 
         for (int i = 0 ; i < sendPhoneNumberList.size() ; i++) {
-            message.get(i).setFrom(smsSendPhoneNumber);
-            message.get(i).setTo(sendPhoneNumberList.get(i));
-            message.get(i).setText("집으로 초대합니다. 가족코드 : " + family.get().getCode());
+            Message message = new Message();
+            message.setFrom(smsSendPhoneNumber);
+            message.setTo(sendPhoneNumberList.get(i));
+            message.setText("집으로 초대합니다. 가족코드 : " + family.get().getCode());
+            messageList.add(message);
         }
 
         try {
             // send 메소드로 ArrayList<Message> 객체를 넣어도 동작합니다!
-            messageService.send(message);
+            messageService.send(messageList);
         } catch (NurigoMessageNotReceivedException exception) {
             // 발송에 실패한 메시지 목록을 확인할 수 있습니다!
             System.out.println(exception.getFailedMessageList());
