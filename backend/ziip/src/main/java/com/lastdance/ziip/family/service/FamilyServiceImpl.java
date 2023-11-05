@@ -118,7 +118,7 @@ public class FamilyServiceImpl implements FamilyService {
         FamilyMember saveFamilyMember = familyMemberRepository.save(familyMember);
 
         FamilyRegisterAcceptResponseDto familyRegisterAcceptResponse = FamilyRegisterAcceptResponseDto.builder()
-                .familyId(saveFamilyMember.getId())
+                .familyId(saveFamilyMember.getFamily().getId())
                 .build();
 
         return familyRegisterAcceptResponse;
