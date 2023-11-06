@@ -60,6 +60,8 @@ public class DiaryServiceImpl implements DiaryService{
                 .emotion(emotion.get())
                 .build();
 
+        Diary saveDiary = diaryRepository.save(diary);
+
         // 이미지 정보 가져오기
         if (files != null && !files.isEmpty()) {
 
@@ -84,16 +86,6 @@ public class DiaryServiceImpl implements DiaryService{
                 }
             );
         }
-        else {
-            // 일기 사진 빌드
-            DiaryPhoto diaryPhoto = DiaryPhoto.builder()
-                    .diary(diary)
-                    .build();
-
-            diaryPhotoRepository.save(diaryPhoto);
-        }
-
-        Diary saveDiary = diaryRepository.save(diary);
 
         DiaryWriteResponseDto diaryWriteResponseDto = DiaryWriteResponseDto.builder()
                 .diaryId(saveDiary.getId())
