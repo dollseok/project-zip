@@ -498,6 +498,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between', // 이 부분 변경
 		paddingHorizontal: 20,
 		paddingTop: 30,
+		marginTop: 30,
 	},
 	editButton: {
 		width: 30,

@@ -55,7 +55,7 @@ export default function KakaoLoginScreen({ navigation }) {
 			<WebView
 				style={{ flex: 1 }}
 				source={{
-					uri: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`,
+					uri: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=https://auth.expo.io/@hyeongseoklee/zip-app/auth/kakao/callback`,
 				}}
 				injectedJavaScript={INJECTED_JAVASCRIPT}
 				javaScriptEnabled
