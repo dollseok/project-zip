@@ -4,11 +4,6 @@ import { StyleSheet, View, Text, Button } from 'react-native';
 import axios from 'axios';
 import { REST_API_KEY, REDIRECT_URI } from '@env';
 
-// const REDIRECT_URI = 'https://auth.expo.io/@hyeongseoklee/zip-app'
-// const REDIRECT_URI = 'http://172.20.10.3:8081/auth/kakao/callback';
-// const REDIRECT_URI = 'http://192.168.31.236:8081/auth/kakao/callback';
-// const REDIRECT_URI = 'http://localhost:8081/auth/kakao/callback';
-
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
 
 export default function KakaoLoginScreen({ navigation }) {
@@ -23,7 +18,7 @@ export default function KakaoLoginScreen({ navigation }) {
 	};
 
 	const requestToken = async (code) => {
-		// const requestTokenUrl = 'http://10.0.2.2:9090/api/members/kakao/login';
+		// const requestTokenUrl = 'http://localhost:9090/api/members/kakao/login';
 		const requestTokenUrl = 'https://lastdance.kr/api/members/kakao/login';
 
 		try {
@@ -46,6 +41,8 @@ export default function KakaoLoginScreen({ navigation }) {
 				// AsyncStorage에 refreshToken 저장
 				await AsyncStorage.setItem('refreshToken', refreshToken);
 			}
+
+			console.log(response.data);
 
 			await navigation.navigate('가족선택');
 		} catch (e) {

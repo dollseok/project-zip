@@ -22,17 +22,27 @@ export default function SchedulePreview(props) {
 		console.log('선택한 날짜: ', today);
 		axiosInstance
 			.get(`/calendar/day`, {
-				todayDate: today,
+				params: {
+					todayDate: today,
+				},
 			})
 			.then((res) => {
-				console.log('선택한 날의 일정 정보', res);
+				console.log(
+					'선택한 날의 일정 정보',
+					res.data.data.calendarDayScheduleResponseDtoList,
+				);
+				const todayScheduleInfo =
+					res.data.data.calendarDayScheduleResponseDtoList;
+				setTodaySchedule(todayScheduleInfo);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 	};
 
-	getTodaySchedule(selectedDate);
+	useEffect(() => {
+		getTodaySchedule(selectedDate);
+	}, []);
 
 	// 모달 관련 설정
 	const screenHeight = Dimensions.get('screen').height;
@@ -122,9 +132,8 @@ export default function SchedulePreview(props) {
 					<View style={styles.previewContent}>
 						<View>
 							<Text style={styles.contentTitleFont}>일정</Text>
+							{todaySchedule ? <Text>일정 있음</Text> : <Text>일정 없음</Text>}
 						</View>
-						<Text>10월 가족 여행</Text>
-						<Text>아부지 환갑</Text>
 					</View>
 				</Animated.View>
 			</View>

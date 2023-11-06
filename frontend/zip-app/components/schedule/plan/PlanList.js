@@ -10,7 +10,7 @@ import PlanItem from './PlanItem';
 import PlanCreate from './PlanCreate';
 
 export default function PlanList(props) {
-	const plans = props.plan;
+	const { scheduleId, plans } = props;
 
 	return (
 		<View style={styles.planContainer}>
@@ -18,23 +18,14 @@ export default function PlanList(props) {
 				<View style={styles.planSubTitle}>
 					<Text>할 일</Text>
 				</View>
-				<TouchableOpacity style={styles.addBtnContainer}>
-					<AntDesign name="plus" size={20} color="black" />
-				</TouchableOpacity>
 			</View>
 			<View style={styles.planList}>
-				<PlanCreate />
-				{plans ? (
-					<FlatList
-						data={plans}
-						keyExtractor={(item) => item.planId.toString()}
-						renderItem={({ item }) => <PlanItem plan={item} />}
-					/>
-				) : (
-					<View>
-						<Text>아직 등록된 할 일이 없습니다.</Text>
-					</View>
-				)}
+				<PlanCreate scheduleId={scheduleId} />
+				<FlatList
+					data={plans}
+					keyExtractor={(item) => item.planId.toString()}
+					renderItem={({ item }) => <PlanItem plan={item} />}
+				/>
 			</View>
 		</View>
 	);

@@ -112,7 +112,9 @@ export default function ScheduleItem({ schedule }) {
 					</View>
 				</TouchableOpacity>
 				{/* 계획 목록 */}
-				{expanded ? <PlanList plan={schedule.plan} /> : null}
+				{expanded ? (
+					<PlanList scheduleId={scheduleId} plans={schedule.plan} />
+				) : null}
 			</View>
 			<ScheduleUpdate
 				schedule={schedule}

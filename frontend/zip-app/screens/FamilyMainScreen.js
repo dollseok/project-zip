@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
 	StyleSheet,
 	Text,
@@ -8,6 +8,8 @@ import {
 	Image,
 	TouchableOpacity,
 	TextInput,
+	Animated,
+	Modal,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../util/Interceptor';
@@ -20,14 +22,60 @@ export default function FamilyMainScreen({ route }) {
 	const [diaries, setDiaries] = useState([]);
 	const [image, setImage] = useState([]);
 	const [isEditMode, setIsEditMode] = useState(false); // 편집 모드 상태
-	const [isFamilyNameEditMode, setIsFamilyNameEditMode] = useState(false); // 가족 이름 편집 모드 상태	
+	const [isFamilyNameEditMode, setIsFamilyNameEditMode] = useState(false); // 가족 이름 편집 모드 상태
 	const [isFamilyContentEditMode, setIsFamilyContentEditMode] = useState(false); // 가족 이름 편집 모드 상태
 	const [backgroundImageUri, setBackgroundImageUri] = useState(null);
 	const [modifiedFamilyName, setModifiedFamilyName] = useState([]);
 	const [modifiedFamilyContent, setModifiedFamilyContent] = useState([]);
 
+	const [member, setMember] = useState([]);
+
+	const [memberUpdated, setMemberUpdated] = useState(false);
+	const [familyUpdated, setFamilyUpdated] = useState(false);
+
+	const [memberProfileImgUrl, setMemberProfileImgUrl] = useState();
+	const [basicImg, setBasicImg] = useState();
+
+	// 이미지 변경 모달창 관련 변수
+	const [modalVisible, setModalVisible] = useState(false);
+	const translateY = useRef(new Animated.Value(300)).current;
+
+	// 모달창 출력 함수
+	const showButtons = () => {
+		setModalVisible(true);
+		Animated.timing(translateY, {
+			toValue: 0,
+			duration: 300,
+			useNativeDriver: true,
+		}).start();
+	};
+
+	// 모달창 가리기 함수
+	const hideButtons = () => {
+		Animated.timing(translateY, {
+			toValue: 300,
+			duration: 300,
+			useNativeDriver: true,
+		}).start(() => {
+			setModalVisible(false);
+		});
+	};
+
+	const handleBasicImg = async () => {
+		if (basicImg == 'Profile') {
+			setMemberProfileImgUrl(
+				'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png',
+			);
+		} else {
+			setBackgroundImageUri(
+				'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png',
+			);
+		}
+	};
+
 	// photo 입력받는 button을 눌렀을 때 실행되는 함수
-	const _handlePhotoBtnPress = async () => {
+	const _handlePhotoBtnPress = async (BackgroudOrProfile) => {
+		console.log('변경할 요소 : ', BackgroudOrProfile);
 		// 사용자의 갤러리 접근 권한 요청
 		const permissionResult =
 			await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -45,26 +93,29 @@ export default function FamilyMainScreen({ route }) {
 
 		// 선택된 이미지의 URI
 		const uri = pickerResult.uri;
-		return _uploadImage(uri);
+		return _uploadImage(uri, BackgroudOrProfile);
 	};
 
-	const _uploadImage = async (uri) => {
-
+	const _uploadImage = async (uri, BackgroudOrProfile) => {
 		const uriParts = uri.split('.');
 		const fileType = uriParts[uriParts.length - 1];
 
 		setImage({
 			uri: uri,
-			name: `photo.${fileType}`,
-			type: `image/${fileType}`,
+			name: `photo.jpeg`,
+			type: `image/jpeg`,
 		});
 
-		console.log("수정할 배경 이미지 : ", image);
-		setBackgroundImageUri(uri);
+		console.log('수정할 이미지 : ', image);
+		if (BackgroudOrProfile == 'Background') {
+			setBackgroundImageUri(uri);
+		} else {
+			setMemberProfileImgUrl(uri);
+		}
 	};
 
-	const modifyFamily = async () =>  {
-		console.log("modifyFamily 함수 시작!");
+	const modifyFamily = async () => {
+		console.log('modifyFamily 함수 시작!');
 
 		const formData = new FormData();
 
@@ -74,16 +125,12 @@ export default function FamilyMainScreen({ route }) {
 			content: modifiedFamilyContent,
 		};
 
-		formData.append(
-			'familyModifyRequest',
-			JSON.stringify(familyModifyRequest),
-		);
-
+		formData.append('familyModifyRequest', JSON.stringify(familyModifyRequest));
 
 		formData.append('file', {
-			uri: image.uri,
-			name: `photo.${image.fileType}`,
-			type: `image/${image.fileType}`,
+			uri: backgroundImageUri,
+			name: `photo.jpeg`,
+			type: `image/jpeg`,
 		});
 
 		await axiosFileInstance
@@ -91,13 +138,34 @@ export default function FamilyMainScreen({ route }) {
 			.then((response) => {
 				console.log(response.data);
 				console.log('수정된 가족의 ID : ', response.data.data.familyId);
-				AsyncStorage.setItem('familyId', JSON.stringify(response.data.data.familyId));
-				// navigation.navigate('홈');
+				AsyncStorage.setItem(
+					'familyId',
+					JSON.stringify(response.data.data.familyId),
+				);
+				setFamilyUpdated(true); // 성공적으로 가족 정보가 수정되었다는 표시
 			})
 			.catch((error) => {
 				console.error('가족 등록 에러: ', error);
 			});
-	}
+
+		const formData2 = new FormData();
+
+		formData2.append('file', {
+			uri: memberProfileImgUrl,
+			name: `photo.jpeg`,
+			type: `image/jpeg`,
+		});
+
+		await axiosFileInstance
+			.put(`/members/profile`, formData2)
+			.then((response) => {
+				console.log('수정 응답 데이터 : ', response.data);
+				setMemberUpdated(true); // 성공적으로 가족 정보가 수정되었다는 표시
+			})
+			.catch((error) => {
+				console.error('회원 프로필 사진 수정 에러: ', error);
+			});
+	};
 
 	// onChangePhoto 함수 정의
 	const onChangePhoto = (photoUri) => {
@@ -131,11 +199,22 @@ export default function FamilyMainScreen({ route }) {
 				.then((response) => {
 					console.log('가족 정보 : ', response.data.data);
 					setFamily(response.data.data);
+					setModifiedFamilyName(response.data.data.familyName);
+					setModifiedFamilyContent(response.data.data.familyContent);
+
+					if (response.data.data.memberProfileImgUrl == null) {
+						setMemberProfileImgUrl(
+							'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png',
+						);
+					} else {
+						setMemberProfileImgUrl(response.data.data.memberProfileImgUrl);
+					}
 
 					if (response.data.data.familyProfileImgUrl == null) {
-						setBackgroundImageUri('https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png');
-					}
-					else {
+						setBackgroundImageUri(
+							'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png',
+						);
+					} else {
 						setBackgroundImageUri(response.data.data.familyProfileImgUrl);
 					}
 				});
@@ -159,10 +238,29 @@ export default function FamilyMainScreen({ route }) {
 				.catch((error) => {
 					console.error('There was an error!', error);
 				});
+
+			axiosInstance
+				.get(`/diary/list?familyId=${familyId}`)
+				.then((response) => {
+					setDiaries(response.data.list);
+					console.log('일기 : ', diaries);
+				})
+				.catch((error) => {
+					console.error('There was an error!', error);
+				});
 		}
 
 		fetchData();
-	}, []);
+
+		// 데이터 가져오기 작업이 끝난 후 familyUpdated를 다시 false로 설정
+		if (familyUpdated) {
+			setFamilyUpdated(false);
+		}
+
+		if (memberUpdated) {
+			setMemberUpdated(false);
+		}
+	}, [familyUpdated, memberUpdated]);
 
 	return (
 		<ImageBackground
@@ -173,7 +271,12 @@ export default function FamilyMainScreen({ route }) {
 			<View style={styles.header}>
 				{isEditMode ? (
 					<>
-						<TouchableOpacity onPress={_handlePhotoBtnPress}>
+						<TouchableOpacity
+							onPress={() => {
+								setBasicImg('Background');
+								showButtons();
+							}}
+						>
 							<Image source={require('../assets/camera.png')} style={{}} />
 						</TouchableOpacity>
 						<TouchableOpacity
@@ -285,10 +388,18 @@ export default function FamilyMainScreen({ route }) {
 				)}
 			</View>
 
-			<Image
-				source={{ uri: family.memberProfileImgUrl }}
-				style={styles.memberImage}
-			/>
+			<Image source={{ uri: memberProfileImgUrl }} style={styles.memberImage} />
+			{isEditMode && (
+				<TouchableOpacity
+					onPress={() => {
+						setBasicImg('Profile');
+						showButtons();
+					}}
+					style={memberStyles.button}
+				>
+					<Image source={require('../assets/camera.png')} style={{}} />
+				</TouchableOpacity>
+			)}
 
 			<Text style={styles.headingSchedule}>일정</Text>
 			<FlatList
@@ -321,6 +432,55 @@ export default function FamilyMainScreen({ route }) {
 				)}
 				keyExtractor={(item) => item.diaryId.toString()}
 			/>
+
+			{modalVisible && (
+				<Modal
+					transparent={true}
+					animationType="none"
+					visible={modalVisible}
+					onRequestClose={hideButtons}
+				>
+					<Animated.View
+						style={[styles.modalContainer, { transform: [{ translateY }] }]}
+					>
+						<TouchableOpacity
+							style={{
+								paddingVertical: 20,
+								paddingHorizontal: 100,
+								justifyContent: 'center', // 여기에 추가
+								alignItems: 'center',
+							}}
+							onPress={() =>
+								_handlePhotoBtnPress(
+									basicImg == 'Background' ? 'Background' : 'Profile',
+								)
+							}
+						>
+							<Text style={{}}>앨범에서 사진 선택하기</Text>
+						</TouchableOpacity>
+						<View
+							style={{
+								// borderBottomColor: 'grey',
+								backgroundColor: 'gray',
+								paddingHorizontal: '100%',
+								height: 1,
+								// borderBottomWidth: 1,
+								// marginHorizontal: 20, // 좌우 마진을 조정하여 선의 길이를 조절
+							}}
+						/>
+
+						<TouchableOpacity
+							style={{ paddingVertical: 20, paddingHorizontal: 100 }}
+							onPress={() => handleBasicImg()}
+						>
+							<Text>기본 이미지로 변경하기</Text>
+						</TouchableOpacity>
+						<TouchableOpacity onPress={hideButtons}>
+							<Text>취소</Text>
+						</TouchableOpacity>
+					</Animated.View>
+				</Modal>
+			)}
 		</ImageBackground>
 	);
 }
@@ -340,7 +500,6 @@ const styles = StyleSheet.create({
 		paddingTop: 30,
 	},
 	editButton: {
-		// justifyContent: 'flex-end',
 		width: 30,
 		height: 30,
 	},
@@ -392,6 +551,19 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		backgroundColor: 'rgba(255,255,255,0.5)',
 	},
+	modalContainer: {
+		position: 'absolute',
+		bottom: 0,
+		left: 0,
+		right: 0,
+		height: 300,
+		backgroundColor: 'white',
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		// padding: 20,
+	},
 });
 
 const familyStyles = StyleSheet.create({
@@ -416,5 +588,25 @@ const familyStyles = StyleSheet.create({
 		color: 'white',
 		marginTop: 20,
 		textAlign: 'center',
+	},
+});
+
+const memberStyles = StyleSheet.create({
+	memberContainer: {
+		position: 'relative',
+		width: 100, // 원하는 이미지 크기로 조정하세요.
+		height: 100, // 원하는 이미지 크기로 조정하세요.
+	},
+	memberImage: {
+		width: '100%',
+		height: '100%',
+		borderRadius: 50, // 원하는 border radius 값을 조정하세요.
+	},
+	button: {
+		position: 'absolute',
+		bottom: 430,
+		left: 220,
+		width: 40,
+		height: 40, // 원하는 버튼 크기로 조정하세요.
 	},
 });

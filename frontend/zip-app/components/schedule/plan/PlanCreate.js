@@ -7,13 +7,30 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
+import { AntDesign } from '@expo/vector-icons';
+import axiosInstance from '../../../util/Interceptor';
 
-export default function PlanCreate() {
+export default function PlanCreate(props) {
 	const [isCreating, SetIsCreating] = useState(false);
-
 	// 계획 등록에 필요한 데이터
-	// 일정 id
+	const { scheduleId } = props; // 일정 id
 	const [planTitle, setPlanTitle] = useState(''); // 계획 제목
+
+	const createPlan = () => {
+		console.log('일정 id: ', scheduleId);
+		// console.log('계획 제목: ', planTitle);
+		// axiosInstance
+		// 	.post(`/plan/write`, {
+		// 		scheduleId: scheduleId,
+		// 		title: planTitle,
+		// 	})
+		// 	.then((res) => {
+		// 		console.log(res);
+		// 	})
+		// 	.catch((err) => {
+		// 		console.log(err);
+		// 	});
+	};
 
 	return (
 		<View style={styles.planCreateContainer}>
@@ -34,13 +51,22 @@ export default function PlanCreate() {
 					<View style={styles.planManager}>
 						<Text>담당자</Text>
 					</View>
-					<TouchableOpacity onPress={() => SetIsCreating(false)}>
+					<TouchableOpacity
+						onPress={async () => {
+							await createPlan();
+							SetIsCreating(false);
+						}}
+					>
 						<Text>등록</Text>
 					</TouchableOpacity>
 				</>
 			) : (
-				<TouchableOpacity onPress={() => SetIsCreating(true)}>
-					<Text>할 일 추가</Text>
+				<TouchableOpacity
+					style={styles.addPlanContainer}
+					onPress={() => SetIsCreating(true)}
+				>
+					<AntDesign name="plus" size={20} color="black" />
+					<Text>할 일 추가하기</Text>
 				</TouchableOpacity>
 			)}
 		</View>
@@ -65,5 +91,11 @@ const styles = StyleSheet.create({
 	},
 	planManager: {
 		width: '20%',
+	},
+	addPlanContainer: {
+		width: '100%',
+		flexDirection: 'row',
+		justifyContent: 'center',
+		gap: 5,
 	},
 });
