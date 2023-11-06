@@ -9,6 +9,10 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import { useState } from 'react';
+import ScheduleUpdate from './ScheduleUpdate';
+import PlanList from './plan/PlanList';
+import { Ionicons } from '@expo/vector-icons';
+import axiosInstance from '../../util/Interceptor';
 
 // if (
 // 	Platform.OS === 'android' &&
@@ -18,6 +22,32 @@ import { useState } from 'react';
 // }
 
 export default function ScheduleItem({ schedule }) {
+	// 스케줄 아이디를 가지고 상세 데이터를 가져와야 함.
+	const scheduleId = schedule.scheduleId;
+
+	const getScheduleDetail = (scheduleId) => {
+		axiosInstance
+			.get(`/schedule/detail`, {
+				params: {
+					scheduleId,
+				},
+			})
+			.then((res) => {
+				console.log(res.data.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	getScheduleDetail(scheduleId);
+
+	// 일정 수정 모달 설정
+	const [updateModalVisible, setUpdateModalVisible] = useState(false);
+	const onModal = () => {
+		setUpdateModalVisible(true);
+	};
+
 	const scheduleDay = schedule.startDate.split('-')[2];
 	// 일정 아이템이 확장되었는지 여부
 	const [expanded, setExpanded] = useState(false);
@@ -28,10 +58,7 @@ export default function ScheduleItem({ schedule }) {
 	};
 
 	return (
-		<TouchableOpacity
-			style={[styles.eachItem, expanded ? styles.expandedItem : null]}
-			onPress={toggleExpanded}
-		>
+		<View style={[styles.eachItem, expanded ? styles.expandedItem : null]}>
 			<View
 				style={[
 					styles.eachSchedule,
@@ -40,8 +67,21 @@ export default function ScheduleItem({ schedule }) {
 				]}
 			>
 				{/* 일정 정보 */}
-				{expanded ? <Text>일정</Text> : null}
-				<View style={styles.scheduleInfo}>
+				{/* 일정 소제목과 수정 버튼 */}
+				{expanded ? (
+					<View style={styles.scheduleHeader}>
+						<View style={styles.scheduleSubTitle}>
+							<Text>일정</Text>
+						</View>
+						<TouchableOpacity onPress={onModal}>
+							<Text>수정</Text>
+						</TouchableOpacity>
+					</View>
+				) : null}
+				<TouchableOpacity
+					style={styles.scheduleInfo}
+					onPress={() => toggleExpanded()}
+				>
 					{/* 일자 */}
 					<View style={styles.scheduleDay}>
 						<View style={styles.dayText}>
@@ -52,38 +92,36 @@ export default function ScheduleItem({ schedule }) {
 					{/* 제목 */}
 					<View style={styles.scheduleTitle}>
 						<Text style={{ fontSize: 20, fontWeight: '600' }}>
-							{schedule.title}
+							{schedule.name}
 						</Text>
 					</View>
 					{/* 준비 상태 */}
 					<View style={styles.ready}>
-						<Text>준비중</Text>
-						<Text>준비완료</Text>
+						<View
+							style={{ flexDirection: 'row', gap: 3, alignItems: 'center' }}
+						>
+							<Ionicons name="checkbox-outline" size={16} color="black" />
+							<Text>준비중</Text>
+						</View>
+						<View
+							style={{ flexDirection: 'row', gap: 3, alignItems: 'center' }}
+						>
+							<Ionicons name="checkbox-outline" size={16} color="black" />
+							<Text>준비완료</Text>
+						</View>
 					</View>
-				</View>
+				</TouchableOpacity>
 				{/* 계획 목록 */}
 				{expanded ? (
-					<View style={styles.planInfo}>
-						{schedule.plan ? (
-							<FlatList
-								data={schedule.plan}
-								keyExtractor={(item) => item.planId.toString()}
-								renderItem={({ item }) => (
-									<View>
-										<Text>{item.title}</Text>
-										<Text>{item.planId}</Text>
-									</View>
-								)}
-							/>
-						) : (
-							<View>
-								<Text>아직 등록된 할 일이 없습니다.</Text>
-							</View>
-						)}
-					</View>
+					<PlanList scheduleId={scheduleId} plans={schedule.plan} />
 				) : null}
 			</View>
-		</TouchableOpacity>
+			<ScheduleUpdate
+				schedule={schedule}
+				updateModalVisible={updateModalVisible}
+				setUpdateModalVisible={setUpdateModalVisible}
+			/>
+		</View>
 	);
 }
 
@@ -106,7 +144,7 @@ const styles = StyleSheet.create({
 	},
 	// 확장 되었을 때 스타일
 	expandedItem: {
-		height: 200,
+		height: 400,
 	},
 	shadowProps: {
 		// ios
@@ -124,6 +162,10 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'baseline',
 		gap: 3,
+	},
+	scheduleHeader: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
 	},
 	scheduleDay: {
 		flexDirection: 'row',

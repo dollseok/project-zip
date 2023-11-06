@@ -315,7 +315,6 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 		marginHorizontal: 15,
 		marginBottom: 15,
-		// padding: 20,
 	},
 	createFormContainer: {
 		padding: 20,
