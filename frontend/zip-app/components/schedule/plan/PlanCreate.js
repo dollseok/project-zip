@@ -18,18 +18,18 @@ export default function PlanCreate(props) {
 
 	const createPlan = () => {
 		console.log('일정 id: ', scheduleId);
-		// console.log('계획 제목: ', planTitle);
-		// axiosInstance
-		// 	.post(`/plan/write`, {
-		// 		scheduleId: scheduleId,
-		// 		title: planTitle,
-		// 	})
-		// 	.then((res) => {
-		// 		console.log(res);
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log(err);
-		// 	});
+		console.log('계획 제목: ', planTitle);
+		axiosInstance
+			.post(`/plan/write`, {
+				scheduleId: scheduleId,
+				title: planTitle,
+			})
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	};
 
 	return (
@@ -43,7 +43,7 @@ export default function PlanCreate(props) {
 						<TextInput
 							style={styles.planTitleInput}
 							placeholder="할 일 등록하기"
-							onChange={(text) => {
+							onChangeText={(text) => {
 								setPlanTitle(text);
 							}}
 						/>
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
 	},
 	planTitleInput: {
 		borderBottomWidth: 1,
-		bordorColor: 'gray',
+		borderColor: 'gray',
 	},
 	planManager: {
 		width: '20%',

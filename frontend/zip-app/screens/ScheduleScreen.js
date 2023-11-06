@@ -7,19 +7,60 @@ import { AntDesign } from '@expo/vector-icons';
 
 import { Ionicons } from '@expo/vector-icons';
 import DatePicker from 'react-native-modern-datepicker';
+import axiosInstance from '../util/Interceptor';
 
 export default function ScheduleScreen({ route, navigation }) {
+	const [schedules, setSchedules] = useState([]);
+
+	const getScheduleList = async () => {
+		console.log('연도: ', selectedYear);
+		console.log('월: ', selectedMonth);
+
+		axiosInstance
+			.get(`/calendar/month`, {
+				params: {
+					year: selectedYear,
+					month: selectedMonth,
+				},
+			})
+			.then((res) => {
+				console.log('월별 일기 & 일정 데이터: ', res.data.data);
+				console.log(
+					'월별 일정 데이터: ',
+					res.data.data.calendarMonthScheduleResponseDtoList,
+				);
+				const scheduleArray =
+					res.data.data.calendarMonthScheduleResponseDtoList;
+				setSchedules(scheduleArray);
+			})
+			.catch((err) => {
+				if (err.response) {
+					// 서버 응답 오류인 경우
+					console.log('서버 응답 오류', err.response.status, err.response.data);
+				} else {
+					// 요청 자체에 문제가 있는 경우
+					console.log('요청 오류', err.message);
+				}
+			});
+	};
+
 	// 캘린더에서 받아온 현재 날짜정보
 	// 예시) '2023-10-25'
 	const { dateInfo } = route.params;
-
+	console.log('일정 미리보기에서 넘어올 때 받아온 날짜정보: ', route.params);
 	const [selectedYear, setSelectedYear] = useState();
 	const [selectedMonth, setSelectedMonth] = useState();
 
 	useEffect(() => {
-		setSelectedYear(dateInfo.split('-')[0]);
-		setSelectedMonth(dateInfo.split('-')[1]);
+		if (dateInfo) {
+			setSelectedYear(dateInfo.split('-')[0]);
+			setSelectedMonth(dateInfo.split('-')[1]);
+		}
 	}, []);
+
+	useEffect(() => {
+		getScheduleList();
+	}, [selectedYear, selectedMonth]);
 
 	// 연월 선택창 모달 설정
 	const [isModalVisible, setisModalVisible] = useState(false);
@@ -33,6 +74,7 @@ export default function ScheduleScreen({ route, navigation }) {
 	const handleDatePickerChange = (year, month) => {
 		setSelectedYear(year);
 		setSelectedMonth(month);
+
 		hidePickerModal();
 	};
 
@@ -78,6 +120,7 @@ export default function ScheduleScreen({ route, navigation }) {
 						mode="monthYear"
 						selectorStartingYear={2020}
 						onMonthYearChange={(selectedDate) => {
+							console.log('일정 화면에서 선택된 연월: ', selectedDate);
 							const [year, month] = selectedDate.split(' ');
 							handleDatePickerChange(year, month);
 						}}
@@ -89,7 +132,7 @@ export default function ScheduleScreen({ route, navigation }) {
 				<AntDesign name="plus" size={24} color="black" />
 			</TouchableOpacity>
 			{/* 일정 리스트 */}
-			<ScheduleList />
+			<ScheduleList schedules={schedules} key={schedules} />
 			<ScheduleCreate
 				createModalVisible={createModalVisible}
 				setCreateModalVisible={setCreateModalVisible}

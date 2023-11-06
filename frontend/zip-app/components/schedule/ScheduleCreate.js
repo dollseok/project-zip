@@ -18,22 +18,6 @@ import axiosInstance from '../../util/Interceptor';
 
 export default function ScheduleCreate(props) {
 	// 일정 등록에 필요한 데이터
-	// const [familyId, setFamilyId] = useState(); // 가족 Id
-	// const getFamilyId = async () => {
-	// 	try {
-	// 		const data = await AsyncStorage.getItem('familyId');
-	// 		if (data !== null) {
-	// 			const parsedData = JSON.parse(data);
-	// 			setFamilyId(parsedData); // familyId 변수에 할당
-	// 			// console.log('가족 ID: ', familyId);
-	// 		} else {
-	// 			console.log('데이터를 찾을 수 없습니다.');
-	// 		}
-	// 	} catch (error) {
-	// 		console.error('데이터를 가져오는 중 오류 발생: ', error);
-	// 	}
-	// };
-
 	const [scheduleTitle, setScheduleTitle] = useState(''); // 제목
 	const [startDate, setStartDate] = useState(new Date()); // 시작일
 	const [endDate, setEndDate] = useState(new Date()); // 종료일

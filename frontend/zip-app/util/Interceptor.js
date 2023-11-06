@@ -33,7 +33,10 @@ axiosInstance.interceptors.response.use(
 				const response = await postRefreshToken();
 				const newAccessToken = response.headers['authorization'];
 				// console.log(newAccessToken, "newAccessToken");
-				await AsyncStorage.setItem('accessToken', response.headers['authorization']);
+				await AsyncStorage.setItem(
+					'accessToken',
+					response.headers['authorization'],
+				);
 				await AsyncStorage.setItem(
 					'refreshToken',
 					response.headers['authorization-refresh'],
@@ -41,7 +44,7 @@ axiosInstance.interceptors.response.use(
 				Axios.defaults.headers.common.Authorization = newAccessToken;
 				originRequest.headers.Authorization = newAccessToken;
 				// console.log("토큰 재발급 완료");
-				return axios(originRequest);
+				return Axios(originRequest);
 			} catch {
 				console.log('catch 에러');
 				// localStorage.removeItem('accessToken');
