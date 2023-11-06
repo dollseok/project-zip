@@ -10,48 +10,38 @@ import {
 	TouchableWithoutFeedback,
 	Dimensions,
 	PanResponder,
+	Touchable,
 } from 'react-native';
 import { format } from 'date-fns';
 import DatePicker from 'react-native-date-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../../util/Interceptor';
 
-export default function ScheduleCreate(props) {
-	// 일정 등록에 필요한 데이터
-	// const [familyId, setFamilyId] = useState(); // 가족 Id
-	// const getFamilyId = async () => {
-	// 	try {
-	// 		const data = await AsyncStorage.getItem('familyId');
-	// 		if (data !== null) {
-	// 			const parsedData = JSON.parse(data);
-	// 			setFamilyId(parsedData); // familyId 변수에 할당
-	// 			// console.log('가족 ID: ', familyId);
-	// 		} else {
-	// 			console.log('데이터를 찾을 수 없습니다.');
-	// 		}
-	// 	} catch (error) {
-	// 		console.error('데이터를 가져오는 중 오류 발생: ', error);
-	// 	}
-	// };
+export default function ScheduleUpdate(props) {
+	const { schedule } = props;
+	// 일정 수정에 필요한 데이터
+	// 수정할 일정 id
+	// 가족 id
+	const [scheduleTitle, setScheduleTitle] = useState(schedule.name); // 제목
+	const [startDate, setStartDate] = useState(new Date(schedule.startDate)); // 시작일
+	const [endDate, setEndDate] = useState(new Date(schedule.endDate)); // 종료일
 
-	const [scheduleTitle, setScheduleTitle] = useState(''); // 제목
-	const [startDate, setStartDate] = useState(new Date()); // 시작일
-	const [endDate, setEndDate] = useState(new Date()); // 종료일
-
-	// 일정 등록
-	const createSchedule = async () => {
+	// 일정 수정
+	const updateSchedule = async () => {
 		const familyId = await AsyncStorage.getItem('familyId');
 		const scheduleStart = format(new Date(startDate), 'yyyy-MM-dd');
 		const scheduleEnd = format(new Date(endDate), 'yyyy-MM-dd');
+		console.log('수정할 일정 Id: ', schedule.scheduleId);
 		console.log('가족 Id: ', familyId);
-		console.log('일정 제목: ', scheduleTitle);
+		console.log('수정할 일정 제목: ', scheduleTitle);
 		console.log('일정 시작일: ', format(new Date(startDate), 'yyyy-MM-dd'));
 		console.log('일정 종료일: ', format(new Date(endDate), 'yyyy-MM-dd'));
 
 		axiosInstance
-			.post(`/schedule/register`, {
+			.put(`/schedule/modify`, {
+				scheduleId: schedule.scheduleId,
 				familyId: familyId,
-				title: scheduleTitle,
+				scheduleTitle: scheduleTitle,
 				startDate: scheduleStart,
 				endDate: scheduleEnd,
 			})
@@ -63,12 +53,33 @@ export default function ScheduleCreate(props) {
 			});
 	};
 
+	// 일정 삭제
+	const deleteSchedule = async () => {
+		const familyId = await AsyncStorage.getItem('familyId');
+
+		console.log('삭제할 일정 id:', schedule.scheduleId);
+		console.log('일정삭제 가족 id:', familyId);
+
+		const scheduleDeleteRequestDto = {
+			scheduleId: schedule.scheduleId,
+			familyId: familyId,
+		};
+		axiosInstance
+			.delete(`/schedule/delete`, { data: scheduleDeleteRequestDto })
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
 	// 시작일 종료일 모달 오픈 여부
 	const [openPickStart, setOpenPickStart] = useState(false); // 시작일 모달 보여줄지 여부
 	const [openPickEnd, setOpenPickEnd] = useState(false); // 종료일 모달 보여줄지 여부
 
 	// 일정 등록창 모달 설정
-	const { createModalVisible, setCreateModalVisible } = props;
+	const { updateModalVisible, setUpdateModalVisible } = props;
 	const screenHeight = Dimensions.get('screen').height;
 	const panY = useRef(new Animated.Value(screenHeight)).current;
 	const translateY = panY.interpolate({
@@ -76,13 +87,13 @@ export default function ScheduleCreate(props) {
 		outputRange: [0, 0, 1],
 	});
 
-	const resetScheduleCreate = Animated.timing(panY, {
+	const resetScheduleUpdate = Animated.timing(panY, {
 		toValue: 0,
 		duration: 300,
 		useNativeDriver: true,
 	});
 
-	const closeScheduleCreate = Animated.timing(panY, {
+	const closeScheduleUpdate = Animated.timing(panY, {
 		toValue: screenHeight,
 		duration: 300,
 		useNativeDriver: true,
@@ -99,29 +110,29 @@ export default function ScheduleCreate(props) {
 				if (gestureState.dy > 0 && gestureState.vy > 1.5) {
 					closeModal();
 				} else {
-					resetScheduleCreate.start();
+					resetScheduleUpdate.start();
 				}
 			},
 		}),
 	).current;
 
 	useEffect(() => {
-		if (props.createModalVisible) {
-			resetScheduleCreate.start();
+		if (props.updateModalVisible) {
+			resetScheduleUpdate.start();
 		} else {
-			closeScheduleCreate.start();
+			closeScheduleUpdate.start();
 		}
-	}, [props.createModalVisible]);
+	}, [props.updateModalVisible]);
 
 	const closeModal = () => {
-		closeScheduleCreate.start(() => {
-			setCreateModalVisible(false);
+		closeScheduleUpdate.start(() => {
+			setUpdateModalVisible(false);
 		});
 	};
 
 	return (
 		<Modal
-			visible={createModalVisible}
+			visible={updateModalVisible}
 			animationType={'fade'}
 			transparent
 			statusBarTranslucent
@@ -150,7 +161,7 @@ export default function ScheduleCreate(props) {
 							{/* 등록 버튼 */}
 							<TouchableOpacity
 								style={styles.writeButton}
-								onPress={createSchedule}
+								onPress={updateSchedule}
 							>
 								<Text>완료</Text>
 							</TouchableOpacity>
@@ -158,7 +169,6 @@ export default function ScheduleCreate(props) {
 						{/* 일정 이름 입력 */}
 						<View style={styles.contentContainer}>
 							<TextInput
-								placeholder="제목"
 								style={styles.titleInput}
 								onChangeText={(text) => {
 									setScheduleTitle(text);
@@ -223,6 +233,9 @@ export default function ScheduleCreate(props) {
 								/>
 							</View>
 						</View>
+						<TouchableOpacity onPress={deleteSchedule}>
+							<Text>삭제</Text>
+						</TouchableOpacity>
 					</View>
 				</Animated.View>
 				<TouchableWithoutFeedback onPress={closeModal}>

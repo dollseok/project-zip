@@ -4,6 +4,7 @@ import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { format } from 'date-fns';
 import { useEffect, useState, useCallback } from 'react';
 import DatePicker from 'react-native-modern-datepicker';
+import { Ionicons } from '@expo/vector-icons';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -186,15 +187,32 @@ export default function CalendarScreen({ navigation }) {
 	return (
 		<View style={styles.container}>
 			<View style={styles.dateContainer}>
-				<View style={styles.selectYear}>
-					<Text style={{ fontSize: 24 }}>{currentYear}</Text>
+				{/* 중앙 정렬을 위해 안보이게 처리 */}
+				<View style={{ paddingLeft: 15, opacity: 0 }}>
+					<Ionicons name="calendar-outline" size={30} color="black" />
 				</View>
-				<View style={styles.selectMonth}>
-					<Text style={{ fontSize: 40 }}>{currentMonth}</Text>
+				<View style={{ opacity: 0 }}>
+					<Text>월</Text>
 				</View>
-				<TouchableOpacity onPress={showPickerModal}>
-					<Text>날짜 선택</Text>
-				</TouchableOpacity>
+				{/* 선택된 날짜정보 */}
+				<View style={styles.selectDate}>
+					<View style={styles.selectYear}>
+						<Text style={{ fontSize: 24 }}>{currentYear}</Text>
+					</View>
+					<View style={styles.selectMonth}>
+						<Text style={{ fontSize: 40 }}>{currentMonth}</Text>
+					</View>
+				</View>
+				<View style={{ justifyContent: 'flex-end', paddingBottom: 10 }}>
+					<Text style={{ fontSize: 15 }}>월</Text>
+				</View>
+				{/* 날짜 선택창 여는 버튼 */}
+				<View style={styles.selectDateBtn}>
+					<TouchableOpacity onPress={showPickerModal}>
+						<Ionicons name="calendar-outline" size={30} color="black" />
+					</TouchableOpacity>
+				</View>
+				{/* 연월 선택 모달 */}
 				<Modal visible={isModalVisible} animationType="slide">
 					<View style={styles.pickerContainer}>
 						<DatePicker
@@ -250,22 +268,20 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	dateContainer: {
-		gap: 20,
+		flexDirection: 'row',
 	},
-	selectYear: {
+	selectDate: {
 		alignItems: 'center',
-		// borderWidth: 1,
-		// borderColor: 'black',
+		justifyContent: 'center',
+		gap: 11,
 	},
-	selectMonth: {
+	selectDateBtn: {
+		paddingLeft: 15,
 		alignItems: 'center',
-		// borderWidth: 1,
-		// borderColor: 'black',
+		justifyContent: 'center',
 	},
 	calendarContainer: {
 		marginTop: 20,
-		// alignItems: 'center',
-		// justifyContent: 'center',
 		width: '100%',
 		height: '50%',
 	},

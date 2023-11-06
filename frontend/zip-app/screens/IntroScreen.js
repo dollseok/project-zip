@@ -9,6 +9,11 @@ import {
 } from 'react-native';
 import React, { useRef, useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
+<<<<<<< HEAD
+import { Webview } from 'react-native-webview';
+import { REST_API_KEY, REDIRECT_URI } from '@env';
+=======
+>>>>>>> f2b829e09abbb77c2446eb350324942139720389
 
 export default function IntroScreen({ navigation }) {
 	const rotateValue = useRef(new Animated.Value(0)).current; // 초기 값 0

@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import {
 	View,
 	StyleSheet,
@@ -10,9 +10,41 @@ import {
 	Dimensions,
 	PanResponder,
 } from 'react-native';
+import axiosInstance from '../../util/Interceptor';
 
 export default function SchedulePreview(props) {
 	const { modalVisible, setModalVisible, selectedDate, navigation } = props;
+	console.log('캘린더에서 선택한 날짜: ', selectedDate);
+	// 선택한 날의 일정 정보
+	const [todaySchedule, setTodaySchedule] = useState([]);
+
+	const getTodaySchedule = (today) => {
+		console.log('선택한 날짜: ', today);
+		axiosInstance
+			.get(`/calendar/day`, {
+				params: {
+					todayDate: today,
+				},
+			})
+			.then((res) => {
+				console.log(
+					'선택한 날의 일정 정보',
+					res.data.data.calendarDayScheduleResponseDtoList,
+				);
+				const todayScheduleInfo =
+					res.data.data.calendarDayScheduleResponseDtoList;
+				setTodaySchedule(todayScheduleInfo);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	useEffect(() => {
+		getTodaySchedule(selectedDate);
+	}, []);
+
+	// 모달 관련 설정
 	const screenHeight = Dimensions.get('screen').height;
 	const panY = useRef(new Animated.Value(screenHeight)).current;
 	const translateY = panY.interpolate({
@@ -100,9 +132,8 @@ export default function SchedulePreview(props) {
 					<View style={styles.previewContent}>
 						<View>
 							<Text style={styles.contentTitleFont}>일정</Text>
+							{todaySchedule ? <Text>일정 있음</Text> : <Text>일정 없음</Text>}
 						</View>
-						<Text>10월 가족 여행</Text>
-						<Text>아부지 환갑</Text>
 					</View>
 				</Animated.View>
 			</View>
