@@ -1,5 +1,9 @@
 server:
   port: 9090
+  servlet:
+    multipart:
+      maxFileSize: 200MB
+      maxRequestSize: 200MB
 
 spring:
   application:
