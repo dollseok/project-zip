@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class DiaryWriteRequestDto {
 
     /**
-     *  "memberId (long)": 일기 작성자 Id,
      * 	"familyId (long)": 일기가 작성되는 가족 Id,
      * 	"title (varchar)": "일기 제목",
      * 	"content (text)": "일기 내용",
@@ -24,7 +23,6 @@ public class DiaryWriteRequestDto {
      * 	]
      */
 
-    private Long memberId;
     private Long familyId;
     private String title;
     private String content;
