@@ -67,11 +67,27 @@ public class CalendarServiceImpl implements CalendarService {
         List<CalendarDayScheduleResponseDto> calendarDayScheduleResponseDtoList =
                 scheduleRepository.findAllByStartDate(getTodayDateAsLocalDate(todayDate))
                         .stream()
-                        .flatMap(schedule -> planRepository.findAllBySchedule(Optional.ofNullable(schedule)).stream())
-                        .map(plan -> CalendarDayScheduleResponseDto.builder()
-                                .planId(plan.getId())
-                                .name(plan.getTitle())
-                                .build())
+                        .map(schedule -> {
+                            List<Plan> plans = planRepository.findAllBySchedule(schedule);
+                            List<CalendarDayPlanResponseDto> planDtos = plans.stream()
+                                    .map(plan -> CalendarDayPlanResponseDto.builder()
+                                            .planId(plan.getId())
+                                            .name(plan.getTitle())
+                                            .build())
+                                    .collect(Collectors.toList());
+
+                            CalendarDayScheduleResponseDto scheduleDto = CalendarDayScheduleResponseDto.builder()
+                                    .scheduleId(schedule.getId())
+                                    .familyId(schedule.getFamily().getId())
+                                    .memberId(schedule.getMember().getId())
+                                    .title(schedule.getTitle())
+                                    .startDate(schedule.getStartDate().toString())
+                                    .endDate(schedule.getEndDate().toString())
+                                    .calendarDayPlanResponseDto(planDtos)
+                                    .build();
+
+                            return scheduleDto;
+                        })
                         .collect(Collectors.toList());
 
         LocalDate inputDate = LocalDate.parse(todayDate);
@@ -122,11 +138,27 @@ public class CalendarServiceImpl implements CalendarService {
         List<CalendarMonthScheduleResponseDto> calendarMonthScheduleResponseDtoList =
                 scheduleRepository.findAllByStartDateBetween(startOfMonth, endOfMonth)
                         .stream()
-                        .flatMap(schedule -> planRepository.findAllBySchedule(schedule).stream())
-                        .map(plan -> CalendarMonthScheduleResponseDto.builder()
-                                .planId(plan.getId())
-                                .name(plan.getTitle())
-                                .build())
+                        .map(schedule -> {
+                            List<Plan> plans = planRepository.findAllBySchedule(schedule);
+                            List<CalendarMonthPlanScheduleResponseDto> planDtos = plans.stream()
+                                    .map(plan -> CalendarMonthPlanScheduleResponseDto.builder()
+                                            .planId(plan.getId())
+                                            .name(plan.getTitle())
+                                            .build())
+                                    .collect(Collectors.toList());
+
+                            CalendarMonthScheduleResponseDto scheduleDto = CalendarMonthScheduleResponseDto.builder()
+                                    .scheduleId(schedule.getId())
+                                    .familyId(schedule.getFamily().getId())
+                                    .memberId(schedule.getMember().getId())
+                                    .title(schedule.getTitle())
+                                    .startDate(schedule.getStartDate().toString())
+                                    .endDate(schedule.getEndDate().toString())
+                                    .calendarMonthPlanScheduleResponseDtoList(planDtos)
+                                    .build();
+
+                            return scheduleDto;
+                        })
                         .collect(Collectors.toList());
 
         // 해당 월의 다이어리 조회 및 다이어리의 코멘트 조회
