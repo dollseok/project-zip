@@ -49,7 +49,7 @@ public class DiaryController {
     public ResponseEntity<ResponseTemplate<DiaryWriteResponseDto>> diaryWrite(
             HttpServletRequest httpServletRequest,
             @RequestPart(value="diaryWriteRequest") DiaryWriteRequestDto diaryWriteRequestDto,
-            @RequestPart(value="files") List<MultipartFile> files) {
+            @RequestPart(value="files", required = false) List<MultipartFile> files) {
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) {

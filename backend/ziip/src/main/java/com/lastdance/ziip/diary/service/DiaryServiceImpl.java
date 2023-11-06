@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -43,7 +44,7 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public DiaryWriteResponseDto writeDiary(Member findMember,
                                             DiaryWriteRequestDto diaryWriteRequestDto,
-                                            List<MultipartFile> files) {
+                                            @RequestParam(value = "files", required = false) List<MultipartFile> files) {
 
         // 엔티티 조회
         Optional<Family> family = familyRepository.findById(diaryWriteRequestDto.getFamilyId());
@@ -60,7 +61,7 @@ public class DiaryServiceImpl implements DiaryService{
                 .build();
 
         // 이미지 정보 가져오기
-        if (!files.isEmpty()) {
+        if (files != null && !files.isEmpty()) {
 
             files.stream().forEach(
                 file -> {
@@ -82,7 +83,14 @@ public class DiaryServiceImpl implements DiaryService{
                     DiaryPhoto saveDiaryPhoto = diaryPhotoRepository.save(diaryPhoto);
                 }
             );
+        }
+        else {
+            // 일기 사진 빌드
+            DiaryPhoto diaryPhoto = DiaryPhoto.builder()
+                    .diary(diary)
+                    .build();
 
+            diaryPhotoRepository.save(diaryPhoto);
         }
 
         Diary saveDiary = diaryRepository.save(diary);
