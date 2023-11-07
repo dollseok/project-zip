@@ -42,10 +42,11 @@ public class PlanServiceImpl implements PlanService{
 
         Optional<Schedule> schedule = scheduleRepository.findById(planWriteRequestDto.getScheduleId());
         StatusCode statusCode = statusCodeRepository.findByCode(Code.Pending);
+        Optional<Member> manageMember = memberRepository.findById(planWriteRequestDto.getMemberId());
 
         Plan plan = Plan.builder()
                 .schedule(schedule.get())
-                .member(member)
+                .member(manageMember.get())
                 .statusCode(statusCode)
                 .title(planWriteRequestDto.getTitle())
                 .build();
