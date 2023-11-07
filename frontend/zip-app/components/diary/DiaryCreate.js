@@ -17,6 +17,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import SelectDropdown from 'react-native-select-dropdown';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axiosFileInstance from '../../util/FileInterceptor';
 
 export default function DiaryCreate(props) {
 	const {
@@ -103,6 +105,7 @@ export default function DiaryCreate(props) {
 	// 인풋 관련 설정
 	const [diaryTitle, setDiaryTitle] = useState('');
 	const [diaryContent, setDiaryContent] = useState('');
+	const [diaryEmotion, setDiaryEmotion] = useState(1);
 
 	// // 사진 업로드
 	// 현재 이미지 주소
@@ -134,24 +137,46 @@ export default function DiaryCreate(props) {
 		// result.uri 해도 잘 되지만 deprecated 되었다고 warn 메시지가 뜸
 		// console에 cancelled 라는 내용이 찍히면 warn 메시지가 출력되는 듯
 		// console.log 제거하니까 오류 사라짐!
+	};
 
-		// 서버에 요청 보내기
-		const localUri = result.assets[0].uri;
-		const filename = localUri.split('/').pop();
-		const match = /\.(\w+)$/.exec(filename ?? '');
-		const type = match ? `image/${match[1]}` : `image`;
+	const writeDiary = async () => {
+		const familyId = await AsyncStorage.getItem('familyId');
+
 		const formData = new FormData();
 
-		formData.append('image', { uri: localUri, name: filename, type });
+		const diaryWriteRequestDto = {
+			familyId: familyId,
+			title: diaryTitle,
+			content: diaryContent,
+			emotionId: diaryEmotion,
+		};
+		console.log(diaryWriteRequestDto);
 
-		// await axios({
-		//   method: 'post',
-		//   url: '{api주소}',
-		//   headers: {
-		//     'content-type': 'multipart/form-data',
-		//   },
-		//   data: formData
-		// })
+		formData.append('diaryWriteRequest', diaryWriteRequestDto);
+		console.log('가족 id: ', familyId);
+		console.log('제목: ', diaryTitle);
+		console.log('내용: ', diaryContent);
+		console.log('감정: ', diaryEmotion);
+
+		// 이미지 파일 담기
+		if (imageUrl) {
+			const localUri = imageUrl;
+			console.log('이미지 uri: ', localUri);
+			const filename = localUri.split('/').pop();
+			const match = /\.(\w+)$/.exec(filename ?? '');
+			const type = match ? `image/${match[1]}` : `image`;
+
+			formData.append('files', { uri: localUri, name: filename, type });
+		}
+
+		await axiosFileInstance
+			.post(`/diary/write`, formData)
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	};
 
 	return (
@@ -188,11 +213,14 @@ export default function DiaryCreate(props) {
 									<Text>취소</Text>
 								</TouchableOpacity>
 								{/* 등록 버튼 */}
-								<View style={styles.writeButton}>
+								<TouchableOpacity
+									style={styles.writeButton}
+									onPress={writeDiary}
+								>
 									<Text>완료</Text>
-								</View>
+								</TouchableOpacity>
 							</View>
-							{/* 일자 및 감정 선택 */}
+							{/* 감정 선택 */}
 							<View style={styles.dayEmotionContainer}>
 								<View style={styles.dayContainer}>
 									<SelectDropdown
@@ -216,7 +244,12 @@ export default function DiaryCreate(props) {
 									/>
 								</View>
 								<View style={styles.emotionContainer}>
-									<TouchableOpacity onPress={() => selectEmotion('smile')}>
+									<TouchableOpacity
+										onPress={() => {
+											selectEmotion('smile');
+											setDiaryEmotion(1);
+										}}
+									>
 										<Image
 											style={[
 												styles.emotionIcon,
@@ -227,7 +260,12 @@ export default function DiaryCreate(props) {
 											source={require('../../assets/emotion/smile.png')}
 										/>
 									</TouchableOpacity>
-									<TouchableOpacity onPress={() => selectEmotion('wow')}>
+									<TouchableOpacity
+										onPress={() => {
+											selectEmotion('wow');
+											setDiaryEmotion(2);
+										}}
+									>
 										<Image
 											style={[
 												styles.emotionIcon,
@@ -238,7 +276,12 @@ export default function DiaryCreate(props) {
 											source={require('../../assets/emotion/wow.png')}
 										/>
 									</TouchableOpacity>
-									<TouchableOpacity onPress={() => selectEmotion('sad')}>
+									<TouchableOpacity
+										onPress={() => {
+											selectEmotion('sad');
+											setDiaryEmotion(3);
+										}}
+									>
 										<Image
 											style={[
 												styles.emotionIcon,
@@ -249,7 +292,12 @@ export default function DiaryCreate(props) {
 											source={require('../../assets/emotion/sad.png')}
 										/>
 									</TouchableOpacity>
-									<TouchableOpacity onPress={() => selectEmotion('angry')}>
+									<TouchableOpacity
+										onPress={() => {
+											selectEmotion('angry');
+											setDiaryEmotion(4);
+										}}
+									>
 										<Image
 											style={[
 												styles.emotionIcon,

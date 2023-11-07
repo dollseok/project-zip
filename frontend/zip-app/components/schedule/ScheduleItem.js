@@ -8,7 +8,7 @@ import {
 	Text,
 	TouchableOpacity,
 } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ScheduleUpdate from './ScheduleUpdate';
 import PlanList from './plan/PlanList';
 import { Ionicons } from '@expo/vector-icons';
@@ -21,26 +21,36 @@ import axiosInstance from '../../util/Interceptor';
 // 	UIManager.setLayoutAnimationEnabledExperimental(true);
 // }
 
-export default function ScheduleItem({ schedule }) {
-	// 스케줄 아이디를 가지고 상세 데이터를 가져와야 함.
-	const scheduleId = schedule.scheduleId;
+export default function ScheduleItem({ startDate, scheduleId }) {
+	const [schedule, setSchedule] = useState([]);
+	const [plans, setPlans] = useState([]);
 
+	console.log('ScheduleItem - 일정 정보: ', schedule);
+	console.log(new Date(schedule.startDate));
+
+	// 일정 상세 데이터 가져오기
 	const getScheduleDetail = (scheduleId) => {
 		axiosInstance
 			.get(`/schedule/detail`, {
 				params: {
-					scheduleId,
+					scheduleId: scheduleId,
 				},
 			})
 			.then((res) => {
-				console.log(res.data.data);
+				const scheduleDetail = res.data.data;
+				setSchedule(scheduleDetail);
+
+				const PlanDetail = res.data.data.scheduleDetailPlanResponseDtos;
+				setPlans(PlanDetail);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 	};
 
-	getScheduleDetail(scheduleId);
+	useEffect(() => {
+		getScheduleDetail(scheduleId);
+	}, []);
 
 	// 일정 수정 모달 설정
 	const [updateModalVisible, setUpdateModalVisible] = useState(false);
@@ -48,7 +58,6 @@ export default function ScheduleItem({ schedule }) {
 		setUpdateModalVisible(true);
 	};
 
-	const scheduleDay = schedule.startDate.split('-')[2];
 	// 일정 아이템이 확장되었는지 여부
 	const [expanded, setExpanded] = useState(false);
 
@@ -85,14 +94,16 @@ export default function ScheduleItem({ schedule }) {
 					{/* 일자 */}
 					<View style={styles.scheduleDay}>
 						<View style={styles.dayText}>
-							<Text style={styles.scheduleDayFont}>{scheduleDay}</Text>
+							<Text style={styles.scheduleDayFont}>
+								{startDate.split('-')[2]}
+							</Text>
 							<Text style={{ fontSize: 15 }}>일</Text>
 						</View>
 					</View>
 					{/* 제목 */}
 					<View style={styles.scheduleTitle}>
 						<Text style={{ fontSize: 20, fontWeight: '600' }}>
-							{schedule.name}
+							{schedule.title}
 						</Text>
 					</View>
 					{/* 준비 상태 */}
@@ -112,15 +123,14 @@ export default function ScheduleItem({ schedule }) {
 					</View>
 				</TouchableOpacity>
 				{/* 계획 목록 */}
-				{expanded ? (
-					<PlanList scheduleId={scheduleId} plans={schedule.plan} />
-				) : null}
+				{expanded ? <PlanList scheduleId={scheduleId} plans={plans} /> : null}
 			</View>
-			<ScheduleUpdate
+			{/* <ScheduleUpdate
 				schedule={schedule}
+				scheduleId={scheduleId}
 				updateModalVisible={updateModalVisible}
 				setUpdateModalVisible={setUpdateModalVisible}
-			/>
+			/> */}
 		</View>
 	);
 }

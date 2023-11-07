@@ -1,22 +1,60 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Image } from 'react-native';
+import axiosInstance from '../../util/Interceptor';
+import { useEffect, useState } from 'react';
+import format from 'date-fns/format';
 
-export default function DiaryItem({ diary }) {
-	const diaryDay = diary.createdAt.split(' ')[0].split('-')[2];
+export default function DiaryItem({ diarySummary }) {
+	const [diary, setDiary] = useState([]);
+	console.log('일기 상세정보: ', diary);
+
+	const getDiaryDetail = () => {
+		axiosInstance
+			.get(`/diary/detail`, {
+				params: {
+					diaryId: diarySummary.diaryId,
+				},
+			})
+			.then((res) => {
+				setDiary(res.data.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const formatDay = (createdAt) => {
+		// createdAt 형식 '2023-11-06'
+		if (createdAt) {
+			return createdAt.split('-')[2];
+		}
+	};
+
+	useEffect(() => {
+		getDiaryDetail();
+	}, []);
+
 	return (
 		<View style={[styles.eachDiary, styles.shadowProps]}>
 			{/* 일자 */}
 			<View style={styles.diaryDay}>
-				<Text style={styles.diaryDayFont}>{diaryDay}</Text>
+				<Text style={styles.diaryDayFont}>{formatDay(diary.createdAt)}</Text>
 				<Text style={styles.diaryDayUnitFont}>일</Text>
 			</View>
 			<View style={styles.diarySummary}>
 				{/* 닉네임과 감정아이콘 */}
 				<View style={styles.diaryAuthor}>
 					<View>
-						<Text style={styles.diaryNicknameFont}>{diary.nickname}</Text>
+						<Text style={styles.diaryNicknameFont}>{diary.name}</Text>
 					</View>
 					<View>
-						<Text>감정아이콘</Text>
+						{/* {diary.emotionId === 1 ? (
+							<Image
+								style={{ width: 24, height: 24 }}
+								source={require('../../assets/emotion/smile.png')}
+							/>
+						) : (
+							<></>
+						)} */}
 					</View>
 				</View>
 				{/* 제목 */}

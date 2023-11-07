@@ -10,7 +10,7 @@ import {
 	TouchableWithoutFeedback,
 	Dimensions,
 	PanResponder,
-	Touchable,
+	Alert,
 } from 'react-native';
 import { format } from 'date-fns';
 import DatePicker from 'react-native-date-picker';
@@ -18,7 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../../util/Interceptor';
 
 export default function ScheduleUpdate(props) {
-	const { schedule } = props;
+	const { schedule, scheduleId } = props;
 	// 일정 수정에 필요한 데이터
 	// 수정할 일정 id
 	// 가족 id
@@ -31,7 +31,7 @@ export default function ScheduleUpdate(props) {
 		const familyId = await AsyncStorage.getItem('familyId');
 		const scheduleStart = format(new Date(startDate), 'yyyy-MM-dd');
 		const scheduleEnd = format(new Date(endDate), 'yyyy-MM-dd');
-		console.log('수정할 일정 Id: ', schedule.scheduleId);
+		console.log('수정할 일정 Id: ', scheduleId);
 		console.log('가족 Id: ', familyId);
 		console.log('수정할 일정 제목: ', scheduleTitle);
 		console.log('일정 시작일: ', format(new Date(startDate), 'yyyy-MM-dd'));
@@ -39,7 +39,7 @@ export default function ScheduleUpdate(props) {
 
 		axiosInstance
 			.put(`/schedule/modify`, {
-				scheduleId: schedule.scheduleId,
+				scheduleId: scheduleId,
 				familyId: familyId,
 				scheduleTitle: scheduleTitle,
 				startDate: scheduleStart,
@@ -56,18 +56,26 @@ export default function ScheduleUpdate(props) {
 	// 일정 삭제
 	const deleteSchedule = async () => {
 		const familyId = await AsyncStorage.getItem('familyId');
-
-		console.log('삭제할 일정 id:', schedule.scheduleId);
-		console.log('일정삭제 가족 id:', familyId);
+		// console.log('삭제할 일정 id:', schedule.scheduleId);
+		// console.log('일정삭제 가족 id:', familyId);
 
 		const scheduleDeleteRequestDto = {
-			scheduleId: schedule.scheduleId,
+			scheduleId: scheduleId,
 			familyId: familyId,
 		};
+
 		axiosInstance
 			.delete(`/schedule/delete`, { data: scheduleDeleteRequestDto })
 			.then((res) => {
-				console.log(res);
+				console.log(res.data.msg);
+				if (res.data.msg === '일정 삭제 성공') {
+					Alert.alert('', '일정이 삭제되었습니다.', [
+						{
+							text: '확인',
+							onPress: () => setUpdateModalVisible(false),
+						},
+					]);
+				}
 			})
 			.catch((err) => {
 				console.log(err);

@@ -42,7 +42,7 @@ export default function SchedulePreview(props) {
 
 	useEffect(() => {
 		getTodaySchedule(selectedDate);
-	}, []);
+	}, [selectedDate]);
 
 	// 모달 관련 설정
 	const screenHeight = Dimensions.get('screen').height;

@@ -1,15 +1,17 @@
 import { StyleSheet, Text, View, Modal, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import DiaryList from '../../components/diary/DiaryList';
 import DiaryCreate from '../../components/diary/DiaryCreate';
 
 import { AntDesign } from '@expo/vector-icons';
 import DatePicker from 'react-native-modern-datepicker';
+import axiosInstance from '../../util/Interceptor';
 
 export default function DiaryScreen() {
 	const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // 초기 년도 설정
 	const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // 초기 월 설정 (0은 1월을 의미)
+	const [diarys, setDiarys] = useState([]);
 
 	// 연월 선택창 모달 설정
 	const [isModalVisible, setisModalVisible] = useState(false);
@@ -31,6 +33,27 @@ export default function DiaryScreen() {
 	const onModal = () => {
 		setCreateModalVisible(true);
 	};
+
+	const getDiaryData = () => {
+		axiosInstance
+			.get(`/calendar/month`, {
+				params: {
+					year: selectedYear,
+					month: selectedMonth,
+				},
+			})
+			.then((res) => {
+				const diaryArray = res.data.data.calendarMonthDiaryResponseDtos;
+				setDiarys(diaryArray);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	useEffect(() => {
+		getDiaryData();
+	}, [selectedYear, selectedMonth]);
 
 	return (
 		<View style={styles.container}>
@@ -80,7 +103,7 @@ export default function DiaryScreen() {
 				<AntDesign name="plus" size={24} color="black" />
 			</TouchableOpacity>
 			{/* 일기 리스트 */}
-			<DiaryList></DiaryList>
+			<DiaryList diarys={diarys} />
 			<DiaryCreate
 				selectedYear={selectedYear}
 				selectedMonth={selectedMonth}
