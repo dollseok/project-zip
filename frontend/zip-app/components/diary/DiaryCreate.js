@@ -200,7 +200,11 @@ export default function DiaryCreate(props) {
 					<ImageBackground
 						style={styles.bgImage}
 						imageStyle={{ opacity: 0.8 }}
-						source={imageUrl ? { uri: imageUrl } : null}
+						source={
+							imageUrl
+								? { uri: imageUrl }
+								: require('../../assets/background.jpg')
+						}
 					>
 						<View style={styles.createFormContainer}>
 							{/* 취소 & 등록 버튼 */}

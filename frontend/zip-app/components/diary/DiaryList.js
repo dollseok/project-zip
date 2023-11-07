@@ -1,5 +1,6 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, FlatList } from 'react-native';
 import DiaryItem from './DiaryItem';
+import { useState } from 'react';
 
 export default function DiaryList(props) {
 	const { diarys } = props;
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 		// borderWidth: 1,
 		// borderColor: 'black',
-		alignItems: 'center',
+		// alignItems: 'center',
 		width: '80%',
 		height: '60%',
 		gap: 10, // 일정별 간격
