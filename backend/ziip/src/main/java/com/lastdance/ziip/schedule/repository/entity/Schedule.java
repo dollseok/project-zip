@@ -41,6 +41,9 @@ public class Schedule extends BaseEntity {
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
     private List<Plan> plans;
 
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
+    private List<SchedulePhoto> schedulePhotos;
+
     public void update(ScheduleModifyRequestDto scheduleModifyRequestDto){
         this.title = scheduleModifyRequestDto.getScheduleTitle();
         this.startDate = LocalDate.parse(scheduleModifyRequestDto.getStartDate());
