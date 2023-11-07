@@ -85,11 +85,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 스케줄을 찾을 수 없습니다. id번호 : " + scheduleId));
 
-
         List<ScheduleDetailPlanResponseDto> scheduleDetailPlanResponseDtos =
                 planRepository.findAllBySchedule(Optional.of(schedule)).stream()
                         .map(plan -> ScheduleDetailPlanResponseDto.builder()
-                                .scheduleId(plan.getSchedule().getId())
+                                .planId(plan.getId())
                                 .memberId(plan.getMember().getId())
                                 .statusCode(Long.valueOf(plan.getStatusCode().getCode().getValue()))
                                 .title(plan.getTitle())

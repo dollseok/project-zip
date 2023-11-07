@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ScheduleDetailPlanResponseDto {
 
-    private Long scheduleId;
+    private Long planId;
     private Long memberId;
     private Long statusCode;
     private String title;
