@@ -1,10 +1,7 @@
 import { StyleSheet, Text, View, Modal, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
-<<<<<<< HEAD:frontend/zip-app/screens/diary/DiaryScreen.js
-import { Ionicons } from '@expo/vector-icons';
-=======
+
 import Ionicons from 'react-native-vector-icons/Ionicons';
->>>>>>> front/feat226-reactnativecli:frontend/zipapp/screens/diary/DiaryScreen.js
 import DiaryList from '../../components/diary/DiaryList';
 import DiaryCreate from '../../components/diary/DiaryCreate';
 
