@@ -10,11 +10,12 @@ import {
   TextInput,
   Animated,
   Modal,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../util/Interceptor';
 import axiosFileInstance from '../util/FileInterceptor';
-import * as ImagePicker from 'expo-image-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 export default function FamilyMainScreen({route}) {
   const [family, setFamily] = useState([]);
@@ -28,6 +29,8 @@ export default function FamilyMainScreen({route}) {
   const [modifiedFamilyName, setModifiedFamilyName] = useState([]);
   const [modifiedFamilyContent, setModifiedFamilyContent] = useState([]);
 
+  const outside = useRef();
+
   const [member, setMember] = useState([]);
 
   const [memberUpdated, setMemberUpdated] = useState(false);
@@ -39,6 +42,33 @@ export default function FamilyMainScreen({route}) {
   // 이미지 변경 모달창 관련 변수
   const [modalVisible, setModalVisible] = useState(false);
   const translateY = useRef(new Animated.Value(300)).current;
+
+  const selectImage = async BackgroudOrProfile =>  {
+    console.log('변경할 요소 : ', BackgroudOrProfile);
+
+    const options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+  
+    launchImageLibrary(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        const uri = response.assets[0].uri ;
+
+        console.log(uri);
+
+        return _uploadImage(uri, BackgroudOrProfile);
+      }
+    });
+  };
 
   // 모달창 출력 함수
   const showButtons = () => {
@@ -52,6 +82,7 @@ export default function FamilyMainScreen({route}) {
 
   // 모달창 가리기 함수
   const hideButtons = () => {
+    console.log('모달창 가리기');
     Animated.timing(translateY, {
       toValue: 300,
       duration: 300,
@@ -71,29 +102,6 @@ export default function FamilyMainScreen({route}) {
         'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png',
       );
     }
-  };
-
-  // photo 입력받는 button을 눌렀을 때 실행되는 함수
-  const _handlePhotoBtnPress = async BackgroudOrProfile => {
-    console.log('변경할 요소 : ', BackgroudOrProfile);
-    // 사용자의 갤러리 접근 권한 요청
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      alert('갤러리 접근 권한이 필요합니다.');
-      return;
-    }
-
-    // 이미지 피커 런칭
-    const pickerResult = await ImagePicker.launchImageLibraryAsync();
-    if (pickerResult.cancelled === true) {
-      return;
-    }
-
-    // 선택된 이미지의 URI
-    const uri = pickerResult.uri;
-    return _uploadImage(uri, BackgroudOrProfile);
   };
 
   const _uploadImage = async (uri, BackgroudOrProfile) => {
@@ -165,27 +173,6 @@ export default function FamilyMainScreen({route}) {
       .catch(error => {
         console.error('회원 프로필 사진 수정 에러: ', error);
       });
-  };
-
-  // onChangePhoto 함수 정의
-  const onChangePhoto = photoUri => {
-    // 가져온 사진의 URI를 이용하여 원하는 작업 수행
-    console.log(`Selected photo URI: ${photoUri}`);
-    // 예를 들어, state를 업데이트하거나 다른 작업을 수행할 수 있습니다.
-  };
-
-  // 편집 모드를 토글하는 함수
-  const toggleEditMode = () => {
-    setIsEditMode(prevMode => !prevMode);
-  };
-
-  const handleEdit = () => {
-    setIsEditMode(true);
-  };
-
-  const handleSave = () => {
-    setFamily({...family, familyName: newFamilyName});
-    setIsEditMode(false);
   };
 
   useEffect(() => {
@@ -299,7 +286,6 @@ export default function FamilyMainScreen({route}) {
           </TouchableOpacity>
         )}
       </View>
-
       <View
         style={[
           {flexDirection: 'row', alignItems: 'center'},
@@ -426,64 +412,66 @@ export default function FamilyMainScreen({route}) {
         keyExtractor={item => item.diaryId.toString()}
       />
 
-      {modalVisible && (
-        <Modal
-          transparent={true}
-          animationType="none"
-          visible={modalVisible}
-          onRequestClose={hideButtons}>
-          <Animated.View
-            style={[styles.modalContainer, {transform: [{translateY}]}]}>
-            <View style={{flex: 1, flexDirection: 'column'}}>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                onPress={() =>
-                  _handlePhotoBtnPress(
-                    basicImg == 'Background' ? 'Background' : 'Profile',
-                  )
-                }>
-                <Text>앨범에서 사진 선택하기</Text>
-              </TouchableOpacity>
-              <View
-                style={{
-                  backgroundColor: 'gray',
-                  height: 1,
-				  paddingHorizontal: '100%'
-                }}
-              />
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                onPress={() => handleBasicImg()}>
-                <Text>기본 이미지로 변경하기</Text>
-              </TouchableOpacity>
-              <View
-                style={{
-                  backgroundColor: 'gray',
-                  height: 1,
-				  paddingHorizontal: '100%'
-                }}
-              />
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                onPress={hideButtons}>
-                <Text>취소</Text>
-              </TouchableOpacity>
-            </View>
-          </Animated.View>
-        </Modal>
-      )}
+      <Modal
+        transparent={true}
+        animationType="none"
+        visible={modalVisible}
+        onRequestClose={hideButtons}>
+        <TouchableWithoutFeedback onPress={hideButtons}>
+          <View style={styles.modalOverlay}>
+            <Animated.View
+              style={[styles.modalContainer, {transform: [{translateY}]}]}>
+              <View style={{flex: 1, flexDirection: 'column'}}>
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() =>
+                    selectImage(
+                      basicImg == 'Background' ? 'Background' : 'Profile',
+                    )
+                  }>
+                  <Text>앨범에서 사진 선택하기</Text>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    backgroundColor: 'gray',
+                    height: 1,
+                    paddingHorizontal: '100%',
+                  }}
+                />
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => handleBasicImg()}>
+                  <Text>기본 이미지로 변경하기</Text>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    backgroundColor: 'gray',
+                    height: 1,
+                    paddingHorizontal: '100%',
+                  }}
+                />
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={hideButtons}>
+                  <Text>취소</Text>
+                </TouchableOpacity>
+              </View>
+            </Animated.View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </ImageBackground>
   );
 }
@@ -566,6 +554,12 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // 반투명 배경
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
