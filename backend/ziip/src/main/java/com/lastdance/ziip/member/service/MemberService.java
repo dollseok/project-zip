@@ -1,11 +1,11 @@
 package com.lastdance.ziip.member.service;
 
+import com.lastdance.ziip.family.dto.response.FamilyMemberDetailResponseDto;
 import com.lastdance.ziip.member.dto.LoginDto;
 import com.lastdance.ziip.member.dto.TokenDto;
 import com.lastdance.ziip.member.dto.request.MemberInfoUpdateRequestDto;
 import com.lastdance.ziip.member.dto.response.BaseResponseDto;
 import com.lastdance.ziip.member.dto.response.MemberAllInfoResponse;
-import com.lastdance.ziip.member.dto.response.MemberInfoResponseDto;
 import com.lastdance.ziip.member.repository.entity.Member;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -292,4 +292,18 @@ public class FamilyServiceImpl implements FamilyService {
 
         return familyInviteResponseDto;
     }
+
+    @Override
+    public FamilyMemberDetailResponseDto getMemberNickname(Member findMember, Long familyId) {
+        Optional<Family> family = familyRepository.findById(familyId);
+
+        FamilyMember familyMember = familyMemberRepository.findByMemberAndFamily(findMember, family.get());
+
+        FamilyMemberDetailResponseDto familyMemberDetailResponseDto = FamilyMemberDetailResponseDto.builder()
+            .memberId(familyMember.getId())
+            .nickname(familyMember.getNickname())
+            .build();
+
+        return familyMemberDetailResponseDto;
+    }
 }

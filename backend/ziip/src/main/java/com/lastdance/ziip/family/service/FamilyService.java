@@ -22,4 +22,6 @@ public interface FamilyService {
     FamilyMemberResponseDto getFamilyMember(Member findMember, long familyId);
     FamilyCheckCodeResponseDto checkFamilyCode(Member findMember, FamilyCheckCodeRequestDto familyCheckCodeRequestDto);
     FamilyInviteResponseDto inviteFamily(Member findMember, FamilyInviteRequestDto familyInviteRequestDto);
+    FamilyMemberDetailResponseDto getMemberNickname(Member findMember, Long familyId);
+
 }

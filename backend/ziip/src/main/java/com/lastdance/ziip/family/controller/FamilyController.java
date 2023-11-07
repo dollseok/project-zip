@@ -8,6 +8,7 @@ import com.lastdance.ziip.family.enums.FamilyResponseMessage;
 import com.lastdance.ziip.family.exception.MemberAlreadyRegisteredInFamilyException;
 import com.lastdance.ziip.family.service.FamilyService;
 import com.lastdance.ziip.global.util.ResponseTemplate;
+import com.lastdance.ziip.member.dto.response.BaseResponseDto;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -263,5 +264,24 @@ public class FamilyController {
                         .result(true)
                         .build(),
                 HttpStatus.OK);
+    }
+
+    @Operation(summary = "마이 페이지에서 사용할 멤버 닉네임 리턴", description = "마이 페이지에서 사용할 멤버 닉네임 리턴")
+    @GetMapping("/mypage")
+    private ResponseEntity<ResponseTemplate<FamilyMemberDetailResponseDto>> getMemberNickname(@RequestParam(name = "familyId") long familyId
+        , HttpServletRequest httpServletRequest) {
+
+        String token = httpServletRequest.getHeader("Authorization");
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        FamilyMemberDetailResponseDto responseDto = familyService.getMemberNickname(findMember, familyId);
+
+        return new ResponseEntity<>(
+            ResponseTemplate.<FamilyMemberDetailResponseDto> builder()
+                .msg(FamilyResponseMessage.FAMILY_MEMBER_NICKNAME_SUCCESS.getMessage())
+                .data(responseDto)
+                .result(true)
+                .build(),
+            HttpStatus.OK);
     }
 }

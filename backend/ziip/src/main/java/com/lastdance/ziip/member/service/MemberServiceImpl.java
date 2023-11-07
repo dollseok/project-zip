@@ -248,7 +248,7 @@ public class MemberServiceImpl implements MemberService {
         return memberAllInfoResponse;
     }
 
-//    @Override
+    //    @Override
 //    public MyPageMemberInfoResponse getMyPageMemberInfo(int memberId) {
 //
 //        Optional<Member> member = memberRepository.findById(memberId);
