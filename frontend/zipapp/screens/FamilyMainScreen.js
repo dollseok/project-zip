@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
     width: 80, // 원하는 이미지 크기로 조정
     height: 80, // 원하는 이미지 크기로 조정
     marginTop: 20,
-    borderRadius: 50, // 원형 이미지를 위해
+    borderRadius: 25, // 원형 이미지를 위해
   },
   headingSchedule: {
     fontSize: 20,
@@ -522,12 +522,6 @@ const styles = StyleSheet.create({
     width: '90',
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.5)',
-  },
-  userImage: {
-    width: 20,
-    height: 20,
-    marginRight: 30, // 간격을 15로 조절했습니다.
-    borderRadius: 20,
   },
   whiteText: {
     fontSize: 20,
