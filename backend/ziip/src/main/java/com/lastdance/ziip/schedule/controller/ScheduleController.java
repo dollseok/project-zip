@@ -5,6 +5,7 @@ import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.member.service.MemberService;
 import com.lastdance.ziip.schedule.dto.request.ScheduleDeleteRequestDto;
 import com.lastdance.ziip.schedule.dto.request.ScheduleModifyRequestDto;
+import com.lastdance.ziip.schedule.dto.request.SchedulePhotoRegisterRequestDto;
 import com.lastdance.ziip.schedule.dto.request.ScheduleRegisterRequestDto;
 import com.lastdance.ziip.schedule.dto.response.*;
 import com.lastdance.ziip.schedule.enums.ScheduleResponseMessage;
@@ -19,7 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.util.List;
 
 @Tag(name = "Schedule", description = "스케줄 관련 API")
 @RestController
@@ -146,4 +150,26 @@ public class ScheduleController {
                 HttpStatus.OK);
     }
 
+    @Operation(summary = "일정 사진", description = "일정 사진 등록")
+    @PostMapping("/photo/register")
+    public ResponseEntity<ResponseTemplate<SchedulePhotoRegisterResponseDto>> schedulePhotoRegister(
+            HttpServletRequest httpServletRequest,
+            @RequestPart(name = "dto") SchedulePhotoRegisterRequestDto requestDto,
+            @RequestPart(name = "files") List<MultipartFile> files){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) {
+            return null;
+        }
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        SchedulePhotoRegisterResponseDto schedulePhotoRegisterResponseDto = scheduleService.registSchedulePhoto(findMember, files, requestDto);
+
+        return new ResponseEntity<>(
+                ResponseTemplate.<SchedulePhotoRegisterResponseDto>builder()
+                        .msg(ScheduleResponseMessage.SCHEDULE_PHOTO_REGIST_SUCCESS.getMessage())
+                        .data(schedulePhotoRegisterResponseDto)
+                        .result(true)
+                        .build(), HttpStatus.OK);
+    }
 }

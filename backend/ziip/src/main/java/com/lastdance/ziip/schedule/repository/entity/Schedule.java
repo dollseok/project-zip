@@ -41,7 +41,7 @@ public class Schedule extends BaseEntity {
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
     private List<Plan> plans;
 
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<SchedulePhoto> schedulePhotos;
 
     public void update(ScheduleModifyRequestDto scheduleModifyRequestDto){
