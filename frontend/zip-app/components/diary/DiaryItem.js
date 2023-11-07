@@ -5,6 +5,7 @@ import format from 'date-fns/format';
 
 export default function DiaryItem({ diarySummary }) {
 	const [diary, setDiary] = useState([]);
+	console.log('일기 상세정보: ', diary);
 
 	const getDiaryDetail = () => {
 		axiosInstance
@@ -14,7 +15,6 @@ export default function DiaryItem({ diarySummary }) {
 				},
 			})
 			.then((res) => {
-				console.log('일기 상세정보: ', res.data.data);
 				setDiary(res.data.data);
 			})
 			.catch((err) => {
@@ -59,7 +59,7 @@ export default function DiaryItem({ diarySummary }) {
 				</View>
 				{/* 제목 */}
 				<View style={styles.diaryTitle}>
-					<Text>제목</Text>
+					<Text>{diary.title}</Text>
 				</View>
 			</View>
 		</View>

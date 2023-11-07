@@ -38,14 +38,15 @@ export default function ScheduleList(props) {
 	return (
 		<View style={styles.scheduleList}>
 			{!schedules ? <Text>아직 등록된 일정이 없습니다</Text> : <></>}
-			{/* {schedules.map((schedule) => {
+			{schedules.map((schedule) => {
 				return (
 					<ScheduleItem
-						schedule={schedule}
+						startDate={schedule.startDate}
+						scheduleId={schedule.scheduleId}
 						key={schedule.scheduleId}
 					></ScheduleItem>
 				);
-			})} */}
+			})}
 		</View>
 	);
 }

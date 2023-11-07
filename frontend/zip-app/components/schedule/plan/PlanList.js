@@ -11,6 +11,7 @@ import PlanCreate from './PlanCreate';
 
 export default function PlanList(props) {
 	const { scheduleId, plans } = props;
+	console.log('일정 id: ', scheduleId);
 
 	return (
 		<View style={styles.planContainer}>
@@ -20,12 +21,12 @@ export default function PlanList(props) {
 				</View>
 			</View>
 			<View style={styles.planList}>
-				<PlanCreate scheduleId={scheduleId} />
 				<FlatList
 					data={plans}
 					keyExtractor={(item) => item.planId.toString()}
 					renderItem={({ item }) => <PlanItem plan={item} />}
 				/>
+				<PlanCreate scheduleId={scheduleId} />
 			</View>
 		</View>
 	);

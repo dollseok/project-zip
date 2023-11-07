@@ -13,9 +13,6 @@ export default function ScheduleScreen({ route, navigation }) {
 	const [schedules, setSchedules] = useState([]);
 
 	const getScheduleList = async () => {
-		console.log('연도: ', selectedYear);
-		console.log('월: ', selectedMonth);
-
 		axiosInstance
 			.get(`/calendar/month`, {
 				params: {
@@ -24,11 +21,7 @@ export default function ScheduleScreen({ route, navigation }) {
 				},
 			})
 			.then((res) => {
-				console.log('월별 일기 & 일정 데이터: ', res.data.data);
-				console.log(
-					'월별 일정 데이터: ',
-					res.data.data.calendarMonthScheduleResponseDtoList,
-				);
+				// 월별 일정 데이터
 				const scheduleArray =
 					res.data.data.calendarMonthScheduleResponseDtoList;
 				setSchedules(scheduleArray);
