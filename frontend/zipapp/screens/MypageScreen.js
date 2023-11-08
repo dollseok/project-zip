@@ -15,7 +15,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../util/Interceptor';
 import axiosFileInstance from '../util/FileInterceptor';
-import { launchImageLibrary } from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 export default function MypageScreen({route}) {
   const [family, setFamily] = useState([]);
@@ -42,7 +42,7 @@ export default function MypageScreen({route}) {
   const [modalVisible, setModalVisible] = useState(false);
   const translateY = useRef(new Animated.Value(300)).current;
 
-  const selectImage = async BackgroudOrProfile =>  {
+  const selectImage = async BackgroudOrProfile => {
     console.log('변경할 요소 : ', BackgroudOrProfile);
 
     const options = {
@@ -51,7 +51,7 @@ export default function MypageScreen({route}) {
         path: 'images',
       },
     };
-  
+
     launchImageLibrary(options, response => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -60,7 +60,7 @@ export default function MypageScreen({route}) {
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
-        const uri = response.assets[0].uri ;
+        const uri = response.assets[0].uri;
 
         console.log(uri);
 
@@ -121,7 +121,7 @@ export default function MypageScreen({route}) {
     }
   };
 
-  // 가족은 배경사진만 변경되는 것
+  // 가족은 배경사진만 변경, 유저는 닉네임, 프로필사진 변경
   const modifyFamily = async () => {
     console.log('modifyFamily 함수 시작!');
 
@@ -129,8 +129,8 @@ export default function MypageScreen({route}) {
 
     const familyModifyRequest = {
       id: family.familyId,
-      name: modifiedFamilyName,
-      content: modifiedFamilyContent,
+      name: family.familyName,
+      content: family.familyContent,
     };
 
     formData.append('familyModifyRequest', JSON.stringify(familyModifyRequest));
@@ -173,6 +173,23 @@ export default function MypageScreen({route}) {
       .catch(error => {
         console.error('회원 프로필 사진 수정 에러: ', error);
       });
+
+    const familyNickNameRequest = {
+      familyId: family.familyId,
+      nickname: modifiedNickName,
+    };
+
+    console.log("수정 버튼 클릭 : ", familyNickNameRequest);
+
+    await axiosInstance
+      .put(`/family/nickname`, familyNickNameRequest)
+      .then(response => {
+        console.log('회원 닉네임 수정 응답 데이터 : ', response.data);
+        setMemberUpdated(true); // 성공적으로 가족 정보가 수정되었다는 표시
+      })
+      .catch(error => {
+        console.error('회원 닉네임 수정 에러: ', error);
+      });
   };
 
   useEffect(() => {
@@ -204,11 +221,13 @@ export default function MypageScreen({route}) {
           }
         });
 
-		axiosInstance.get(`/family/mypage?familyId=${familyId}`).then((response) => {
-			console.log('본인 닉네임 : ', response.data.data);
-			setNickname(response.data.data.nickname);
-		})
-		
+      axiosInstance
+        .get(`/family/mypage?familyId=${familyId}`)
+        .then(response => {
+          console.log('본인 닉네임 : ', response.data.data);
+          setNickname(response.data.data.nickname);
+          setModifiedNickName(response.data.data.nickname);
+        });
     }
 
     fetchData();
@@ -275,8 +294,8 @@ export default function MypageScreen({route}) {
             style={familyStyles.familyName}
             defaultValue={nickname}
             editable={isNickNameEditMode} // 편집 모드가 활성화되면 편집 가능하게 설정
-            onChangeText={text => {
-				setModifiedNickName(text);
+            onChangeText={(text) => {
+              setModifiedNickName(text);
             }}
             autoFocus={isNickNameEditMode} // 편집 모드가 활성화되면 자동으로 포커스를 설정하여 키보드를 나타나게 함
           />
@@ -298,7 +317,6 @@ export default function MypageScreen({route}) {
           </TouchableOpacity>
         )}
       </View>
-
 
       <View>
         <Image source={{uri: memberProfileImgUrl}} style={styles.memberImage} />
@@ -382,7 +400,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    // justifyContent: 'center',
     backgroundColor: 'gray',
   },
   header: {
