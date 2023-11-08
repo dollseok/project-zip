@@ -300,7 +300,7 @@ public class FamilyServiceImpl implements FamilyService {
         FamilyMember familyMember = familyMemberRepository.findByMemberAndFamily(findMember, family.get());
 
         FamilyMemberDetailResponseDto familyMemberDetailResponseDto = FamilyMemberDetailResponseDto.builder()
-            .memberId(familyMember.getId())
+            .memberId(findMember.getId())
             .nickname(familyMember.getNickname())
             .build();
 
