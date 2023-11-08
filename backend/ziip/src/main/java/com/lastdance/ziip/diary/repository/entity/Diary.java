@@ -43,4 +43,7 @@ public class Diary extends BaseEntity {
 
     @OneToMany(mappedBy = "diary", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<DiaryComment> diaryComments;
+
+    @OneToMany(mappedBy = "diary", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<DiaryAlert> diaryAlerts;
 }

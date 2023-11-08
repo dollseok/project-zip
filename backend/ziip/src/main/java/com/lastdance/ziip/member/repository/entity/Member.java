@@ -1,7 +1,9 @@
 package com.lastdance.ziip.member.repository.entity;
 
 import com.lastdance.ziip.diary.repository.entity.Diary;
+import com.lastdance.ziip.diary.repository.entity.DiaryAlert;
 import com.lastdance.ziip.diary.repository.entity.DiaryComment;
+import com.lastdance.ziip.diary.repository.entity.DiaryCommentAlert;
 import com.lastdance.ziip.member.dto.FileDto;
 import com.lastdance.ziip.member.dto.request.MemberInfoUpdateRequestDto;
 import com.lastdance.ziip.member.enums.Gender;
@@ -69,6 +71,12 @@ public class Member extends BaseEntity{
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Schedule> schedules;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<DiaryAlert> diaryAlerts;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<DiaryCommentAlert> diaryCommentAlerts;
 
     public void updateName(String name){
         this.name = name;

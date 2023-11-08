@@ -1,5 +1,6 @@
 package com.lastdance.ziip.diary.repository.entity;
 
+import com.lastdance.ziip.diary.enums.IsRead;
 import com.lastdance.ziip.member.repository.entity.Member;
 import lombok.*;
 
@@ -23,5 +24,5 @@ public class DiaryCommentAlert {
     @JoinColumn(name = "diary_comment_id")
     private DiaryComment diaryComment;
 
-    private Integer readStatus; // default로 안읽음 0이 들어감
+    private IsRead isRead;
 }
