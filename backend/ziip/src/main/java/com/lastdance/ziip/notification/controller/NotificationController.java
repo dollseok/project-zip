@@ -33,6 +33,7 @@ public class NotificationController {
 	public ResponseEntity<ResponseTemplate<ReceiveFCMTokenResponseDto>> receiveFCMToken(HttpServletRequest httpServletRequest,
 		@RequestBody ReceiveFCMTokenRequestDto receiveFCMTokenRequestDto) {
 
+		System.out.println("전달받은 FCM Token : " + receiveFCMTokenRequestDto.getFcmToken());
 
 		ReceiveFCMTokenResponseDto responseDto = ReceiveFCMTokenResponseDto.builder()
 			.fcmToken(receiveFCMTokenRequestDto.getFcmToken())
