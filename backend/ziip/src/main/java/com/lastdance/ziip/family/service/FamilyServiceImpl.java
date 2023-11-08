@@ -164,6 +164,8 @@ public class FamilyServiceImpl implements FamilyService {
 
         FamilyMember familyMember = familyMemberRepository.findByMemberAndFamilyId(findMember, familyNickNameRequest.getFamilyId());
 
+        System.out.println(familyNickNameRequest);
+
         familyMember.updateNickname(familyNickNameRequest.getNickname());
 
         FamilyNickNameResponseDto familyNickNameResponse = FamilyNickNameResponseDto.builder()
