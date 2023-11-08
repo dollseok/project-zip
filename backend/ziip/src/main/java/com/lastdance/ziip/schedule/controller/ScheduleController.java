@@ -150,7 +150,7 @@ public class ScheduleController {
                 HttpStatus.OK);
     }
 
-    @Operation(summary = "일정 사진", description = "일정 사진 등록")
+    @Operation(summary = "일정 사진 등록", description = "일정 사진 등록")
     @PostMapping("/photo/register")
     public ResponseEntity<ResponseTemplate<SchedulePhotoRegisterResponseDto>> schedulePhotoRegister(
             HttpServletRequest httpServletRequest,
@@ -171,5 +171,26 @@ public class ScheduleController {
                         .data(schedulePhotoRegisterResponseDto)
                         .result(true)
                         .build(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "일정 사진 삭제", description = "일정 사진 삭제 api")
+    @DeleteMapping("/photo/delete")
+    public ResponseEntity<ResponseTemplate<SchedulePhotoDeleteResponseDto>> deleteSchedulePhoto(
+            HttpServletRequest httpServletRequest,
+            @RequestParam(name = "schedulePhotoId") Long schedulePhotoId){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null){
+            return null;
+        }
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        SchedulePhotoDeleteResponseDto schedulePhotoDeleteResponseDto = scheduleService.deleteSchedulePhoto(findMember, schedulePhotoId);
+
+        return new ResponseEntity<>(ResponseTemplate.<SchedulePhotoDeleteResponseDto>builder()
+                .msg(ScheduleResponseMessage.SCHEDULE_PHOTO_DELETE_SUCCESS.getMessage())
+                .result(true)
+                .data(schedulePhotoDeleteResponseDto)
+                .build(),HttpStatus.OK);
     }
 }
