@@ -7,7 +7,8 @@ public enum ScheduleResponseMessage {
     SCHEDULE_DETAIL_SUCCESS("일정 상세조회 성공"),
     SCHEDULE_MODIFY_SUCCESS("일정 수정 성공"),
     SCHEDULE_DELETE_SUCCESS("일정 삭제 성공"),
-    SCHEDULE_PHOTO_REGIST_SUCCESS("일정 사진 등록 성공");
+    SCHEDULE_PHOTO_REGIST_SUCCESS("일정 사진 등록 성공"),
+    SCHEDULE_PHOTO_DELETE_SUCCESS("일정 사진 삭제 성공");
 
     private final String message;
 

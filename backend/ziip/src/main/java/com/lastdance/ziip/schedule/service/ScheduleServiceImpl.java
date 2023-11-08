@@ -11,6 +11,7 @@ import com.lastdance.ziip.schedule.dto.request.ScheduleModifyRequestDto;
 import com.lastdance.ziip.schedule.dto.request.SchedulePhotoRegisterRequestDto;
 import com.lastdance.ziip.schedule.dto.request.ScheduleRegisterRequestDto;
 import com.lastdance.ziip.schedule.dto.response.*;
+import com.lastdance.ziip.schedule.exception.validator.ScheduleValidator;
 import com.lastdance.ziip.schedule.repository.SchedulePhotoRepository;
 import com.lastdance.ziip.schedule.repository.ScheduleRepository;
 import com.lastdance.ziip.schedule.repository.entity.Schedule;
@@ -40,6 +41,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final SchedulePhotoRepository schedulePhotoRepository;
     private final PlanRepository planRepository;
     private final S3Uploader s3Uploader;
+    private final ScheduleValidator scheduleValidator;
 
     @Override
     public ScheduleRegisterResponseDto registerSchedule(Member findMember,
@@ -103,11 +105,20 @@ public class ScheduleServiceImpl implements ScheduleService {
                                 .build())
                         .collect(Collectors.toList());
 
+        List<ScheduleDetailPhotoResponseDto> scheduleDetailPhotoResponseDtos =
+                schedulePhotoRepository.findAllBySchedule(Optional.of(schedule)).stream()
+                        .map(schedulePhoto -> ScheduleDetailPhotoResponseDto.builder()
+                                .imgUrl(schedulePhoto.getImgUrl())
+                                .createdAt(schedulePhoto.getCreatedAt())
+                                .build())
+                        .collect(Collectors.toList());
+
         ScheduleDetailResponseDto scheduleDetailResponseDto = ScheduleDetailResponseDto.builder()
                 .title(schedule.getTitle())
                 .startDate(String.valueOf(schedule.getStartDate()))
                 .endDate(String.valueOf(schedule.getEndDate()))
                 .scheduleDetailPlanResponseDtos(scheduleDetailPlanResponseDtos)
+                .scheduleDetailPhotoResponseDtos(scheduleDetailPhotoResponseDtos)
                 .build();
 
         return scheduleDetailResponseDto;
@@ -166,6 +177,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
                         SchedulePhoto schedulePhoto = SchedulePhoto.builder()
                                 .schedule(schedule.get())
+                                .member(findMember)
                                 .imgUrl(fileUrl)
                                 .imgName(OriginalName)
                                 .build();
@@ -180,6 +192,24 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .build();
 
         return schedulePhotoRegisterResponseDto;
+    }
+
+    @Override
+    public SchedulePhotoDeleteResponseDto deleteSchedulePhoto(Member findMember, Long schedulePhotoId) {
+
+        Optional<SchedulePhoto> tmpSchedulePhoto = schedulePhotoRepository.findById(schedulePhotoId);
+        scheduleValidator.checkSchedulePhotoExist(tmpSchedulePhoto);
+        SchedulePhoto schedulePhoto = tmpSchedulePhoto.get();
+        System.out.println("여기?");
+        scheduleValidator.checkSchedulePhotoManager(schedulePhoto, findMember.getId());
+
+        schedulePhotoRepository.delete(schedulePhoto);
+
+        SchedulePhotoDeleteResponseDto schedulePhotoDeleteResponseDto = SchedulePhotoDeleteResponseDto.builder()
+                .memberId(findMember.getId())
+                .build();
+
+        return schedulePhotoDeleteResponseDto;
     }
 
 }

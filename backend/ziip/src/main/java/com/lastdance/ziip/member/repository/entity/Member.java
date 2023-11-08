@@ -18,6 +18,7 @@ import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import com.lastdance.ziip.schedule.repository.entity.SchedulePhoto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -77,6 +78,9 @@ public class Member extends BaseEntity{
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<DiaryCommentAlert> diaryCommentAlerts;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<SchedulePhoto> schedulePhotos;
 
     public void updateName(String name){
         this.name = name;

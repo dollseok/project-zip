@@ -23,4 +23,6 @@ public interface ScheduleService {
     ScheduleDeleteResponseDto deleteService(Member findMember, ScheduleDeleteRequestDto scheduleDeleteRequestDto);
 
     SchedulePhotoRegisterResponseDto registSchedulePhoto(Member findMember, List<MultipartFile> files, SchedulePhotoRegisterRequestDto requestDto);
+
+    SchedulePhotoDeleteResponseDto deleteSchedulePhoto(Member findMember, Long schedulePhotoId);
 }

@@ -5,8 +5,9 @@ import com.lastdance.ziip.schedule.repository.entity.SchedulePhoto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SchedulePhotoRepository extends JpaRepository<SchedulePhoto, Long> {
 
-    List<SchedulePhoto> findAllBySchedule(Schedule schedule);
+    List<SchedulePhoto> findAllBySchedule(Optional<Schedule> schedule);
 }
