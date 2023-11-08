@@ -11,6 +11,6 @@ public interface PlanService {
     PlanWriteResponseDto postPlan(Member member, PlanWriteRequestDto planWriteRequestDto);
     PlanDetailResponseDto getPlanDetail(Member member, Long planId);
     PlanModifyResponseDto modifyPlan(Member member, PlanModifyRequestDto planModifyRequestDto);
-    PlanDeleteResponseDto deletePlan(Member member, PlanDeleteRequestDto planDeleteRequestDto);
+    PlanDeleteResponseDto deletePlan(Member member, Long planId);
     PlanStatusModifyResponseDto modifyPlanStatus(Member member, PlanStatusModifyRequestDto planStatusModifyRequestDto);
 }

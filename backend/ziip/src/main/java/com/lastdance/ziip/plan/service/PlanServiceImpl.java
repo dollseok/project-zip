@@ -102,9 +102,9 @@ public class PlanServiceImpl implements PlanService{
     }
 
     @Override
-    public PlanDeleteResponseDto deletePlan(Member member, PlanDeleteRequestDto planDeleteRequestDto) {
+    public PlanDeleteResponseDto deletePlan(Member member, Long planId) {
 
-        Optional<Plan> tmpPlan = planRepository.findById(planDeleteRequestDto.getPlanId());
+        Optional<Plan> tmpPlan = planRepository.findById(planId);
         planValidator.checkPlanExist(tmpPlan);
         Plan plan = tmpPlan.get();
 

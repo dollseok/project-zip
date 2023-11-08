@@ -106,7 +106,7 @@ public class PlanController {
     @Operation(summary = "계획 삭제", description = "계획 삭제 API")
     @DeleteMapping("/delete")
     public ResponseEntity<ResponseTemplate<PlanDeleteResponseDto>> deletePlan(HttpServletRequest httpServletRequest,
-                                                                              @RequestBody PlanDeleteRequestDto planDeleteRequestDto){
+                                                                              @RequestParam Long planId){
 
         String token = httpServletRequest.getHeader("Authorization");
         if(token == null){
@@ -115,7 +115,7 @@ public class PlanController {
 
         Member member = memberService.findMemberByJwtToken(token);
 
-        PlanDeleteResponseDto responseDto = planService.deletePlan(member, planDeleteRequestDto);
+        PlanDeleteResponseDto responseDto = planService.deletePlan(member, planId);
 
         return new ResponseEntity<>(
                 ResponseTemplate.<PlanDeleteResponseDto> builder()
