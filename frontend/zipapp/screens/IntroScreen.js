@@ -7,13 +7,10 @@ import {
 	Animated,
 } from 'react-native';
 import React, { useRef, useEffect } from 'react';
-<<<<<<< HEAD:frontend/zip-app/screens/IntroScreen.js
-import * as SplashScreen from 'expo-splash-screen';
 import { Webview } from 'react-native-webview';
 import { REST_API_KEY, REDIRECT_URI } from '@env';
-=======
+
 // import * as SplashScreen from 'expo-splash-screen';
->>>>>>> front/feat226-reactnativecli:frontend/zipapp/screens/IntroScreen.js
 
 export default function IntroScreen({ navigation }) {
 	const rotateValue = useRef(new Animated.Value(0)).current; // 초기 값 0
