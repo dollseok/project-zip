@@ -103,11 +103,20 @@ public class ScheduleServiceImpl implements ScheduleService {
                                 .build())
                         .collect(Collectors.toList());
 
+        List<ScheduleDetailPhotoResponseDto> scheduleDetailPhotoResponseDtos =
+                schedulePhotoRepository.findAllBySchedule(Optional.of(schedule)).stream()
+                        .map(schedulePhoto -> ScheduleDetailPhotoResponseDto.builder()
+                                .imgUrl(schedulePhoto.getImgUrl())
+                                .createdAt(schedulePhoto.getCreatedAt())
+                                .build())
+                        .collect(Collectors.toList());
+
         ScheduleDetailResponseDto scheduleDetailResponseDto = ScheduleDetailResponseDto.builder()
                 .title(schedule.getTitle())
                 .startDate(String.valueOf(schedule.getStartDate()))
                 .endDate(String.valueOf(schedule.getEndDate()))
                 .scheduleDetailPlanResponseDtos(scheduleDetailPlanResponseDtos)
+                .scheduleDetailPhotoResponseDtos(scheduleDetailPhotoResponseDtos)
                 .build();
 
         return scheduleDetailResponseDto;

@@ -17,5 +17,6 @@ public class ScheduleDetailResponseDto {
     private String startDate;
     private String endDate;
     private List<ScheduleDetailPlanResponseDto> scheduleDetailPlanResponseDtos;
+    private List<ScheduleDetailPhotoResponseDto> scheduleDetailPhotoResponseDtos;
 
 }
