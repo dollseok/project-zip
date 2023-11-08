@@ -13,6 +13,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -34,8 +36,10 @@ public class DiaryComment extends BaseEntity {
      
     private Diary diary;
 
-     
     private String content;
+
+    @OneToMany(mappedBy = "diaryComment", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<DiaryCommentAlert> diaryCommentAlerts;
 
     public void updateDiaryComment(DiaryCommentModifyRequestDto diaryCommentModifyRequestDto){
         this.content = diaryCommentModifyRequestDto.getContent();

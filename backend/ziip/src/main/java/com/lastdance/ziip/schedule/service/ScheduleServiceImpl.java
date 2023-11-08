@@ -2,26 +2,32 @@ package com.lastdance.ziip.schedule.service;
 
 import com.lastdance.ziip.family.repository.FamilyRepository;
 import com.lastdance.ziip.family.repository.entity.Family;
+import com.lastdance.ziip.global.awsS3.S3Uploader;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.plan.repository.PlanRepository;
 import com.lastdance.ziip.plan.repository.entity.Plan;
 import com.lastdance.ziip.schedule.dto.request.ScheduleDeleteRequestDto;
 import com.lastdance.ziip.schedule.dto.request.ScheduleModifyRequestDto;
+import com.lastdance.ziip.schedule.dto.request.SchedulePhotoRegisterRequestDto;
 import com.lastdance.ziip.schedule.dto.request.ScheduleRegisterRequestDto;
 import com.lastdance.ziip.schedule.dto.response.*;
+import com.lastdance.ziip.schedule.repository.SchedulePhotoRepository;
 import com.lastdance.ziip.schedule.repository.ScheduleRepository;
 import com.lastdance.ziip.schedule.repository.entity.Schedule;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.lastdance.ziip.schedule.repository.entity.SchedulePhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +37,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private final FamilyRepository familyRepository;
     private final ScheduleRepository scheduleRepository;
+    private final SchedulePhotoRepository schedulePhotoRepository;
     private final PlanRepository planRepository;
+    private final S3Uploader s3Uploader;
 
     @Override
     public ScheduleRegisterResponseDto registerSchedule(Member findMember,
@@ -138,6 +146,40 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .build();
 
         return scheduleDeleteResponseDto;
+    }
+
+    @Override
+    public SchedulePhotoRegisterResponseDto registSchedulePhoto(Member findMember, List<MultipartFile> files , SchedulePhotoRegisterRequestDto requestDto) {
+
+        Optional<Schedule> schedule = scheduleRepository.findById(requestDto.getScheduleId());
+
+        if (!files.isEmpty()){
+            files.stream().forEach(
+                    file -> {
+                        String fileUrl = null;
+                        try {
+                            fileUrl = s3Uploader.upload(file, "schedulePhoto");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        String OriginalName = file.getOriginalFilename();
+
+                        SchedulePhoto schedulePhoto = SchedulePhoto.builder()
+                                .schedule(schedule.get())
+                                .imgUrl(fileUrl)
+                                .imgName(OriginalName)
+                                .build();
+
+                        schedulePhotoRepository.save(schedulePhoto);
+                    }
+            );
+        }
+
+        SchedulePhotoRegisterResponseDto schedulePhotoRegisterResponseDto = SchedulePhotoRegisterResponseDto.builder()
+                .scheduleId(schedule.get().getId())
+                .build();
+
+        return schedulePhotoRegisterResponseDto;
     }
 
 }
