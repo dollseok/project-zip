@@ -19,6 +19,8 @@ export default function KakaoLoginScreen({navigation}) {
 
     console.log("firebase 토큰 : ", fcmToken);
 
+    sendFCMTokenToServer(fcmToken);
+
     // messaging
     //   .requestPermission()
     //   .then(function () {
@@ -32,11 +34,16 @@ export default function KakaoLoginScreen({navigation}) {
 
   // 서버로 FCM 토큰을 전송하는 함수 (예: POST 요청)
   const sendFCMTokenToServer = async token => {
+    console.log("sendFCMTokenToServer로 들어온 token : ", token);
+    const receiveFCMTokenRequestDto = {
+      fcmToken: token
+    };
+
     try {
       axiosInstance
-        .post(`/notification/saveToken`, token)
+        .post(`/notification/saveToken`, receiveFCMTokenRequestDto)
         .then(response => {
-          console.log('FCM 토큰 서버에 성공적으로 전송', response);
+          console.log("FCM Token 전송 응답 : ", response.data);
         })
         .catch(error => {
           console.log('토큰 전송 중, 에러 발생 : ', error);
