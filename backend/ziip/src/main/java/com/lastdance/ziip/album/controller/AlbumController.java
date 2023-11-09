@@ -42,7 +42,7 @@ public class AlbumController {
             return null;
         }
         Member findMember = memberService.findMemberByJwtToken(token);
-        System.out.println("111111");
+
         AlbumListResponseDto albumListResponseDto = albumService.listAlbum(findMember, familyId);
 
         return new ResponseEntity<>(

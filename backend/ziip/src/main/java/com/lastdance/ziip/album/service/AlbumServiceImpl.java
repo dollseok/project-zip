@@ -35,44 +35,37 @@ public class AlbumServiceImpl implements AlbumService{
     public AlbumListResponseDto listAlbum(Member findMember, Long familyId) {
 
         QSchedulePhoto qSchedulePhoto = QSchedulePhoto.schedulePhoto;
-        log.info("1번");
+
         List<SchedulePhoto> schedulePhotos = jpaQueryFactory
                 .selectFrom(qSchedulePhoto)
                 .where(qSchedulePhoto.schedule.family.id.eq(familyId))
                 .fetch();
 
-        log.info("2번");
+
         QDiaryPhoto qDiaryPhoto = QDiaryPhoto.diaryPhoto;
 
-        log.info("3번");
         List<DiaryPhoto> diaryPhotos = jpaQueryFactory
                 .selectFrom(qDiaryPhoto)
                 .where(qDiaryPhoto.diary.family.id.eq(familyId))
                 .fetch();
 
-        log.info("4번");
         List<AlbumImageResponseDto> resultList = new ArrayList<>();
 
         for (SchedulePhoto schedulePhoto : schedulePhotos) {
             resultList.add(schedulePhotoToDto(schedulePhoto));
         }
 
-        log.info("5번");
 
         for (DiaryPhoto diaryPhoto : diaryPhotos) {
             resultList.add(diaryPhotoToDto(diaryPhoto));
         }
 
-        log.info("6번");
-
         Collections.sort(resultList, Comparator.comparing(AlbumImageResponseDto::getCreatedAt));
 
-        log.info("7번");
         AlbumListResponseDto albumListResponseDto = AlbumListResponseDto.builder()
                 .images(resultList)
                 .build();
 
-        log.info("8번");
         return albumListResponseDto;
     }
 
