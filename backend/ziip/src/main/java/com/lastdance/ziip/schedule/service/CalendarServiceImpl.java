@@ -97,7 +97,7 @@ public class CalendarServiceImpl implements CalendarService {
 
         // 해당 일자의 다이어리 조회 및 다이어리의 코멘트 조회
         List<CalendarDayDiaryResponseDto> calendarDayDiaryResponseDtos =
-                diaryRepository.findAllByCreatedAtBetween(startOfDay, endOfDay)
+                diaryRepository.findAllByCreatedAtBetweenAndFamilyId(startOfDay, endOfDay, familyId)
                         .stream()
                         .map(diary -> {
                             List<CalendarDayCommentResponseDto> calendarDayCommentResponseDtoList =
@@ -166,7 +166,7 @@ public class CalendarServiceImpl implements CalendarService {
 
         // 해당 월의 다이어리 조회 및 다이어리의 코멘트 조회
         List<CalendarMonthDiaryResponseDto> calendarMonthDiaryResponseDtos =
-                diaryRepository.findAllByCreatedAtBetween(startOfMonth.atStartOfDay(), endOfMonth.atTime(23, 59, 59))
+                diaryRepository.findAllByCreatedAtBetweenAndFamilyId(startOfMonth.atStartOfDay(), endOfMonth.atTime(23, 59, 59), familyId)
                         .stream()
                         .map(diary -> {
                             List<CalendarMonthCommentResponseDto> calendarMonthCommentResponseDtoList =
