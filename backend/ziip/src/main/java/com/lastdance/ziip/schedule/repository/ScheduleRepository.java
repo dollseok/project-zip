@@ -18,4 +18,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Query
 
     List<Schedule> findAllByStartDateBetween(LocalDate startDate, LocalDate endDate);
 
+    List<Schedule> findAllByStartDateAndFamilyId(LocalDate todayDateAsLocalDate, Long familyId);
+
+    List<Schedule> findAllByStartDateBetweenAndFamilyId(LocalDate startOfMonth, LocalDate endOfMonth, Long familyId);
 }
