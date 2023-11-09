@@ -1,6 +1,8 @@
 package com.lastdance.ziip.album.controller;
 
+import com.lastdance.ziip.album.dto.request.AlbumMonthRequestDto;
 import com.lastdance.ziip.album.dto.response.AlbumListResponseDto;
+import com.lastdance.ziip.album.dto.response.AlbumMonthResponseDto;
 import com.lastdance.ziip.album.enums.AlbumResponseMessage;
 import com.lastdance.ziip.album.service.AlbumService;
 import com.lastdance.ziip.global.util.ResponseTemplate;
@@ -12,10 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +50,27 @@ public class AlbumController {
                         .data(albumListResponseDto)
                         .result(true)
                         .build(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "사진첩 월별 조회", description = "사진첩 월별로 조회")
+    @GetMapping("/month")
+    public ResponseEntity<ResponseTemplate<AlbumMonthResponseDto>> albumMonth(
+            HttpServletRequest httpServletRequest,
+            @RequestBody AlbumMonthRequestDto albumMonthRequestDto){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null){
+            return null;
+        }
+        Member fineMember = memberService.findMemberByJwtToken(token);
+
+        AlbumMonthResponseDto albumMonthResponseDto = albumService.monthAlbum(fineMember, albumMonthRequestDto);
+
+        return new ResponseEntity<>(ResponseTemplate.<AlbumMonthResponseDto>builder()
+                .msg(AlbumResponseMessage.ALBUM_MONTH_SUCCESS.getMessage())
+                .data(albumMonthResponseDto)
+                .result(true)
+                .build(),HttpStatus.OK);
     }
 
 }
