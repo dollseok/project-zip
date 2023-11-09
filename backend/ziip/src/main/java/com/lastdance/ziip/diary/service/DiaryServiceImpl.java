@@ -148,6 +148,7 @@ public class DiaryServiceImpl implements DiaryService{
                 .name(diary.getMember().getName())
                 .title(diary.getTitle())
                 .content(diary.getContent())
+                .emotionId(diary.getEmotion().getId())
                 .createdAt(diary.getCreatedAt())
                 .diaryPhotos(diaryDetailPhotoResponseDtos)
                 .diaryComments(diaryDetailCommentResponseDtos)
