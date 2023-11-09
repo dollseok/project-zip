@@ -16,18 +16,20 @@ import axiosInstance from '../../util/Interceptor';
 import PhotoList from './photo/PhotoList';
 
 // if (
-// 	Platform.OS === 'android' &&
-// 	UIManager.setLayoutAnimationEnabledExperimental
+//   Platform.OS === 'android' &&
+//   UIManager.setLayoutAnimationEnabledExperimental
 // ) {
-// 	UIManager.setLayoutAnimationEnabledExperimental(true);
+//   UIManager.setLayoutAnimationEnabledExperimental(true);
 // }
 
 export default function ScheduleItem({startDate, scheduleId}) {
   const [schedule, setSchedule] = useState([]);
   const [plans, setPlans] = useState([]);
+  const [photos, setPhotos] = useState([]);
 
-  console.log('ScheduleItem - 일정 정보: ', schedule);
-  console.log(new Date(schedule.startDate));
+  // console.log('ScheduleItem - 일정 정보: ', schedule);
+  // console.log('ScheduleItem - 할일 정보: ', plans);
+  // console.log('ScheduleItem - 사진 정보: ', photos);
 
   // 일정 상세 데이터 가져오기
   const getScheduleDetail = scheduleId => {
@@ -39,10 +41,14 @@ export default function ScheduleItem({startDate, scheduleId}) {
       })
       .then(res => {
         const scheduleDetail = res.data.data;
+        // console.log('일정 상세: ', res.data.data);
         setSchedule(scheduleDetail);
 
-        const PlanDetail = res.data.data.scheduleDetailPlanResponseDtos;
+        const PlanDetail = res.data.data.plans;
         setPlans(PlanDetail);
+
+        const PhotoDetail = res.data.data.photos;
+        setPhotos(PhotoDetail);
       })
       .catch(err => {
         console.log(err);
@@ -121,7 +127,7 @@ export default function ScheduleItem({startDate, scheduleId}) {
         {expanded ? (
           <View>
             <PlanList scheduleId={scheduleId} plans={plans} />
-            <PhotoList scheduleId={scheduleId} />
+            <PhotoList scheduleId={scheduleId} photos={photos} />
           </View>
         ) : null}
       </View>

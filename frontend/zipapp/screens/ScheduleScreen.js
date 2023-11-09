@@ -7,39 +7,52 @@ import ScheduleCreate from '../components/schedule/ScheduleCreate';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DatePicker from 'react-native-modern-datepicker';
 import axiosInstance from '../util/Interceptor';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ScheduleScreen({route, navigation}) {
   const [schedules, setSchedules] = useState([]);
 
   const getScheduleList = async () => {
-    axiosInstance
-      .get(`/calendar/month`, {
-        params: {
-          year: selectedYear,
-          month: selectedMonth,
-        },
-      })
-      .then(res => {
-        // 월별 일정 데이터
-        const scheduleArray =
-          res.data.data.calendarMonthScheduleResponseDtoList;
-        setSchedules(scheduleArray);
-      })
-      .catch(err => {
-        if (err.response) {
-          // 서버 응답 오류인 경우
-          console.log('서버 응답 오류', err.response.status, err.response.data);
-        } else {
-          // 요청 자체에 문제가 있는 경우
-          console.log('요청 오류', err.message);
-        }
-      });
+    const familyId = await AsyncStorage.getItem('familyId');
+
+    if (selectedYear && selectedMonth) {
+      axiosInstance
+        .get(`/calendar/month`, {
+          params: {
+            year: selectedYear,
+            month: selectedMonth,
+            familyId: familyId,
+          },
+        })
+        .then(res => {
+          // 월별 일정 데이터
+          const scheduleArray =
+            res.data.data.calendarMonthScheduleResponseDtoList;
+          setSchedules(scheduleArray);
+          console.log('월별 일정 데이터: ', scheduleArray);
+        })
+        .catch(err => {
+          if (err.response) {
+            // 서버 응답 오류인 경우
+            console.log(
+              '서버 응답 오류',
+              err.response.status,
+              err.response.data,
+            );
+          } else {
+            // 요청 자체에 문제가 있는 경우
+            console.log('요청 오류', err.message);
+          }
+        });
+    } else {
+      return;
+    }
   };
 
   // 캘린더에서 받아온 현재 날짜정보
   // 예시) '2023-10-25'
   const {dateInfo} = route.params;
-  console.log('일정 미리보기에서 넘어올 때 받아온 날짜정보: ', route.params);
+  // console.log('일정 미리보기에서 넘어올 때 받아온 날짜정보: ', route.params);
   const [selectedYear, setSelectedYear] = useState();
   const [selectedMonth, setSelectedMonth] = useState();
 

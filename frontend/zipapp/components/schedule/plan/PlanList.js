@@ -6,13 +6,13 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native';
-import {AntDesign} from '@expo/vector-icons';
 import PlanItem from './PlanItem';
 import PlanCreate from './PlanCreate';
 
 export default function PlanList(props) {
   const {scheduleId, plans} = props;
   console.log('일정 id: ', scheduleId);
+  console.log('계획 리스트?', plans);
 
   return (
     <View style={styles.planContainer}>
@@ -22,14 +22,9 @@ export default function PlanList(props) {
         </View>
       </View>
       <View style={styles.planList}>
-        {/* <FlatList
-          data={plans}
-          keyExtractor={item => item.planId.toString()}
-          renderItem={({item}) => <PlanItem plan={item} />}
-        /> */}
         <ScrollView nestedScrollEnabled={true}>
           {plans.map(plan => {
-            return <PlanItem plan={plan} key={plan} />;
+            return <PlanItem plan={plan} key={plan.planId} />;
           })}
         </ScrollView>
       </View>

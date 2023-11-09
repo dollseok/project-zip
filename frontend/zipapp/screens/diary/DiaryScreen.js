@@ -5,6 +5,7 @@ import DiaryList from '../../components/diary/DiaryList';
 import DiaryCreate from '../../components/diary/DiaryCreate';
 import DatePicker from 'react-native-modern-datepicker';
 import axiosInstance from '../../util/Interceptor';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function DiaryScreen() {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // 초기 년도 설정
@@ -32,15 +33,19 @@ export default function DiaryScreen() {
     setCreateModalVisible(true);
   };
 
-  const getDiaryData = () => {
+  const getDiaryData = async () => {
+    const familyId = await AsyncStorage.getItem('familyId');
+
     axiosInstance
       .get(`/calendar/month`, {
         params: {
           year: selectedYear,
           month: selectedMonth,
+          familyId: familyId,
         },
       })
       .then(res => {
+        console.log(res);
         const diaryArray = res.data.data.calendarMonthDiaryResponseDtos;
         setDiarys(diaryArray);
       })
@@ -101,7 +106,11 @@ export default function DiaryScreen() {
         <Ionicons name="add-outline" size={24} color="black" />
       </TouchableOpacity>
       {/* 일기 리스트 */}
-      <DiaryList diarys={diarys} />
+      <DiaryList
+        diarys={diarys}
+        selectedYear={selectedYear}
+        selectedMonth={selectedMonth}
+      />
       <DiaryCreate
         selectedYear={selectedYear}
         selectedMonth={selectedMonth}

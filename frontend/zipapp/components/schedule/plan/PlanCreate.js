@@ -41,7 +41,7 @@ export default function PlanCreate(props) {
       emptyList.push(item.nickname);
     });
 
-    console.log('멤버 이름 리스트: ', emptyList);
+    // console.log('멤버 이름 리스트: ', emptyList);
     setMemberNames(emptyList);
   };
 

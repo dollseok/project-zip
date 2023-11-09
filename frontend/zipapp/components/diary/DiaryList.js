@@ -3,8 +3,8 @@ import DiaryItem from './DiaryItem';
 import {useState} from 'react';
 
 export default function DiaryList(props) {
-  const {diarys} = props;
-  console.log('해당 월의 일기리스트: ', diarys);
+  const {diarys, selectedMonth, selectedYear} = props;
+  // console.log('해당 월의 일기리스트: ', diarys);
 
   return (
     <View style={styles.diaryList}>
@@ -12,7 +12,11 @@ export default function DiaryList(props) {
       <ScrollView>
         {diarys.map(diary => {
           return (
-            <DiaryItem diarySummary={diary} key={diary.diaryId}></DiaryItem>
+            <DiaryItem
+              diarySummary={diary}
+              key={diary.diaryId}
+              selectedYear={selectedYear}
+              selectedMonth={selectedMonth}></DiaryItem>
           );
         })}
       </ScrollView>
