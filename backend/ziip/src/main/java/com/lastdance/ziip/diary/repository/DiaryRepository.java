@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public interface DiaryRepository extends JpaRepository<Diary, Long>, QuerydslPredicateExecutor<Diary> {
 
-    List<Diary> findAllByCreatedAtBetween(LocalDateTime startOfDay, LocalDateTime endOfDay);
+    List<Diary> findAllByCreatedAtBetweenAndFamilyId(LocalDateTime startOfDay, LocalDateTime endOfDay, Long familyId);
 
     List<Diary> findAllByFamilyId(Long FamilyId);
 }
