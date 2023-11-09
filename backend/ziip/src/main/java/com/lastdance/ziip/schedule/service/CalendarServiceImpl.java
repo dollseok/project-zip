@@ -39,6 +39,7 @@ public class CalendarServiceImpl implements CalendarService {
     private final DiaryRepository diaryRepository;
     private final DiaryCommentRepository diaryCommentRepository;
 
+    @Override
     public CalendarYearResponseDto yearCalendar(Member findMember, int year, Long familyId) {
         LocalDate startOfYear = LocalDate.of(year, 1, 1);
         LocalDate endOfYear = LocalDate.of(year, 12, 31);
