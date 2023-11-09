@@ -1,5 +1,6 @@
 package com.lastdance.ziip.diary.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lastdance.ziip.diary.dto.request.DiaryDeleteRequestDto;
 import com.lastdance.ziip.diary.dto.request.DiaryWriteRequestDto;
 import com.lastdance.ziip.diary.dto.response.DiaryDeleteResponseDto;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @Tag(name = "Diary", description = "일기 관련 API")
@@ -48,8 +50,11 @@ public class DiaryController {
     @PostMapping("/write")
     public ResponseEntity<ResponseTemplate<DiaryWriteResponseDto>> diaryWrite(
             HttpServletRequest httpServletRequest,
-            @RequestPart(value="diaryWriteRequest") DiaryWriteRequestDto diaryWriteRequestDto,
-            @RequestPart(value="files", required = false) List<MultipartFile> files) {
+            @RequestPart(value="diaryWriteRequest") String jsonString,
+            @RequestPart(value="files", required = false) List<MultipartFile> files) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        DiaryWriteRequestDto diaryWriteRequestDto = mapper.readValue(jsonString, DiaryWriteRequestDto.class);
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) {
