@@ -15,12 +15,15 @@ import { format } from 'date-fns';
 import DatePicker from 'react-native-date-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../../util/Interceptor';
+import { response } from 'express';
 
 export default function ScheduleCreate(props) {
 	// 일정 등록에 필요한 데이터
 	const [scheduleTitle, setScheduleTitle] = useState(''); // 제목
 	const [startDate, setStartDate] = useState(new Date()); // 시작일
 	const [endDate, setEndDate] = useState(new Date()); // 종료일
+	const sendNotification = require('../../util/SendNotification');
+	const [fcmToken, setFcmToken] = useState([]);
 
 	// 일정 등록
 	const createSchedule = async () => {
@@ -31,6 +34,12 @@ export default function ScheduleCreate(props) {
 		console.log('일정 제목: ', scheduleTitle);
 		console.log('일정 시작일: ', format(new Date(startDate), 'yyyy-MM-dd'));
 		console.log('일정 종료일: ', format(new Date(endDate), 'yyyy-MM-dd'));
+
+		axiosInstance.get(`/members/getFcmToken?familyId=${familyId}`).then((response) => {
+			setFcmToken(response.data.data);
+		}).catch((error) => {
+			console.log("가족별 Fcm 토큰 조회 에러 : ", error);
+		});
 
 		axiosInstance
 			.post(`/schedule/register`, {
