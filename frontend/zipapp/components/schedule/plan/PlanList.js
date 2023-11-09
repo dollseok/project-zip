@@ -29,11 +29,11 @@ export default function PlanList(props) {
         /> */}
         <ScrollView nestedScrollEnabled={true}>
           {plans.map(plan => {
-            return <PlanItem plan={plan} />;
+            return <PlanItem plan={plan} key={plan} />;
           })}
         </ScrollView>
-        <PlanCreate scheduleId={scheduleId} />
       </View>
+      <PlanCreate scheduleId={scheduleId} />
     </View>
   );
 }
@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   planList: {
-    height: 150,
+    maxHeight: 120,
+    marginVertical: 10,
   },
 });

@@ -13,6 +13,7 @@ import ScheduleUpdate from './ScheduleUpdate';
 import PlanList from './plan/PlanList';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axiosInstance from '../../util/Interceptor';
+import PhotoList from './photo/PhotoList';
 
 // if (
 // 	Platform.OS === 'android' &&
@@ -117,7 +118,12 @@ export default function ScheduleItem({startDate, scheduleId}) {
           </View>
         </TouchableOpacity>
         {/* 계획 목록 */}
-        {expanded ? <PlanList scheduleId={scheduleId} plans={plans} /> : null}
+        {expanded ? (
+          <View>
+            <PlanList scheduleId={scheduleId} plans={plans} />
+            <PhotoList scheduleId={scheduleId} />
+          </View>
+        ) : null}
       </View>
       <ScheduleUpdate
         schedule={schedule}

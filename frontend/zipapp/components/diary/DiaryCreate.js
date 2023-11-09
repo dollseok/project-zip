@@ -110,10 +110,6 @@ export default function DiaryCreate(props) {
   const [diaryEmotion, setDiaryEmotion] = useState(1);
 
   // // 사진 업로드
-
-  const formData = new FormData();
-  console.log('formData 생성');
-
   const [image, setImage] = useState([]);
 
   const uploadImage = async () => {
@@ -130,19 +126,20 @@ export default function DiaryCreate(props) {
       } else if (res.assets) {
         // 정상적으로 사진 반환받았을 때
         console.log('ImagePicker res: ', res);
+        // console.log(res.assets[0].uri.replace('//', ''));
         setImage({
-          uri:
-            Platform.OS === 'android'
-              ? res.assets[0].uri
-              : res.assets[0].uri.replace('file://', ''),
-          type: res.assets[0].type,
-          name: res.assets[0].fileName,
+          uri: res.assets[0].uri,
+          type: 'image/jpeg',
+          name: 'photo.jpg',
         });
       }
     });
   };
 
   const writeDiary = async () => {
+    const formData = new FormData();
+    console.log('formData 생성');
+
     const familyId = await AsyncStorage.getItem('familyId');
 
     const diaryWriteRequestDto = {
@@ -151,37 +148,31 @@ export default function DiaryCreate(props) {
       content: diaryContent,
       emotionId: diaryEmotion,
     };
+
     // 이미지 파일 담기
-    console.log('업로드할 사진: ', image);
-    formData.append('files', image);
+    if (image.uri) {
+      console.log('업로드할 사진: ', image);
+      formData.append('files', image);
+    } else {
+      console.log('이미지 없습니당');
+    }
 
     // 파일 외 다른 값들 넣어주기
     console.log('입력값들: ', diaryWriteRequestDto);
-    formData.append('diaryWriteRequest', diaryWriteRequestDto);
+    formData.append('diaryWriteRequest', {
+      string: JSON.stringify(diaryWriteRequestDto),
+      type: 'application/json',
+    });
 
-    const accessToken = await AsyncStorage.getItem('accessToken');
+    console.log(formData);
 
     await axiosFileInstance
-      .post('/diary/write', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      .post('/diary/write', formData)
       .then(res => {
         console.log(res);
       })
       .catch(error => {
         console.log(error);
-        // if (error.response) {
-        //   // 서버 응답 오류 처리
-        //   console.log('서버 응답 오류:', error.response.status);
-        // } else if (error.request) {
-        //   // 요청 오류 처리
-        //   console.log('요청 오류:', error.request);
-        // } else {
-        //   // 일반적인 오류 처리
-        //   console.log('오류 발생:', error.message);
-        // }
       });
   };
 
@@ -332,7 +323,7 @@ export default function DiaryCreate(props) {
               </View>
               {/* 사진 업로드 */}
               <View style={styles.photoUpload}>
-                <TouchableOpacity onPress={uploadImage}>
+                <TouchableOpacity onPress={() => uploadImage()}>
                   <Ionicons name="camera-outline" size={40} color="black" />
                 </TouchableOpacity>
               </View>
