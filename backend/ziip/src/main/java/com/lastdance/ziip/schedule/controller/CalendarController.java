@@ -33,7 +33,7 @@ public class CalendarController {
 
     @Operation(summary = "년도별 이슈 조회", description = "년도별 이슈 조회 API")
     @GetMapping("/year")
-    public ResponseEntity<ResponseTemplate<CalendarYearResponseDto>> yearCalendar(HttpServletRequest httpServletRequest, @RequestParam(name = "year") int year) {
+    public ResponseEntity<ResponseTemplate<CalendarYearResponseDto>> yearCalendar(HttpServletRequest httpServletRequest, @RequestParam(name = "year") int year, @RequestParam(name = "familyId") Long familyId) {
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) {
@@ -42,7 +42,7 @@ public class CalendarController {
 
         Member findMember = memberService.findMemberByJwtToken(token);
 
-        CalendarYearResponseDto calendarYearResponseDto = calendarService.yearCalendar(findMember, year);
+        CalendarYearResponseDto calendarYearResponseDto = calendarService.yearCalendar(findMember, year, familyId);
 
         return new ResponseEntity<>(
                 ResponseTemplate.<CalendarYearResponseDto>builder()
@@ -55,7 +55,7 @@ public class CalendarController {
 
     @Operation(summary = "날짜 일정 조회", description = "날짜별 일정 , 계획 조회 API")
     @GetMapping("/day")
-    public ResponseEntity<ResponseTemplate<CalendarDayResponseDto>> dayCalendar(HttpServletRequest httpServletRequest, @RequestParam(name = "todayDate") String todayDate ) {
+    public ResponseEntity<ResponseTemplate<CalendarDayResponseDto>> dayCalendar(HttpServletRequest httpServletRequest, @RequestParam(name = "todayDate") String todayDate, @RequestParam(name = "familyId") Long familyId) {
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) {
@@ -64,7 +64,7 @@ public class CalendarController {
 
         Member findMember = memberService.findMemberByJwtToken(token);
 
-        CalendarDayResponseDto calendarDayResponseDto = calendarService.dayCalendar(findMember, todayDate);
+        CalendarDayResponseDto calendarDayResponseDto = calendarService.dayCalendar(findMember, todayDate, familyId);
 
         String[] datePart = todayDate.split("-");
 
@@ -84,7 +84,7 @@ public class CalendarController {
 
     @Operation(summary = "월별 일정 조회", description = "월별 일정 , 계획, 일기 조회 API")
     @GetMapping("/month")
-    public ResponseEntity<ResponseTemplate<CalendarMonthResponseDto>> monthCalendar(HttpServletRequest httpServletRequest, @RequestParam(name = "year") int year, @RequestParam(name = "month") int month) {
+    public ResponseEntity<ResponseTemplate<CalendarMonthResponseDto>> monthCalendar(HttpServletRequest httpServletRequest, @RequestParam(name = "year") int year, @RequestParam(name = "month") int month , @RequestParam(name = "familyId") Long familyId ) {
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) {
@@ -93,9 +93,7 @@ public class CalendarController {
 
         Member findMember = memberService.findMemberByJwtToken(token);
 
-        CalendarMonthResponseDto calendarMonthResponseDto = calendarService.monthCalendar(findMember, year, month);
-
-
+        CalendarMonthResponseDto calendarMonthResponseDto = calendarService.monthCalendar(findMember, year, month, familyId);
 
         return new ResponseEntity<>(
                 ResponseTemplate.<CalendarMonthResponseDto>builder()

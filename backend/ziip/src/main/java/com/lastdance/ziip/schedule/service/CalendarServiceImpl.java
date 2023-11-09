@@ -39,7 +39,7 @@ public class CalendarServiceImpl implements CalendarService {
     private final DiaryRepository diaryRepository;
     private final DiaryCommentRepository diaryCommentRepository;
 
-    public CalendarYearResponseDto yearCalendar(Member findMember, int year) {
+    public CalendarYearResponseDto yearCalendar(Member findMember, int year, Long familyId) {
         LocalDate startOfYear = LocalDate.of(year, 1, 1);
         LocalDate endOfYear = LocalDate.of(year, 12, 31);
 
@@ -47,7 +47,8 @@ public class CalendarServiceImpl implements CalendarService {
 
         List<Schedule> schedules = jpaQueryFactory
                 .selectFrom(qSchedule)
-                .where(qSchedule.startDate.between(startOfYear, endOfYear))
+                .where(qSchedule.startDate.between(startOfYear, endOfYear)
+                        .and(qSchedule.family.id.eq(familyId)))
                 .fetch();
 
         List<CalendarYearScheduleResponseDto> calendarYearScheduleResponseDtos = schedules.stream()
@@ -62,10 +63,10 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public CalendarDayResponseDto dayCalendar(Member findMember, String todayDate) {
+    public CalendarDayResponseDto dayCalendar(Member findMember, String todayDate, Long familyId) {
         // 해당하는 날짜의 스케줄 조회 및 스케줄의 플랜 조회
         List<CalendarDayScheduleResponseDto> calendarDayScheduleResponseDtoList =
-                scheduleRepository.findAllByStartDate(getTodayDateAsLocalDate(todayDate))
+                scheduleRepository.findAllByStartDateAndFamilyId(getTodayDateAsLocalDate(todayDate), familyId)
                         .stream()
                         .map(schedule -> {
                             List<Plan> plans = planRepository.findAllBySchedule(schedule);
@@ -126,17 +127,19 @@ public class CalendarServiceImpl implements CalendarService {
                 .build();
 
         return calendarDayResponseDto;
+
     }
 
+
     @Override
-    public CalendarMonthResponseDto monthCalendar(Member findMember, int year, int month) {
+    public CalendarMonthResponseDto monthCalendar(Member findMember, int year, int month, Long familyId) {
         // 해당 월의 시작 날짜와 마지막 날짜 계산
         LocalDate startOfMonth = LocalDate.of(year, month, 1);
         LocalDate endOfMonth = startOfMonth.plusMonths(1).minusDays(1);
 
         // 해당 월의 스케줄 조회 및 스케줄의 플랜 조회
         List<CalendarMonthScheduleResponseDto> calendarMonthScheduleResponseDtoList =
-                scheduleRepository.findAllByStartDateBetween(startOfMonth, endOfMonth)
+                scheduleRepository.findAllByStartDateBetweenAndFamilyId(startOfMonth, endOfMonth, familyId)
                         .stream()
                         .map(schedule -> {
                             List<Plan> plans = planRepository.findAllBySchedule(schedule);
