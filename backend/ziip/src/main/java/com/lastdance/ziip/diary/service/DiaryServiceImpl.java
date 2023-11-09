@@ -13,8 +13,11 @@ import com.lastdance.ziip.diary.repository.entity.DiaryPhoto;
 import com.lastdance.ziip.diary.repository.entity.Emotion;
 import com.lastdance.ziip.family.repository.FamilyRepository;
 import com.lastdance.ziip.family.repository.entity.Family;
+import com.lastdance.ziip.family.repository.entity.FamilyMember;
+import com.lastdance.ziip.family.repository.entity.QFamilyMember;
 import com.lastdance.ziip.global.awsS3.S3Uploader;
 import com.lastdance.ziip.member.repository.entity.Member;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,6 +43,7 @@ public class DiaryServiceImpl implements DiaryService{
     private final DiaryCommentRepository diaryCommentRepository;
     private final S3Uploader s3Uploader;
     private final DiaryValidator diaryValidator;
+    private final JPAQueryFactory jpaQueryFactory;
 
     @Override
     public DiaryWriteResponseDto writeDiary(Member findMember,
@@ -143,9 +147,18 @@ public class DiaryServiceImpl implements DiaryService{
                                 .build())
                         .collect(Collectors.toList());
 
+        QFamilyMember qFamilyMember = QFamilyMember.familyMember;
+
+        List<FamilyMember> familyMemberData = jpaQueryFactory
+                .selectFrom(qFamilyMember)
+                .where(qFamilyMember.family.id.eq(diary.getFamily().getId())
+                        .and (qFamilyMember.member.id.eq(diary.getMember().getId())))
+                .fetch();
+
+
         return DiaryDetailResponseDto.builder()
                 .diaryId(diary.getId())
-                .name(diary.getMember().getName())
+                .name(familyMemberData.get(0).getNickname())
                 .title(diary.getTitle())
                 .content(diary.getContent())
                 .emotionId(diary.getEmotion().getId())
