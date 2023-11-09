@@ -42,10 +42,11 @@ public class DiaryController {
     /**
      * 일기 작성
      * @param httpServletRequest 로그인한 유저의 Id
-     * @param diaryWriteRequestDto memberId, familyId, text, content, emotionId
+     * @param jsonString  memberId, familyId, text, content, emotionId
      * @param files 사진 파일 리스트
+     * @return
+     * @throws IOException
      */
-
     @Operation(summary = "일기 작성", description = "일기 작성하기 API, 사진 여러장 등록 가능")
     @PostMapping("/write")
     public ResponseEntity<ResponseTemplate<DiaryWriteResponseDto>> diaryWrite(
