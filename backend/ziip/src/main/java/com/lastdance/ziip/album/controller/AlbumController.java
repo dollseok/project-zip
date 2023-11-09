@@ -35,9 +35,9 @@ public class AlbumController {
     @GetMapping("/list")
     public ResponseEntity<ResponseTemplate<AlbumListResponseDto>> albumList(
             HttpServletRequest httpServletRequest,
-            @RequestParam(name = "familyId") Long familyId){
+            @RequestParam(name = "familyId") long familyId){
 
-        String token = httpServletRequest.getHeader("Authentication");
+        String token = httpServletRequest.getHeader("Authorization");
         if(token == null){
             return null;
         }
