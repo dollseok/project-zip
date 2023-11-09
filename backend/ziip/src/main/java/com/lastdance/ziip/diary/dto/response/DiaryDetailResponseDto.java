@@ -25,6 +25,8 @@ public class DiaryDetailResponseDto {
 
     private String content;
 
+    private Long emotionId;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
 
