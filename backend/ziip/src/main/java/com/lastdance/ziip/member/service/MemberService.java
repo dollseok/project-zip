@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public interface MemberService {
 
-    LoginDto findKakaoMemberByAuthorizedCode(String code, String kakaoRedirectUrl);
+    LoginDto findKakaoMemberByAuthorizedCode(String code, String kakaoRedirectUrl, String fcmToken);
 
     LoginDto findNaverMemberByAuthorizedCode(String code, String naverState);
     TokenDto reissue(String refreshToken);

@@ -46,7 +46,7 @@ public class MemberController {
     @Operation(summary = "카카오로 로그인 및 회원가입", description = "카카오로 로그인 및 회원가입 하는 API")
     @PostMapping("/kakao/login")
     public ResponseEntity<LoginResponseDto> loginKakao(@RequestBody LoginRequestDto codeRequest) {
-        LoginDto member = memberService.findKakaoMemberByAuthorizedCode(codeRequest.getCode(), RedirectUrlProperties.KAKAO_REDIRECT_URL);
+        LoginDto member = memberService.findKakaoMemberByAuthorizedCode(codeRequest.getCode(), RedirectUrlProperties.KAKAO_REDIRECT_URL, codeRequest.getFcmToken());
 
         String accessToken = jwtTokenProvider.createAccessToken(member.getId(), member.getSocialId(), member.getSocialType());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getId());

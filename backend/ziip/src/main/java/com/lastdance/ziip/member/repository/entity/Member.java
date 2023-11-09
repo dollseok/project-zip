@@ -33,19 +33,14 @@ import lombok.NoArgsConstructor;
 public class Member extends BaseEntity{
 
     @Id @GeneratedValue
-     
     private Long id;
 
-     
     private String email;
 
     @Enumerated(EnumType.STRING)
-     
     private Gender gender;
 
-     
     private String name;
-
     private String profileImgUrl;
     private String profileImgName;
     private String socialId;
@@ -53,8 +48,9 @@ public class Member extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
+    private String fcmToken;
+
     @Enumerated(EnumType.STRING)
-     
     private Role role;
 
 
