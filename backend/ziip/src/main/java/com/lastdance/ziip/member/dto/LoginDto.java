@@ -14,5 +14,6 @@ public class LoginDto {
     private String socialId;
     private SocialType socialType;
     private String name;
+    private String fcmToken;
     private boolean firstLogin;
 }

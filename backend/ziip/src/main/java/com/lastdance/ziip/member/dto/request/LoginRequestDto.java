@@ -6,4 +6,5 @@ import lombok.Data;
 public class LoginRequestDto {
 
     private String code;
+    private String fcmToken;
 }

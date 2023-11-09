@@ -66,7 +66,7 @@ public class MemberServiceImpl implements MemberService {
 
     // authorizedCode로 가입된 사용자 조회
     @Transactional
-    public LoginDto findKakaoMemberByAuthorizedCode(String authorizedCode, String redirectUri) {
+    public LoginDto findKakaoMemberByAuthorizedCode(String authorizedCode, String redirectUri, String fcmToken) {
         // 카카오 OAuth2 를 통해 카카오 사용자 정보 조회
         KakaoMemberDto kakaoUserDto = kakaoOAuth2.getMemberInfo(authorizedCode, redirectUri);
         String email = kakaoUserDto.getEmail();
@@ -80,6 +80,7 @@ public class MemberServiceImpl implements MemberService {
                     .socialId(optionalMember.get().getSocialId())
                     .socialType(optionalMember.get().getSocialType())
                     .name(optionalMember.get().getName())
+                    .fcmToken(optionalMember.get().getFcmToken())
                     .firstLogin(false)
                     .build();
         }
@@ -108,6 +109,7 @@ public class MemberServiceImpl implements MemberService {
                     .profileImgUrl(null)
                     .socialId(socialId)
                     .socialType(SocialType.KAKAO)
+                    .fcmToken(fcmToken)
                     .role(Role.USER)
                     .build();
             System.out.println(member.toString());
@@ -118,6 +120,7 @@ public class MemberServiceImpl implements MemberService {
                     .socialId(member.getSocialId())
                     .socialType(member.getSocialType())
                     .name(member.getName())
+                    .fcmToken(member.getFcmToken())
                     .firstLogin(true)
                     .build();
         }
