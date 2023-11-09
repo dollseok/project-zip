@@ -44,7 +44,7 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public DiaryWriteResponseDto writeDiary(Member findMember,
                                             DiaryWriteRequestDto diaryWriteRequestDto,
-                                            @RequestParam(value = "files", required = false) List<MultipartFile> files) {
+                                            List<MultipartFile> files) {
 
         // 엔티티 조회
         Optional<Family> family = familyRepository.findById(diaryWriteRequestDto.getFamilyId());
