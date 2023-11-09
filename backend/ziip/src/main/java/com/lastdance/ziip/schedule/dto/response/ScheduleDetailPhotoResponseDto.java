@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ScheduleDetailPhotoResponseDto {
 
+    private Long schedulePhotoId;
     private String imgUrl;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
