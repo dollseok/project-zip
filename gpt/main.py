@@ -1,7 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
+import gpt.routers.gpt
 
-app = FastAPI()
+app = FastAPI(host="0.0.0.0", port=8000)
+route = APIRouter()
 
+app.include_router(gpt.routers.gpt.app)
 
 @app.get("/")
 async def root():
