@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -55,15 +56,16 @@ public class AlbumServiceImpl implements AlbumService{
 
         List<AlbumImageResponseDto> resultList = new ArrayList<>();
 
-        for (SchedulePhoto schedulePhoto : schedulePhotos) {
-            resultList.add(schedulePhotoToDto(schedulePhoto));
-        }
+        List<AlbumImageResponseDto> schedulePhotoList = schedulePhotos.stream()
+                .map(schedulePhoto -> schedulePhotoToDto(schedulePhoto))
+                .collect(Collectors.toList());
 
+        List<AlbumImageResponseDto> diaryPhotoList = diaryPhotos.stream()
+                .map(diaryPhoto -> diaryPhotoToDto(diaryPhoto))
+                .collect(Collectors.toList());
 
-        for (DiaryPhoto diaryPhoto : diaryPhotos) {
-            resultList.add(diaryPhotoToDto(diaryPhoto));
-        }
-
+        resultList.addAll(schedulePhotoList);
+        resultList.addAll(diaryPhotoList);
         Collections.sort(resultList, Comparator.comparing(AlbumImageResponseDto::getCreatedAt));
 
         AlbumListResponseDto albumListResponseDto = AlbumListResponseDto.builder()
@@ -103,15 +105,16 @@ public class AlbumServiceImpl implements AlbumService{
 
         List<AlbumImageResponseDto> resultList = new ArrayList<>();
 
-        for (SchedulePhoto schedulePhoto : schedulePhotos) {
-            resultList.add(schedulePhotoToDto(schedulePhoto));
-        }
+        List<AlbumImageResponseDto> schedulePhotoList = schedulePhotos.stream()
+                .map(schedulePhoto -> schedulePhotoToDto(schedulePhoto))
+                .collect(Collectors.toList());
 
+        List<AlbumImageResponseDto> diaryPhotoList = diaryPhotos.stream()
+                .map(diaryPhoto -> diaryPhotoToDto(diaryPhoto))
+                .collect(Collectors.toList());
 
-        for (DiaryPhoto diaryPhoto : diaryPhotos) {
-            resultList.add(diaryPhotoToDto(diaryPhoto));
-        }
-
+        resultList.addAll(schedulePhotoList);
+        resultList.addAll(diaryPhotoList);
         Collections.sort(resultList, Comparator.comparing(AlbumImageResponseDto::getCreatedAt));
 
         AlbumMonthResponseDto albumMonthResponseDto = AlbumMonthResponseDto.builder()
