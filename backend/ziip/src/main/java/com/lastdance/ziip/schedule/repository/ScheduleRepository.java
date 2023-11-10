@@ -3,6 +3,7 @@ package com.lastdance.ziip.schedule.repository;
 import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.schedule.repository.entity.Schedule;
 
+import com.querydsl.jpa.QueryHandler;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,4 +22,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Query
     List<Schedule> findAllByStartDateAndFamilyId(LocalDate todayDateAsLocalDate, Long familyId);
 
     List<Schedule> findAllByStartDateBetweenAndFamilyId(LocalDate startOfMonth, LocalDate endOfMonth, Long familyId);
+
+    List<Schedule> findAllByStartDateBeforeAndEndDateAfterAndFamilyId(LocalDate todayDateAsLocalDate, LocalDate todayDateAsLocalDate1, Long familyId);
 }

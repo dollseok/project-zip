@@ -48,8 +48,10 @@ public class CalendarServiceImpl implements CalendarService {
 
         List<Schedule> schedules = jpaQueryFactory
                 .selectFrom(qSchedule)
-                .where(qSchedule.startDate.between(startOfYear, endOfYear)
-                        .and(qSchedule.family.id.eq(familyId)))
+                .where(qSchedule.family.id.eq(familyId)
+                                .and(qSchedule.startDate.between(startOfYear, endOfYear)
+                                                .or(qSchedule.endDate.between(startOfYear, endOfYear)))
+                )
                 .fetch();
 
         List<CalendarYearScheduleResponseDto> calendarYearScheduleResponseDtos = schedules.stream()
@@ -67,7 +69,8 @@ public class CalendarServiceImpl implements CalendarService {
     public CalendarDayResponseDto dayCalendar(Member findMember, String todayDate, Long familyId) {
         // 해당하는 날짜의 스케줄 조회 및 스케줄의 플랜 조회
         List<CalendarDayScheduleResponseDto> calendarDayScheduleResponseDtoList =
-                scheduleRepository.findAllByStartDateAndFamilyId(getTodayDateAsLocalDate(todayDate), familyId)
+                scheduleRepository.findAllByStartDateBeforeAndEndDateAfterAndFamilyId(
+                                getTodayDateAsLocalDate(todayDate), getTodayDateAsLocalDate(todayDate), familyId)
                         .stream()
                         .map(schedule -> {
                             List<Plan> plans = planRepository.findAllBySchedule(schedule);
@@ -140,7 +143,8 @@ public class CalendarServiceImpl implements CalendarService {
 
         // 해당 월의 스케줄 조회 및 스케줄의 플랜 조회
         List<CalendarMonthScheduleResponseDto> calendarMonthScheduleResponseDtoList =
-                scheduleRepository.findAllByStartDateBetweenAndFamilyId(startOfMonth, endOfMonth, familyId)
+                scheduleRepository.findAllByStartDateBeforeAndEndDateAfterAndFamilyId(
+                                endOfMonth, startOfMonth, familyId)
                         .stream()
                         .map(schedule -> {
                             List<Plan> plans = planRepository.findAllBySchedule(schedule);
