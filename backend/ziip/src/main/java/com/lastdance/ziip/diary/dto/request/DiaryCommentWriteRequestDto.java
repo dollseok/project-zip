@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DiaryCommentWriteRequestDto {
 
-    private Long memberId;
     private Long diaryId;
     private String content;
 

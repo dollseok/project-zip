@@ -23,17 +23,14 @@ import java.util.List;
 public class DiaryComment extends BaseEntity {
 
     @Id @GeneratedValue
-     
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-     
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id")
-     
     private Diary diary;
 
     private String content;
