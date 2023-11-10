@@ -37,7 +37,7 @@ public class DiaryCommentController {
     /**
      * 일기 댓글 작성
      * @param httpServletRequest 로그인한 유저의 Id
-     * @param diaryCommentWriteRequestDto memberId, diaryId, content
+     * @param diaryCommentWriteRequestDto diaryId, content
      */
     @Operation(summary = "일기 댓글 작성", description = "일기 댓글 작성 API")
     @PostMapping("/write")

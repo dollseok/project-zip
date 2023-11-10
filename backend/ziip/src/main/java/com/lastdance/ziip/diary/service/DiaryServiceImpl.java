@@ -134,19 +134,6 @@ public class DiaryServiceImpl implements DiaryService{
                                 .build())
                         .collect(Collectors.toList());
 
-        // 댓글 리스트
-        List<DiaryDetailCommentResponseDto> diaryDetailCommentResponseDtos =
-                diaryCommentRepository.findAllByDiary(diary)
-                        .stream()
-                        .map(diaryComment -> DiaryDetailCommentResponseDto.builder()
-                                .commentId(diaryComment.getId())
-                                .name(diaryComment.getMember().getName())
-                                .content(diaryComment.getContent())
-                                .createdAt(diaryComment.getCreatedAt())
-                                .updatedAt(diaryComment.getUpdatedAt())
-                                .build())
-                        .collect(Collectors.toList());
-
         QFamilyMember qFamilyMember = QFamilyMember.familyMember;
 
         List<FamilyMember> familyMemberData = jpaQueryFactory
@@ -154,6 +141,22 @@ public class DiaryServiceImpl implements DiaryService{
                 .where(qFamilyMember.family.id.eq(diary.getFamily().getId())
                         .and (qFamilyMember.member.id.eq(diary.getMember().getId())))
                 .fetch();
+
+
+        // 댓글 리스트
+        List<DiaryDetailCommentResponseDto> diaryDetailCommentResponseDtos =
+                diaryCommentRepository.findAllByDiary(diary)
+                        .stream()
+                        .map(diaryComment -> DiaryDetailCommentResponseDto.builder()
+                                .commentId(diaryComment.getId())
+                                .name(familyMemberData.get(0).getNickname())
+                                .content(diaryComment.getContent())
+                                .createdAt(diaryComment.getCreatedAt())
+                                .updatedAt(diaryComment.getUpdatedAt())
+                                .build())
+                        .collect(Collectors.toList());
+
+
 
 
         return DiaryDetailResponseDto.builder()
