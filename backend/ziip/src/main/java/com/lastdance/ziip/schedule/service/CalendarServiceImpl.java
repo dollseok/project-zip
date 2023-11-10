@@ -143,7 +143,8 @@ public class CalendarServiceImpl implements CalendarService {
 
         // 해당 월의 스케줄 조회 및 스케줄의 플랜 조회
         List<CalendarMonthScheduleResponseDto> calendarMonthScheduleResponseDtoList =
-                scheduleRepository.findAllByStartDateBetweenAndFamilyId(startOfMonth, endOfMonth, familyId)
+                scheduleRepository.findAllByStartDateBeforeAndEndDateAfterAndFamilyId(
+                                endOfMonth, startOfMonth, familyId)
                         .stream()
                         .map(schedule -> {
                             List<Plan> plans = planRepository.findAllBySchedule(schedule);
