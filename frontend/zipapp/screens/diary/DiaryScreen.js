@@ -1,5 +1,6 @@
 import {StyleSheet, Text, View, Modal, TouchableOpacity} from 'react-native';
 import {useEffect, useState} from 'react';
+
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DiaryList from '../../components/diary/DiaryList';
 import DiaryCreate from '../../components/diary/DiaryCreate';

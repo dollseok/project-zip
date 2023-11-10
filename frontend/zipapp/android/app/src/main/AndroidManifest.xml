@@ -22,8 +22,10 @@
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
-      android:allowBackup="false"
-      android:theme="@style/AppTheme">
+      android:allowBackup="true"
+      android:theme="@style/AppTheme"
+      android:requestLegacyExternalStorage="true"
+      >
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
@@ -35,6 +37,30 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+
+        <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+            android:scheme="http"
+            android:host="10.0.2.2:8081"
+            android:pathPrefix="/auth/kakao/callback" />
+    </intent-filter>
       </activity>
+      <!-- <activity 
+    android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+    android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        
+        <data android:host="oauth"
+                android:scheme="kakaof6e9f5f934ef60053d1707a1ed31772b" />
+      </intent-filter>
+    </activity> -->
     </application>
 </manifest>
