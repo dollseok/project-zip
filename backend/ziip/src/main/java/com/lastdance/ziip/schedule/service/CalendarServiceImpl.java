@@ -48,8 +48,10 @@ public class CalendarServiceImpl implements CalendarService {
 
         List<Schedule> schedules = jpaQueryFactory
                 .selectFrom(qSchedule)
-                .where(qSchedule.startDate.between(startOfYear, endOfYear)
-                        .and(qSchedule.family.id.eq(familyId)))
+                .where(qSchedule.family.id.eq(familyId)
+                                .and(qSchedule.startDate.between(startOfYear, endOfYear)
+                                                .or(qSchedule.endDate.between(startOfYear, endOfYear)))
+                )
                 .fetch();
 
         List<CalendarYearScheduleResponseDto> calendarYearScheduleResponseDtos = schedules.stream()
