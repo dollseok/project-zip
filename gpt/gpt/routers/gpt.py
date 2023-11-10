@@ -4,7 +4,7 @@ from gpt.services.gpt_service import get_gpt_message
 
 
 app = APIRouter(
-    prefix="/api/gpt"
+    prefix="/fastapi/gpt"
 )
 
 # app.add_middleware(
