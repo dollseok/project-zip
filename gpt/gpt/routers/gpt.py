@@ -16,11 +16,6 @@ app = APIRouter(
 # )
 
 
-@app.get("/hajin")
-async def hajin():
-    return {"message": "!!!"}
-
-
 @app.get("/")
 async def gpt_message():
     response = get_gpt_message()
