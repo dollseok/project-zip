@@ -64,3 +64,4 @@ buck-out/
 
 # firebase
 android/app/google-services.json
+serviceAccountKey.json

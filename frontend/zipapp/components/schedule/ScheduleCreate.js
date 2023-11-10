@@ -16,13 +16,14 @@ import DatePicker from 'react-native-date-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../../util/Interceptor';
 import { response } from 'express';
+// import getGoogleAccessToken from '../../util/GetGoogleAccessToken';
 
 export default function ScheduleCreate(props) {
 	// 일정 등록에 필요한 데이터
 	const [scheduleTitle, setScheduleTitle] = useState(''); // 제목
 	const [startDate, setStartDate] = useState(new Date()); // 시작일
 	const [endDate, setEndDate] = useState(new Date()); // 종료일
-	const sendNotification = require('../../util/SendNotification');
+	// const sendNotification = require('../../util/SendNotification');
 	const [fcmToken, setFcmToken] = useState([]);
 
 	// 일정 등록
@@ -34,6 +35,10 @@ export default function ScheduleCreate(props) {
 		console.log('일정 제목: ', scheduleTitle);
 		console.log('일정 시작일: ', format(new Date(startDate), 'yyyy-MM-dd'));
 		console.log('일정 종료일: ', format(new Date(endDate), 'yyyy-MM-dd'));
+
+		const accessToken = await getGoogleAccessToken();
+
+		console.log('Google Access Token: ', accessToken);
 
 		axiosInstance.get(`/members/getFcmToken?familyId=${familyId}`).then((response) => {
 			setFcmToken(response.data.data);
