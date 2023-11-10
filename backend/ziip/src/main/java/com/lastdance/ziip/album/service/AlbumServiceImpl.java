@@ -8,6 +8,8 @@ import com.lastdance.ziip.album.enums.ImageCategory;
 import com.lastdance.ziip.diary.repository.DiaryPhotoRepository;
 import com.lastdance.ziip.diary.repository.entity.DiaryPhoto;
 import com.lastdance.ziip.diary.repository.entity.QDiaryPhoto;
+import com.lastdance.ziip.family.repository.entity.FamilyMember;
+import com.lastdance.ziip.family.repository.entity.QFamilyMember;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.schedule.repository.SchedulePhotoRepository;
 import com.lastdance.ziip.schedule.repository.entity.QSchedulePhoto;
@@ -129,15 +131,27 @@ public class AlbumServiceImpl implements AlbumService{
     private AlbumImageResponseDto schedulePhotoToDto(SchedulePhoto schedulePhoto){
         return AlbumImageResponseDto.builder()
                 .category(ImageCategory.SCHEDULE)
+                .detail(schedulePhoto.getSchedule().getTitle())
                 .imgUrl(schedulePhoto.getImgUrl())
                 .createdAt(schedulePhoto.getCreatedAt())
                 .build();
     }
 
+
     // 일정 사진 dto화
     private AlbumImageResponseDto diaryPhotoToDto(DiaryPhoto diaryPhoto){
+
+        QFamilyMember qFamilyMember = QFamilyMember.familyMember;
+
+        List<FamilyMember> familyMemberData = jpaQueryFactory
+                .selectFrom(qFamilyMember)
+                .where(qFamilyMember.family.id.eq(diaryPhoto.getDiary().getFamily().getId())
+                        .and (qFamilyMember.member.id.eq(diaryPhoto.getDiary().getMember().getId())))
+                .fetch();
+
         return AlbumImageResponseDto.builder()
                 .category(ImageCategory.DIARY)
+                .detail(familyMemberData.get(0).getNickname() + "의 일기")
                 .imgUrl(diaryPhoto.getImgUrl())
                 .createdAt(diaryPhoto.getCreatedAt())
                 .build();

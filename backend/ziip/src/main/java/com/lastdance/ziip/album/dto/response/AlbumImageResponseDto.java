@@ -17,6 +17,7 @@ public class AlbumImageResponseDto {
 
     private ImageCategory category;
     private String imgUrl;
+    private String detail;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
