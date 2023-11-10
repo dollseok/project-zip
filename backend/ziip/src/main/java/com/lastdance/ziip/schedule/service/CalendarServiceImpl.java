@@ -69,7 +69,8 @@ public class CalendarServiceImpl implements CalendarService {
     public CalendarDayResponseDto dayCalendar(Member findMember, String todayDate, Long familyId) {
         // 해당하는 날짜의 스케줄 조회 및 스케줄의 플랜 조회
         List<CalendarDayScheduleResponseDto> calendarDayScheduleResponseDtoList =
-                scheduleRepository.findAllByStartDateAndFamilyId(getTodayDateAsLocalDate(todayDate), familyId)
+                scheduleRepository.findAllByStartDateBeforeAndEndDateAfterAndFamilyId(
+                                getTodayDateAsLocalDate(todayDate), getTodayDateAsLocalDate(todayDate), familyId)
                         .stream()
                         .map(schedule -> {
                             List<Plan> plans = planRepository.findAllBySchedule(schedule);
