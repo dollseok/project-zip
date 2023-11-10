@@ -16,3 +16,4 @@ def get_gpt_message():
 
     response = completion.choices[0].message.content
     return response
+
