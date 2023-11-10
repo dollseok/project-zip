@@ -3,6 +3,7 @@ import axiosInstance from '../../util/Interceptor';
 import {useEffect, useState} from 'react';
 import format from 'date-fns/format';
 import DiaryItemDetail from './DiaryItemDetail';
+import {useIsFocused} from '@react-navigation/native';
 
 export default function DiaryItem(props) {
   const {diarySummary, selectedYear, selectedMonth} = props;
@@ -26,6 +27,12 @@ export default function DiaryItem(props) {
       });
   };
 
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    getDiaryDetail();
+  }, [isFocused, createModalVisible]);
+
   // 날짜 포맷팅
   const formatDay = createdAt => {
     // createdAt 형식 '2023-11-06'
@@ -40,10 +47,6 @@ export default function DiaryItem(props) {
   const toggleExpanded = () => {
     setExpanded(!expanded);
   };
-
-  useEffect(() => {
-    getDiaryDetail();
-  }, []);
 
   // 일기 상세 모달 설정
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -142,7 +145,6 @@ const styles = StyleSheet.create({
   // 일기 작성자
   diaryAuthor: {
     flexDirection: 'row',
-    gap: 5,
   },
   diaryNicknameFont: {
     fontSize: 18,

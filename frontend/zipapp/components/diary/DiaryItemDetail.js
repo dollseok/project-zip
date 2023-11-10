@@ -12,6 +12,8 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   PanResponder,
+  ScrollView,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -21,6 +23,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import SelectDropdown from 'react-native-select-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosFileInstance from '../../util/FileInterceptor';
+import axiosInstance from '../../util/Interceptor';
 
 export default function DiaryItemDetail(props) {
   const {
@@ -31,7 +34,7 @@ export default function DiaryItemDetail(props) {
     diary,
   } = props;
 
-  // console.log('일기 상세 데이터: ', diary);
+  console.log('일기 상세 데이터: ', diary);
 
   const formatDiaryDay = createdAt => {
     return new Date(createdAt).getDate();
@@ -86,21 +89,47 @@ export default function DiaryItemDetail(props) {
     });
   };
 
-  // // 일자 선택 설정
-  // 연월 정보를 기반으로 일 수 계산
-  function getDaysInMonth(year, month) {
-    return new Date(year, month, 0).getDate();
-  }
+  // 수정 <-> 상세 조회
+  const [isUpdateMode, setIsUpdateMode] = useState(false);
 
-  const daysInMonth = getDaysInMonth(selectedYear, selectedMonth);
-  // 일자 리스트 생성
-  const dateList = [];
-  for (let day = 1; day <= daysInMonth; day++) {
-    dateList.push(day);
-  }
+  const toggleUpdateMode = () => {
+    setIsUpdateMode(!isUpdateMode);
+  };
 
-  // // 감정 선택 설정
+  // // 상세 조회 시 // //
+
+  // 1. 댓글
+  const [diaryComment, setDiaryComment] = useState(''); // 댓글 입력값
+
+  const writeComment = () => {
+    // 댓글 작성
+    const diaryCommentWriteRequestDto = {
+      diaryId: diary.diaryId,
+      content: diaryComment,
+    };
+
+    console.log('댓글 작성 dto: ', diaryCommentWriteRequestDto);
+
+    axiosInstance
+      .post(`/diary/comment/write`, JSON.stringify(diaryCommentWriteRequestDto))
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  // // 수정 시 // //
+
+  // 1. 제목, 내용 입력
+  const [diaryTitle, setDiaryTitle] = useState(''); // 제목
+  const [diaryContent, setDiaryContent] = useState(''); // 내용
+
+  // 2. 감정 선택
+
   // 초기 감정 상태 설정
+  const [diaryEmotion, setDiaryEmotion] = useState(1); // 감정 id
   const [selectedEmotion, setSelectedEmotion] = useState('smile');
 
   // 감정을 선택하는 함수
@@ -112,13 +141,7 @@ export default function DiaryItemDetail(props) {
     return selectedEmotion === emotion;
   };
 
-  // 인풋 관련 설정
-  const [diaryTitle, setDiaryTitle] = useState('');
-  const [diaryContent, setDiaryContent] = useState('');
-  const [diaryEmotion, setDiaryEmotion] = useState(1);
-  const [diaryComment, setDiaryComment] = useState('');
-
-  // // 사진 업로드
+  // 3. 사진 업로드
   const [image, setImage] = useState([]);
 
   return (
@@ -127,9 +150,11 @@ export default function DiaryItemDetail(props) {
       animationType={'fade'}
       transparent
       statusBarTranslucent>
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView
+        style={styles.overlay}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={closeModal}>
-          <View style={styles.background} />
+          <View style={{flex: 2}} />
         </TouchableWithoutFeedback>
         <Animated.View
           style={{
@@ -139,7 +164,7 @@ export default function DiaryItemDetail(props) {
           {...panResponders.panHandlers}>
           <ImageBackground
             style={styles.bgImage}
-            imageStyle={{opacity: 0.65}}
+            imageStyle={{opacity: 0.4}}
             source={
               diary?.diaryPhotos && diary?.diaryPhotos.length != 0
                 ? {uri: diary.diaryPhotos[0].imgUrl}
@@ -156,8 +181,9 @@ export default function DiaryItemDetail(props) {
                   <Text>편집</Text>
                 </TouchableOpacity>
               </View>
-              {/* 감정 선택 */}
+              {/* 날짜와 작성자 감정상태 */}
               <View style={styles.dayEmotionContainer}>
+                <View style={{flex: 1}}></View>
                 <View style={styles.dayContainer}>
                   <View>
                     <Text style={{fontSize: 40, fontWeight: 'bold'}}>
@@ -168,48 +194,77 @@ export default function DiaryItemDetail(props) {
                     <Text style={{fontSize: 15}}>일</Text>
                   </View>
                 </View>
-                <View style={styles.emotionContainer}></View>
-              </View>
-              {/* 제목 및 내용 */}
-              <View style={styles.contentContainer}>
-                <View style={styles.diaryTitleContainer}>
-                  <Text style={{fontSize: 18, fontWeight: '700'}}>
-                    {diary.title}
-                  </Text>
-                </View>
-                <View style={{marginTop: 10}}>
-                  <Text style={{fontSize: 15, fontWeight: '300'}}>
-                    {diary.content}
-                  </Text>
-                </View>
-              </View>
-              {/* 댓글 */}
-              <View style={styles.commentContainer}>
-                <View style={styles.commentSubtitle}>
-                  <Text>댓글</Text>
-                </View>
-                <View style={styles.commentList}>
-                  <Text>댓글 리스트</Text>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                  <TextInput
-                    style={{
-                      borderBottomWidth: 1,
-                      borderColor: 'gray',
-                      width: '60%',
-                    }}
-                    onChangeText={text => {
-                      setDiaryComment(text);
-                    }}
-                    value={diaryComment}
-                  />
-                  <TouchableOpacity>
-                    <Ionicons
-                      name="checkmark-circle-outline"
-                      size={24}
-                      color="black"
+                <View style={styles.emotionContainer}>
+                  {/* 닉네임 */}
+                  <View>
+                    <Text>{diary.name}</Text>
+                  </View>
+                  {/* 감정 이모티콘 */}
+                  <View>
+                    <Image
+                      style={{width: 24, height: 24}}
+                      source={require('../../assets/emotion/smile.png')}
                     />
-                  </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+              <View>
+                {/* 제목 및 내용 */}
+                <View style={styles.contentContainer}>
+                  <View style={styles.diaryTitleContainer}>
+                    <Text style={{fontSize: 18, fontWeight: '700'}}>
+                      {diary.title}
+                    </Text>
+                  </View>
+                  <View style={{marginTop: 15}}>
+                    <Text style={{fontSize: 15, fontWeight: '300'}}>
+                      {diary.content}
+                    </Text>
+                  </View>
+                </View>
+                {/* 댓글 */}
+                <View style={styles.commentContainer}>
+                  <View style={styles.commentSubtitle}>
+                    <Text style={{fontSize: 15, fontWeight: 'bold'}}>댓글</Text>
+                  </View>
+                  {/* 댓글 리스트 */}
+                  <View style={styles.commentList}>
+                    <ScrollView nestedScrollEnabled={true}>
+                      <View onStartShouldSetResponder={() => true}>
+                        {diary?.diaryComments?.map(comment => {
+                          return (
+                            <View>
+                              <Text>
+                                {comment.name}: {comment.content}
+                              </Text>
+                            </View>
+                          );
+                        })}
+                      </View>
+                    </ScrollView>
+                  </View>
+                  {/* 댓글 입력폼 */}
+                  <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+                    <TextInput
+                      style={{
+                        borderBottomWidth: 1,
+                        borderColor: 'gray',
+                        width: '60%',
+                        height: 35,
+                      }}
+                      onChangeText={text => {
+                        setDiaryComment(text);
+                      }}
+                      value={diaryComment}
+                    />
+                    <TouchableOpacity onPress={writeComment}>
+                      <Ionicons
+                        name="checkmark-circle-outline"
+                        size={24}
+                        color="black"
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>
@@ -218,7 +273,7 @@ export default function DiaryItemDetail(props) {
         <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.background} />
         </TouchableWithoutFeedback>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -233,10 +288,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bottomSheetContainer: {
-    height: 400,
+    height: 500,
     backgroundColor: 'white',
     borderRadius: 20,
     marginHorizontal: 15,
+    marginTop: 15,
     marginBottom: 15,
   },
   createFormContainer: {
@@ -248,18 +304,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   dayEmotionContainer: {
-    gap: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+
+    borderWidth: 1,
+    borderColor: 'black',
   },
   dayContainer: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'baseline',
+
+    height: 60,
   },
   emotionContainer: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
-
-    gap: 10,
   },
   emotionIcon: {
     width: 28,
@@ -269,6 +332,9 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   contentContainer: {
+    height: 200,
+    marginTop: 20,
+    padding: 10,
     borderWidth: 1,
     borderColor: 'black',
   },
@@ -297,5 +363,16 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     zIndex: -10,
     position: 'absolute',
+  },
+  commentContainer: {
+    height: 130,
+    marginTop: 20,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: 'black',
+  },
+  commentList: {
+    maxHeight: 50,
+    marginTop: 7,
   },
 });

@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -30,11 +30,44 @@ export default function PhotoList(props) {
         isCropCircle: true,
       });
       await setImages(response);
-      console.log('선택한 이미지들: ', images);
     } catch (e) {
       console.log(e.code, e.message);
     }
 
+    // const fd = new FormData();
+
+    // const dto = {
+    //   scheduleId: scheduleId,
+    // };
+
+    // fd.append('dto', {string: JSON.stringify(dto), type: 'application/json'});
+
+    // images.map(item => {
+    //   let image = {
+    //     uri: item.path,
+    //     type: 'image/jpeg',
+    //     name: 'photo.jpg',
+    //   };
+    //   fd.append('files', image);
+    // });
+
+    // console.log('폼데이터: ', fd);
+
+    // axiosFileInstance
+    //   .post(`/schedule/photo/register`, fd, {
+    //     transformRequest: (data, headers) => {
+    //       return data;
+    //     },
+    //   })
+    //   .then(res => {
+    //     console.log(res);
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
+  };
+
+  const onUploadImage = () => {
     const fd = new FormData();
 
     const dto = {
@@ -52,7 +85,7 @@ export default function PhotoList(props) {
       fd.append('files', image);
     });
 
-    console.log('폼데이터: ', fd);
+    // console.log('폼데이터: ', fd);
 
     axiosFileInstance
       .post(`/schedule/photo/register`, fd, {
@@ -67,6 +100,12 @@ export default function PhotoList(props) {
         console.log(err);
       });
   };
+
+  useEffect(() => {
+    if (images.length > 0) {
+      onUploadImage();
+    }
+  }, [images]);
 
   return (
     <View style={styles.albumContainer}>

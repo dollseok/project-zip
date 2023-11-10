@@ -217,25 +217,14 @@ export default function DiaryCreate(props) {
               {/* 감정 선택 */}
               <View style={styles.dayEmotionContainer}>
                 <View style={styles.dayContainer}>
-                  <SelectDropdown
-                    data={dateList}
-                    defaultValueByIndex={0}
-                    buttonStyle={{
-                      backgroundColor: 'white',
-                      width: '35%',
-                    }}
-                    buttonTextStyle={{
-                      fontSize: 40,
-                      fontWeight: '700',
-                    }}
-                    renderDropdownIcon={() => (
-                      <AntDesign name="caretdown" size={18} color="grey" />
-                    )}
-                    // 드랍다운 내려왔을 때 텍스트스타일
-                    rowTextStyle={{
-                      fontSize: 20,
-                    }}
-                  />
+                  <View>
+                    <Text style={{fontSize: 40, fontWeight: 'bold'}}>
+                      {new Date().getDate()}
+                    </Text>
+                  </View>
+                  <View>
+                    <Text style={{fontSize: 15}}>일</Text>
+                  </View>
                 </View>
                 <View style={styles.emotionContainer}>
                   <TouchableOpacity
@@ -366,6 +355,8 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   dayContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   emotionContainer: {
