@@ -47,7 +47,7 @@ public class MemberController {
     // 회원가입 또는 로그인
     @Operation(summary = "카카오로 로그인 및 회원가입", description = "카카오로 로그인 및 회원가입 하는 API")
     @PostMapping("/kakao/login")
-    public ResponseEntity<LoginResponseDto> loginKakao(@RequestBody LoginRequestDto codeRequest) {
+    public ResponseEntity<LoginResponseDto> loginKakao(@RequestBody LoginRequestDto codeRequest) throws IOException {
         LoginDto member = memberService.findKakaoMemberByAuthorizedCode(codeRequest.getCode(), RedirectUrlProperties.KAKAO_REDIRECT_URL, codeRequest.getFcmToken());
 
         String accessToken = jwtTokenProvider.createAccessToken(member.getId(), member.getSocialId(), member.getSocialType());
@@ -62,6 +62,7 @@ public class MemberController {
                         .id(member.getId())
                         .name(member.getName())
                         .firstLogin(member.isFirstLogin())
+                        .googleAccessToken(messaging.getAccessToken())
                         .build());
     }
 

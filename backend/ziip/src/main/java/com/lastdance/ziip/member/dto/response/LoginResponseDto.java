@@ -13,4 +13,5 @@ public class LoginResponseDto {
     private String message;
     private String name;
     private Boolean firstLogin;
+    private String googleAccessToken;
 }
