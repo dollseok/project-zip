@@ -50,6 +50,7 @@ dependencies {
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 	implementation 'net.nurigo:sdk:4.3.0'
+	implementation 'com.google.firebase:firebase-admin:6.8.1'
 }
 
 tasks.named('test') {

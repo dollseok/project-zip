@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -238,16 +239,16 @@ public class MemberServiceImpl implements MemberService {
     public MemberAllInfoResponse getALlMemberInfo(Member findMember) {
 
         MemberAllInfoResponse memberAllInfoResponse = MemberAllInfoResponse.builder()
-                .id(findMember.getId())
-                .email(findMember.getEmail())
-                .name(findMember.getName())
-                .gender(findMember.getGender().name())
-                .profileImgName(findMember.getProfileImgName())
-                .profileImgUrl(findMember.getProfileImgUrl())
-                .socialId(findMember.getSocialId())
-                .socialType(findMember.getSocialType())
-                .role(findMember.getRole().getValue())
-                .build();
+            .id(findMember.getId())
+            .email(findMember.getEmail())
+            .name(findMember.getName())
+            .gender(findMember.getGender().name())
+            .profileImgName(findMember.getProfileImgName())
+            .profileImgUrl(findMember.getProfileImgUrl())
+            .socialId(findMember.getSocialId())
+            .socialType(findMember.getSocialType())
+            .role(findMember.getRole().getValue())
+            .build();
         return memberAllInfoResponse;
     }
 
@@ -482,5 +483,14 @@ public class MemberServiceImpl implements MemberService {
     private boolean isValidNickname(String nickname) {
 
         return Pattern.matches("[a-zA-Z0-9[가-힣]]*$", nickname);
+    }
+
+    @Override
+    public FcmTokenResponseDto findFcmTokensByFamilyIdAndExcludeMemberId(Member findMember, Long familyId) {
+        List<String> fcmTokens =  memberRepository.findFcmTokensByFamilyIdAndExcludeMemberId(findMember.getId(), familyId);
+
+        return FcmTokenResponseDto.builder()
+            .fcmToken(fcmTokens)
+            .build();
     }
 }

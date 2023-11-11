@@ -5,6 +5,7 @@ import com.lastdance.ziip.member.dto.LoginDto;
 import com.lastdance.ziip.member.dto.TokenDto;
 import com.lastdance.ziip.member.dto.request.MemberInfoUpdateRequestDto;
 import com.lastdance.ziip.member.dto.response.BaseResponseDto;
+import com.lastdance.ziip.member.dto.response.FcmTokenResponseDto;
 import com.lastdance.ziip.member.dto.response.MemberAllInfoResponse;
 import com.lastdance.ziip.member.repository.entity.Member;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,4 +33,5 @@ public interface MemberService {
 //    MemberInfoResponseDto getMemberInfo(Member findMember);
 
     MemberAllInfoResponse getALlMemberInfo(Member findMember);
+    FcmTokenResponseDto findFcmTokensByFamilyIdAndExcludeMemberId(Member findMember, Long familyId);
 }
