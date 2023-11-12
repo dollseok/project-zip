@@ -1,8 +1,10 @@
 package com.lastdance.ziip.diary.service;
 
 import com.lastdance.ziip.diary.dto.request.DiaryDeleteRequestDto;
+import com.lastdance.ziip.diary.dto.request.DiaryModifyRequestDto;
 import com.lastdance.ziip.diary.dto.request.DiaryWriteRequestDto;
 import com.lastdance.ziip.diary.dto.response.*;
+import com.lastdance.ziip.diary.exception.NoExistDiary;
 import com.lastdance.ziip.diary.exception.validator.DiaryValidator;
 import com.lastdance.ziip.diary.repository.DiaryCommentRepository;
 import com.lastdance.ziip.diary.repository.DiaryPhotoRepository;
@@ -189,4 +191,55 @@ public class DiaryServiceImpl implements DiaryService{
         return diaryDeleteResponseDto;
     }
 
+    @Override
+    public DiaryModifyResponseDto modifyDiary(Member findMember, DiaryModifyRequestDto diaryModifyRequestDto, MultipartFile file){
+
+        Optional<Family> family = familyRepository.findById(diaryModifyRequestDto.getFamilyId());
+        Optional<Diary> tmpDiary = diaryRepository.findById(diaryModifyRequestDto.getDiaryId());
+        diaryValidator.checkDiaryExist(tmpDiary);
+        Diary diary = tmpDiary.get();
+
+        diaryValidator.checkDiaryManager(diary, findMember.getId());
+
+        Optional<Emotion> tmpEmotion = emotionRepository.findById(diaryModifyRequestDto.getEmotionId());
+        diaryValidator.checkEmotionExist(tmpEmotion);
+        Emotion emotion = tmpEmotion.get();
+
+        // 일기 내용 저장
+        diary.updateDiary(diaryModifyRequestDto, emotion);
+
+        Optional<DiaryPhoto> tmpDiaryPhoto  = diaryPhotoRepository.findById(diary.getDiaryPhotos().get(0).getId());
+
+        // 이미지 새로 들어왓는지 확인 + 기존 일기 사진 존재하는지 확인 + 사진 저장
+        if (file != null){
+
+            String fileUrl = null;
+            try {
+                fileUrl = s3Uploader.upload(file, "diary");
+            } catch (IOException e){
+                throw new RuntimeException(e);
+            }
+            String originalImgName = file.getOriginalFilename();
+
+            DiaryPhoto newDiaryPhoto = DiaryPhoto.builder()
+                    .diary(diary)
+                    .imgName(originalImgName)
+                    .imgUrl(fileUrl)
+                    .build();
+
+            if (!tmpDiaryPhoto.isPresent()) {
+                diaryPhotoRepository.save(newDiaryPhoto);
+            } else {
+                DiaryPhoto diaryPhoto = tmpDiaryPhoto.get();
+                diaryPhoto.updateDiaryPhoto(newDiaryPhoto);
+            }
+
+        }
+
+        DiaryModifyResponseDto diaryModifyResponseDto = DiaryModifyResponseDto.builder()
+                .diaryId(diary.getId())
+                .build();
+
+        return diaryModifyResponseDto;
+    }
 }

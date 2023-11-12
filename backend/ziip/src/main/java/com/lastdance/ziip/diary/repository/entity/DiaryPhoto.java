@@ -10,6 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,4 +33,8 @@ public class DiaryPhoto extends BaseEntity {
 
     private String imgName;
 
+    public void updateDiaryPhoto(DiaryPhoto diaryPhoto){
+        this.imgUrl = diaryPhoto.getImgUrl();
+        this.imgName = diaryPhoto.getImgName();
+    }
 }

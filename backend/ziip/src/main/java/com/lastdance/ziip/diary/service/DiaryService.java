@@ -2,6 +2,7 @@ package com.lastdance.ziip.diary.service;
 
 import com.lastdance.ziip.diary.dto.request.DiaryCommentWriteRequestDto;
 import com.lastdance.ziip.diary.dto.request.DiaryDeleteRequestDto;
+import com.lastdance.ziip.diary.dto.request.DiaryModifyRequestDto;
 import com.lastdance.ziip.diary.dto.request.DiaryWriteRequestDto;
 import com.lastdance.ziip.diary.dto.response.*;
 import com.lastdance.ziip.member.repository.entity.Member;
@@ -19,4 +20,6 @@ public interface DiaryService {
     DiaryDetailResponseDto getDiaryDetail(Member findMember, Long diaryId);
 
     DiaryDeleteResponseDto deleteDiary(Member findMember, DiaryDeleteRequestDto diaryDeleteRequestDto);
+
+    DiaryModifyResponseDto modifyDiary(Member findMember, DiaryModifyRequestDto diaryModifyRequestDto, MultipartFile file);
 }
