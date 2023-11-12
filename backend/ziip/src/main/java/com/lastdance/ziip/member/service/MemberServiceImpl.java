@@ -3,6 +3,7 @@ package com.lastdance.ziip.member.service;
 import com.lastdance.ziip.diary.repository.DiaryRepository;
 import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.global.auth.jwt.JwtTokenProvider;
+import com.lastdance.ziip.global.auth.oauth2.Messaging;
 import com.lastdance.ziip.global.auth.oauth2.kakao.KakaoMemberDto;
 import com.lastdance.ziip.global.auth.oauth2.kakao.KakaoOAuth2;
 import com.lastdance.ziip.global.auth.oauth2.naver.NaverMemberDto;
@@ -64,6 +65,7 @@ public class MemberServiceImpl implements MemberService {
     //private final RecordRepository recordRepository;
     //private final DiaryRepository diaryRepository;
     private final S3Uploader s3Uploader;
+    private final Messaging messaging;
 
     // authorizedCode로 가입된 사용자 조회
     @Transactional
@@ -486,11 +488,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public FcmTokenResponseDto findFcmTokensByFamilyIdAndExcludeMemberId(Member findMember, Long familyId) {
+    public FcmTokenResponseDto findFcmTokensByFamilyIdAndExcludeMemberId(Member findMember, Long familyId) throws
+        IOException {
         List<String> fcmTokens =  memberRepository.findFcmTokensByFamilyIdAndExcludeMemberId(findMember.getId(), familyId);
 
         return FcmTokenResponseDto.builder()
             .fcmToken(fcmTokens)
+            .googleAccessToken(messaging.getAccessToken())
             .build();
     }
 }

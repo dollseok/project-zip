@@ -11,4 +11,5 @@ import lombok.Data;
 @Builder
 public class FcmTokenResponseDto {
 	private List<String> fcmToken;
+	private String googleAccessToken;
 }

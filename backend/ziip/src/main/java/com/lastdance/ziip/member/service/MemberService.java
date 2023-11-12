@@ -33,5 +33,5 @@ public interface MemberService {
 //    MemberInfoResponseDto getMemberInfo(Member findMember);
 
     MemberAllInfoResponse getALlMemberInfo(Member findMember);
-    FcmTokenResponseDto findFcmTokensByFamilyIdAndExcludeMemberId(Member findMember, Long familyId);
+    FcmTokenResponseDto findFcmTokensByFamilyIdAndExcludeMemberId(Member findMember, Long familyId) throws IOException;
 }
