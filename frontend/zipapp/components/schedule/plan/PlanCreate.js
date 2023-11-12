@@ -12,6 +12,7 @@ import { AntDesign } from '@expo/vector-icons';
 import axiosInstance from '../../../util/Interceptor';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectDropdown from 'react-native-select-dropdown';
+import * as Notification from '../notification/Notification';
 
 export default function PlanCreate(props) {
 	const [isCreating, setIsCreating] = useState(false);
@@ -107,6 +108,8 @@ export default function PlanCreate(props) {
 			.catch((err) => {
 				console.log(err);
 			});
+
+		Notification.sendNotification('새로운 할 일이 등록되었습니다.');
 	};
 
 	return (

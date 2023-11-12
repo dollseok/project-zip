@@ -27,7 +27,7 @@ export default function KakaoLoginScreen({navigation}) {
       await firebase.messaging().registerDeviceForRemoteMessages();
       const fcmToken = await firebase.messaging().getToken();
 
-      console.log('firebase 토큰 : ', fcmToken);
+      // console.log('firebase 토큰 : ', fcmToken);
 
       const codeRequest = {
         code: code,
@@ -35,8 +35,6 @@ export default function KakaoLoginScreen({navigation}) {
       };
 
       const response = await axios.post(requestTokenUrl, codeRequest);
-
-      console.log(response.headers);
 
       const accessToken = response.headers['authorization'];
       const refreshToken = response.headers['authorization-refresh'];

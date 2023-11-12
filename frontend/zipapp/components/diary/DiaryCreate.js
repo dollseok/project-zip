@@ -19,6 +19,7 @@ import * as ImagePicker from 'expo-image-picker';
 import SelectDropdown from 'react-native-select-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosFileInstance from '../../util/FileInterceptor';
+import * as Notification from '../notification/Notification';
 
 export default function DiaryCreate(props) {
 	const {
@@ -177,6 +178,8 @@ export default function DiaryCreate(props) {
 			.catch((err) => {
 				console.log(err);
 			});
+
+		Notification.sendNotification('새로운 일기가 작성되었습니다.');
 	};
 
 	return (
