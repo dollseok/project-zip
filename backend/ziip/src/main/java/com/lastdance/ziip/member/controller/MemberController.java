@@ -62,7 +62,6 @@ public class MemberController {
                         .id(member.getId())
                         .name(member.getName())
                         .firstLogin(member.isFirstLogin())
-                        .googleAccessToken(messaging.getAccessToken())
                         .build());
     }
 

@@ -17,6 +17,9 @@ public class Messaging {
 
 	@Value("${oauth2.google.scopes}")
 	private String SCOPES;
+	private String type;
+	private String project_id;
+
 
 	public String getAccessToken() throws IOException {
 		GoogleCredentials googleCredentials = GoogleCredentials
