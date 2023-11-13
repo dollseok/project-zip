@@ -150,6 +150,7 @@ const styles = StyleSheet.create({
   scheduleSubTitle:{
     fontSize: 20,
     fontWeight: 'bold',
+    padding: 5,
   },
 
   // 일정 아이템 스타일
