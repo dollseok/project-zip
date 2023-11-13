@@ -42,7 +42,6 @@ public class GptService{
         String header = "Bearer ";
         header += messaging.getAccessToken();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        System.out.println("Header !!! : "+ header);
         headers.set("Authorization", header);
         headers.setAcceptCharset(Collections.singletonList(StandardCharsets.UTF_8));
 
