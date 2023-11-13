@@ -51,10 +51,10 @@ public class NotificationController {
 		);
 	}
 
-	@GetMapping("/gpttest")
-	public void testGpt() throws IOException {
-		gptService.postNotification();
-//		GptResponseDto responseDto = gptService.postNotification();
-//		return responseDto;
-	}
+//	@GetMapping("/gpttest")
+//	public void testGpt() throws IOException {
+//		gptService.postNotification();
+////		GptResponseDto responseDto = gptService.postNotification();
+////		return responseDto;
+//	}
 }
