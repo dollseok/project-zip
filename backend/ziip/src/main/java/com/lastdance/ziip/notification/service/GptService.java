@@ -28,7 +28,7 @@ public class GptService{
     private final MemberRepository memberRepository;
     private final Messaging messaging;
 
-    @Scheduled(cron="0 40 13 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron="0 50 13 * * *", zone = "Asia/Seoul")
     public void postNotification() throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
