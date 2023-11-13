@@ -141,11 +141,14 @@ export default function AlbumScreen() {
               imageStyle={styles.eachPhoto}>
               <View style={styles.photoDetail}>
                 <View style={styles.photoDate}>
-                  <Text>{item.startDate.split('-')[2]}일</Text>
+                  <Text style={{fontSize: 40, fontWeight: 'bold'}}>
+                    {item.startDate.split('-')[2]}
+                  </Text>
+                  <Text style={{fontSize: 20, fontWeight: '600'}}>일</Text>
                 </View>
-                <View style={styles.photoSource}>
+                {/* <View style={styles.photoSource}>
                   <Text>{item.detail}</Text>
-                </View>
+                </View> */}
               </View>
             </ImageBackground>
           )}
@@ -182,7 +185,9 @@ const styles = StyleSheet.create({
     width: '80%',
     alignItems: 'flex-end',
   },
-  albumContainer: {},
+  albumContainer: {
+    maxHeight: 400,
+  },
   eachPhotoContainer: {
     width: '47%',
     height: 200,
@@ -201,6 +206,10 @@ const styles = StyleSheet.create({
   },
   photoDate: {
     flex: 1,
+    flexDirection: 'row',
+
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
   },
   photoSource: {
     flex: 2,

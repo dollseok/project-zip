@@ -16,26 +16,34 @@ import {format} from 'date-fns';
 import DatePicker from 'react-native-date-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../../util/Interceptor';
+import refreshState from '../../atoms/refreshState';
+import {useRecoilState} from 'recoil';
 
 export default function ScheduleUpdate(props) {
   const {schedule, scheduleId} = props;
   // 일정 수정에 필요한 데이터
-  // 수정할 일정 id
-  // 가족 id
-  const [scheduleTitle, setScheduleTitle] = useState(schedule.name); // 제목
+  const [scheduleTitle, setScheduleTitle] = useState(''); // 제목
   const [startDate, setStartDate] = useState(new Date()); // 시작일
   const [endDate, setEndDate] = useState(new Date()); // 종료일
+
+  const [refresh, setRefresh] = useRecoilState(refreshState);
+
+  useEffect(() => {
+    if (schedule) {
+      setScheduleTitle(schedule.title);
+    }
+  }, [schedule]);
 
   // 일정 수정
   const updateSchedule = async () => {
     const familyId = await AsyncStorage.getItem('familyId');
     const scheduleStart = format(new Date(startDate), 'yyyy-MM-dd');
     const scheduleEnd = format(new Date(endDate), 'yyyy-MM-dd');
-    console.log('수정할 일정 Id: ', scheduleId);
-    console.log('가족 Id: ', familyId);
-    console.log('수정할 일정 제목: ', scheduleTitle);
-    console.log('일정 시작일: ', scheduleStart);
-    console.log('일정 종료일: ', scheduleEnd);
+    // console.log('수정할 일정 Id: ', scheduleId);
+    // console.log('가족 Id: ', familyId);
+    // console.log('수정할 일정 제목: ', scheduleTitle);
+    // console.log('일정 시작일: ', scheduleStart);
+    // console.log('일정 종료일: ', scheduleEnd);
 
     axiosInstance
       .put(`/schedule/modify`, {
@@ -46,15 +54,25 @@ export default function ScheduleUpdate(props) {
         endDate: scheduleEnd,
       })
       .then(res => {
-        console.log(res.data);
+        console.log(res.data.msg);
+        if (res.data.msg === '일정 수정 성공') {
+          Alert.alert('', '일정이 수정되었습니다.', [
+            {
+              text: '확인',
+              onPress: () => {
+                setUpdateModalVisible(false);
+                setRefresh(refresh => refresh * -1);
+              },
+            },
+          ]);
+        }
       })
       .catch(err => {
         console.log(err);
       });
   };
 
-  // 일정 삭제
-  const deleteSchedule = async () => {
+  const onDelete = async () => {
     const familyId = await AsyncStorage.getItem('familyId');
     // console.log('삭제할 일정 id:', schedule.scheduleId);
     // console.log('일정삭제 가족 id:', familyId);
@@ -69,17 +87,34 @@ export default function ScheduleUpdate(props) {
       .then(res => {
         console.log(res.data.msg);
         if (res.data.msg === '일정 삭제 성공') {
-          Alert.alert('', '일정이 삭제되었습니다.', [
-            {
-              text: '확인',
-              onPress: () => setUpdateModalVisible(false),
-            },
-          ]);
+          setRefresh(refresh => refresh * -1);
         }
       })
       .catch(err => {
         console.log(err);
       });
+  };
+
+  // 일정 삭제
+  const deleteSchedule = async () => {
+    Alert.alert(
+      '',
+      '정말로 삭제하시겠습니까?',
+      [
+        {text: '취소', onPress: () => {}, style: 'cancel'},
+        {
+          text: '삭제',
+          onPress: () => {
+            onDelete();
+          },
+          style: 'destructive',
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => {},
+      },
+    );
   };
 
   // 시작일 종료일 모달 오픈 여부

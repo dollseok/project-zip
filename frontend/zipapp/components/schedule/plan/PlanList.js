@@ -11,8 +11,8 @@ import PlanCreate from './PlanCreate';
 
 export default function PlanList(props) {
   const {scheduleId, plans} = props;
-  console.log('일정 id: ', scheduleId);
-  console.log('계획 리스트?', plans);
+  // console.log('일정 id: ', scheduleId);
+  // console.log('계획 리스트?', plans);
 
   return (
     <View style={styles.planContainer}>
@@ -45,11 +45,10 @@ const styles = StyleSheet.create({
     maxHeight: 120,
     marginVertical: 10,
   },
-  scheduleSubTitle:{
+  scheduleSubTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     padding: 5,
     marginTop: 10,
   },
-
 });

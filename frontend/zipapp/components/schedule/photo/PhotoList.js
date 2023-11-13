@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {
   StyleSheet,
+  Alert,
   View,
   Text,
   Image,
@@ -9,12 +10,15 @@ import {
 } from 'react-native';
 import axiosFileInstance from '../../../util/FileInterceptor';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
+import refreshState from '../../atoms/refreshState';
+import {useRecoilState} from 'recoil';
 
 export default function PhotoList(props) {
   const {scheduleId, photos} = props;
 
   const [images, setImages] = useState([]); // 업로드할 이미지들
   // console.log('등록된 이미지: ', photos);
+  const [refresh, setRefresh] = useRecoilState(refreshState);
 
   // 이미지 가져오기
   const onSelectImage = async () => {
@@ -33,38 +37,6 @@ export default function PhotoList(props) {
     } catch (e) {
       console.log(e.code, e.message);
     }
-
-    // const fd = new FormData();
-
-    // const dto = {
-    //   scheduleId: scheduleId,
-    // };
-
-    // fd.append('dto', {string: JSON.stringify(dto), type: 'application/json'});
-
-    // images.map(item => {
-    //   let image = {
-    //     uri: item.path,
-    //     type: 'image/jpeg',
-    //     name: 'photo.jpg',
-    //   };
-    //   fd.append('files', image);
-    // });
-
-    // console.log('폼데이터: ', fd);
-
-    // axiosFileInstance
-    //   .post(`/schedule/photo/register`, fd, {
-    //     transformRequest: (data, headers) => {
-    //       return data;
-    //     },
-    //   })
-    //   .then(res => {
-    //     console.log(res);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
   };
 
   const onUploadImage = () => {
@@ -95,6 +67,9 @@ export default function PhotoList(props) {
       })
       .then(res => {
         console.log(res);
+        if (res.data.msg === '일정 사진 등록 성공') {
+          setRefresh(refresh => refresh * -1);
+        }
       })
       .catch(err => {
         console.log(err);
@@ -149,7 +124,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 12,
   },
-  scheduleSubTitle:{
+  scheduleSubTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     padding: 5,

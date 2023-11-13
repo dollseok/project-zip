@@ -12,7 +12,9 @@ import {useState, useEffect} from 'react';
 import axiosInstance from '../../../util/Interceptor';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectDropdown from 'react-native-select-dropdown';
-import * as Notification from '../notification/Notification';
+// import * as Notification from '../notification/Notification';
+import refreshState from '../../atoms/refreshState';
+import {useRecoilState} from 'recoil';
 
 export default function PlanCreate(props) {
   const [isCreating, setIsCreating] = useState(false);
@@ -20,9 +22,11 @@ export default function PlanCreate(props) {
   const {scheduleId} = props; // 일정 id
   const [planTitle, setPlanTitle] = useState(''); // 계획 제목
 
+  const [refresh, setRefresh] = useRecoilState(refreshState);
+
   // 담당자 선택
   const [members, setMembers] = useState([]);
-  console.log(members);
+  // console.log(members);
   const [memberNames, setMemberNames] = useState([]);
   const [memberId, setMemberId] = useState(0);
 
@@ -92,25 +96,33 @@ export default function PlanCreate(props) {
       Alert.alert('', '담당자가 선택되지 않았습니다.', [
         {
           text: '확인',
-          onPress: () => setIsCreating(true),
+          onPress: () => {
+            // const tempTitle = planTitle;
+            // console.log('기존 입력값: ', tempTitle);
+            setIsCreating(true);
+          },
         },
       ]);
       return;
     }
 
-    getMemberIdByNickname;
+    // getMemberIdByNickname;
 
-		axiosInstance
-			.post(`/plan/write`, PlanWriteRequestDto)
-			.then((res) => {
-				console.log(res.data.data);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+    axiosInstance
+      .post(`/plan/write`, PlanWriteRequestDto)
+      .then(res => {
+        console.log(res.data);
+        if (res.data.msg === '계획 등록 성공') {
+          setIsCreating(false);
+          setRefresh(refresh => refresh * -1);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
 
-		Notification.sendNotification('새로운 할 일이 등록되었습니다.');
-	};
+    // Notification.sendNotification('새로운 할 일이 등록되었습니다.');
+  };
 
   return (
     <View style={styles.planCreateContainer}>

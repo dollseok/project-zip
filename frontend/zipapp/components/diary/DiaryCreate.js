@@ -21,7 +21,9 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import SelectDropdown from 'react-native-select-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosFileInstance from '../../util/FileInterceptor';
-import * as Notification from '../notification/Notification';
+import refreshState from '../../atoms/refreshState';
+import {useRecoilState} from 'recoil';
+// import * as Notification from '../notification/Notification';
 
 export default function DiaryCreate(props) {
   const {
@@ -30,6 +32,7 @@ export default function DiaryCreate(props) {
     createModalVisible,
     setCreateModalVisible,
   } = props;
+
   const screenHeight = Dimensions.get('screen').height;
   const panY = useRef(new Animated.Value(screenHeight)).current;
   const translateY = panY.interpolate({
@@ -65,8 +68,11 @@ export default function DiaryCreate(props) {
     }),
   ).current;
 
+  const [refresh, setRefresh] = useRecoilState(refreshState);
+
   useEffect(() => {
     if (props.createModalVisible) {
+      setImage([]);
       resetDiaryCreate.start();
     } else {
       closeDiaryCreate.start();
@@ -105,6 +111,12 @@ export default function DiaryCreate(props) {
     return selectedEmotion === emotion;
   };
 
+  const resetInput = async () => {
+    await setDiaryTitle('');
+    await setDiaryContent('');
+    await setDiaryEmotion(1);
+  };
+
   // 인풋 관련 설정
   const [diaryTitle, setDiaryTitle] = useState('');
   const [diaryContent, setDiaryContent] = useState('');
@@ -120,8 +132,8 @@ export default function DiaryCreate(props) {
 
     await launchImageLibrary({}, res => {
       if (res.didCancel) {
-        setImage([]);
         console.log('이미지 선택 취소');
+        setImage([]);
       } else if (res.errorCode) {
         console.log('ImagePicker Error: ', res.errorCode);
       } else if (res.assets) {
@@ -165,17 +177,21 @@ export default function DiaryCreate(props) {
       type: 'application/json',
     });
 
-		await axiosFileInstance
-			.post(`/diary/write`, formData)
-			.then((res) => {
-				console.log(res);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+    await axiosFileInstance
+      .post(`/diary/write`, formData)
+      .then(res => {
+        console.log(res.data.msg);
+        if (res.data.msg === '일기 작성 성공') {
+          closeModal();
+          setRefresh(refresh => refresh * -1);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
 
-		Notification.sendNotification('새로운 일기가 작성되었습니다.');
-	};
+    // Notification.sendNotification('새로운 일기가 작성되었습니다.');
+  };
 
   return (
     <Modal

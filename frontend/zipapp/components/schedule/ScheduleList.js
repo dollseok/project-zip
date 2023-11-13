@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     gap: 10, // 일정별 간격
   },
 
-  scheduleItem:{
+  scheduleItem: {
     marginBottom: 16,
-  }
+  },
 });

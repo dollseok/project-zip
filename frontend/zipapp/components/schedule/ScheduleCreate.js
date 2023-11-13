@@ -17,6 +17,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../../util/Interceptor';
 import {response} from 'express';
 // import * as Notification from '../notification/Notification';
+import refreshState from '../../atoms/refreshState';
+import {useRecoilState} from 'recoil';
 
 export default function ScheduleCreate(props) {
   // 일정 등록에 필요한 데이터
@@ -24,15 +26,17 @@ export default function ScheduleCreate(props) {
   const [startDate, setStartDate] = useState(new Date()); // 시작일
   const [endDate, setEndDate] = useState(new Date()); // 종료일
 
+  const [refresh, setRefresh] = useRecoilState(refreshState);
+
   // 일정 등록
   const createSchedule = async () => {
     const familyId = await AsyncStorage.getItem('familyId');
     const scheduleStart = format(new Date(startDate), 'yyyy-MM-dd');
     const scheduleEnd = format(new Date(endDate), 'yyyy-MM-dd');
-    console.log('가족 Id: ', familyId);
-    console.log('일정 제목: ', scheduleTitle);
-    console.log('일정 시작일: ', format(new Date(startDate), 'yyyy-MM-dd'));
-    console.log('일정 종료일: ', format(new Date(endDate), 'yyyy-MM-dd'));
+    // console.log('가족 Id: ', familyId);
+    // console.log('일정 제목: ', scheduleTitle);
+    // console.log('일정 시작일: ', format(new Date(startDate), 'yyyy-MM-dd'));
+    // console.log('일정 종료일: ', format(new Date(endDate), 'yyyy-MM-dd'));
 
     axiosInstance
       .post(`/schedule/register`, {
@@ -42,13 +46,17 @@ export default function ScheduleCreate(props) {
         endDate: scheduleEnd,
       })
       .then(res => {
-        console.log(res.data);
+        console.log(res.data.msg);
+        if (res.data.msg === '일정 등록 성공') {
+          closeModal();
+          setRefresh(refresh => refresh * -1);
+        }
       })
       .catch(err => {
         console.log(err);
       });
 
-	  // Notification.sendNotification('새로운 일정이 등록되었습니다.');
+    // Notification.sendNotification('새로운 일정이 등록되었습니다.');
   };
 
   // 시작일 종료일 모달 오픈 여부
@@ -127,13 +135,11 @@ export default function ScheduleCreate(props) {
             {/* 취소 & 등록 버튼 */}
             <View style={styles.buttonContainer}>
               {/* 취소 버튼 */}
-              <TouchableOpacity
-                onPress={closeModal}>
+              <TouchableOpacity onPress={closeModal}>
                 <Text style={styles.cancelButton}>취소</Text>
               </TouchableOpacity>
               {/* 등록 버튼 */}
-              <TouchableOpacity
-                onPress={createSchedule}>
+              <TouchableOpacity onPress={createSchedule}>
                 <Text style={styles.writeButton}>완료</Text>
               </TouchableOpacity>
             </View>
@@ -155,7 +161,9 @@ export default function ScheduleCreate(props) {
                 <TouchableOpacity
                   style={styles.selectDateInput}
                   onPress={() => setOpenPickStart(true)}>
-                  <Text style={styles.selectDateInputText}>{format(new Date(startDate), 'yyyy.M.d')}</Text>
+                  <Text style={styles.selectDateInputText}>
+                    {format(new Date(startDate), 'yyyy.M.d')}
+                  </Text>
                 </TouchableOpacity>
                 <DatePicker
                   modal
@@ -181,7 +189,9 @@ export default function ScheduleCreate(props) {
                 <TouchableOpacity
                   style={styles.selectDateInput}
                   onPress={() => setOpenPickEnd(true)}>
-                  <Text style={styles.selectDateInputText}>{format(new Date(endDate), 'yyyy.M.d')}</Text>
+                  <Text style={styles.selectDateInputText}>
+                    {format(new Date(endDate), 'yyyy.M.d')}
+                  </Text>
                 </TouchableOpacity>
                 <DatePicker
                   modal
@@ -252,7 +262,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   selectDateInput: {
-    marginBottom:20,
+    marginBottom: 20,
   },
   selectDateInputText: {
     fontSize: 23,

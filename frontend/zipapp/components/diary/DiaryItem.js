@@ -4,12 +4,17 @@ import {useEffect, useState} from 'react';
 import format from 'date-fns/format';
 import DiaryItemDetail from './DiaryItemDetail';
 import {useIsFocused} from '@react-navigation/native';
+import refreshState from '../../atoms/refreshState';
+import {useRecoilState} from 'recoil';
 
 export default function DiaryItem(props) {
   const {diarySummary, selectedYear, selectedMonth} = props;
 
   const [diary, setDiary] = useState([]);
   // console.log('일기 상세 데이터: ', diary);
+
+  const [refresh, setRefresh] = useRecoilState(refreshState);
+
   // 일기 상세 데이터 가져오기
   const getDiaryDetail = () => {
     axiosInstance
@@ -31,7 +36,7 @@ export default function DiaryItem(props) {
 
   useEffect(() => {
     getDiaryDetail();
-  }, [isFocused, createModalVisible]);
+  }, [isFocused, createModalVisible, refresh]);
 
   // 날짜 포맷팅
   const formatDay = createdAt => {
