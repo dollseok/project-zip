@@ -85,7 +85,7 @@ export default function PhotoList(props) {
   return (
     <View style={styles.albumContainer}>
       <View style={styles.albumHeader}>
-        <Text style={styles.subtitleFont}>사진첩</Text>
+        <Text style={styles.scheduleSubTitle}>사진첩</Text>
         <TouchableOpacity onPress={onSelectImage}>
           <Text>추가</Text>
         </TouchableOpacity>
@@ -124,8 +124,9 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 12,
   },
-  subtitleFont: {
+  scheduleSubTitle: {
     fontSize: 20,
     fontWeight: 'bold',
+    padding: 5,
   },
 });

@@ -209,8 +209,7 @@ export default function FamilyMainScreen({route}) {
       axiosInstance
         .get(`/schedule/list?familyId=${familyId}`)
         .then(response => {
-          setSchedules(response.data.list);
-          console.log('일정 : ', schedules);
+          setSchedules(response.data.data.scheduleListDetailResponseList);
         })
         .catch(error => {
           console.error('There was an error!', error);
@@ -219,18 +218,7 @@ export default function FamilyMainScreen({route}) {
       axiosInstance
         .get(`/diary/list?familyId=${familyId}`)
         .then(response => {
-          setDiaries(response.data.list);
-          console.log('일기 : ', diaries);
-        })
-        .catch(error => {
-          console.error('There was an error!', error);
-        });
-
-      axiosInstance
-        .get(`/diary/list?familyId=${familyId}`)
-        .then(response => {
-          setDiaries(response.data.list);
-          console.log('일기 : ', diaries);
+          setDiaries(response.data.data.diaryListDetailResponseList);
         })
         .catch(error => {
           console.error('There was an error!', error);
@@ -519,7 +507,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 7,
     marginVertical: 5,
-    width: '90',
+    width: '100%',
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.5)',
   },
@@ -533,7 +521,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 7,
     marginVertical: 5,
-    width: '90',
+    width: '100%',
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.5)',
   },
@@ -555,6 +543,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  userImage: {
+    width: 40,
+    height: 40,
+    marginRight: 30
+  }
 });
 
 const familyStyles = StyleSheet.create({

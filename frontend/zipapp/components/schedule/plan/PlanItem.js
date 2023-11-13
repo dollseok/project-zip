@@ -105,13 +105,15 @@ export default function PlanItem(props) {
 const styles = StyleSheet.create({
   eachPlan: {
     flexDirection: 'row',
+    alignItems : 'center',
     gap: 5,
+    padding: 3,
   },
   planCheckbox: {
     width: '10%',
   },
   planTitle: {
-    width: '50%',
+    width: '40%',
   },
   planManager: {
     width: '20%',

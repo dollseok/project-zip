@@ -49,31 +49,7 @@ export default function KakaoLoginScreen({navigation}) {
         await AsyncStorage.setItem('refreshToken', refreshToken);
       }
 
-      const headers = {
-        Authorization: `Bearer ` + response.data.googleAccessToken,
-        'Content-Type': 'application/json'
-      };
-
-      const message = {
-        message: {
-          token:
-            '',
-          notification: {
-            title: '하진아 안녕',
-            body: '하진아 안녕',
-          },
-        },
-      };
-
-      const fcmUrl =
-        'https://fcm.googleapis.com/v1/projects/lastdance-test/messages:send';
-
-      await axios.post(fcmUrl, message, { headers: headers })
-      .then((response) => {
-        console.log("firebase 알림 전송 성공 : ", response)
-      }).catch((error) => {
-        console.log("firebase 알림 전송 실패 : ", error);
-      })
+      console.log(response);
 
       await navigation.navigate('가족선택');
     } catch (e) {

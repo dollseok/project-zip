@@ -18,7 +18,7 @@ export default function PlanList(props) {
     <View style={styles.planContainer}>
       <View style={styles.planHeader}>
         <View style={styles.planSubTitle}>
-          <Text style={styles.subtitleFont}>할 일</Text>
+          <Text style={styles.scheduleSubTitle}>할 일</Text>
         </View>
       </View>
       <View style={styles.planList}>
@@ -45,8 +45,10 @@ const styles = StyleSheet.create({
     maxHeight: 120,
     marginVertical: 10,
   },
-  subtitleFont: {
+  scheduleSubTitle: {
     fontSize: 20,
     fontWeight: 'bold',
+    padding: 5,
+    marginTop: 10,
   },
 });

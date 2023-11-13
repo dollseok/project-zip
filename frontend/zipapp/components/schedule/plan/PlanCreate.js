@@ -148,7 +148,7 @@ export default function PlanCreate(props) {
               }}
               defaultButtonText="담당자"
               buttonStyle={{
-                width: 100,
+                width: 65,
                 height: 24,
                 backgroundColor: 'white',
                 borderColor: 'grey',
@@ -164,17 +164,19 @@ export default function PlanCreate(props) {
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              onPress={() => {
-                setIsCreating(false);
-              }}>
-              <Text>취소</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+              style={styles.planAddCancelButton}
               onPress={async () => {
                 await createPlan();
                 setIsCreating(false);
               }}>
               <Text>등록</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.planAddCancelButton}
+              onPress={() => {
+                setIsCreating(false);
+              }}>
+              <Text>취소</Text>
             </TouchableOpacity>
           </View>
         </>
@@ -194,18 +196,20 @@ export default function PlanCreate(props) {
 const styles = StyleSheet.create({
   planCreateContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: 5,
     opacity: 0.5,
+    padding: 3,
+  
   },
   planCheckbox: {
     width: '10%',
   },
   planTitle: {
-    width: '35%',
+    width: '40%',
   },
   planTitleInput: {
-    borderBottomWidth: 1,
-    borderColor: 'gray',
+    
   },
   planManager: {
     width: '20%',
@@ -217,8 +221,13 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   buttonContainer: {
-    marginLeft: 50,
+    flexDirection: 'row',
+    marginLeft:15,
     gap: 10,
-    width: '20%',
+    width: '15%',
   },
+  planAddCancelButton:{
+    padding: 2,
+    margin: 3,
+  }
 });

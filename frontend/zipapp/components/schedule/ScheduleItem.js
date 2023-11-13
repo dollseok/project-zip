@@ -117,11 +117,11 @@ export default function ScheduleItem({startDate, scheduleId}) {
         {/* 일정 소제목과 수정 버튼 */}
         {expanded ? (
           <View style={styles.scheduleHeader}>
-            <View style={styles.scheduleSubTitle}>
-              <Text style={styles.subtitleFont}>일정</Text>
+            <View>
+              <Text style={styles.scheduleSubTitle}>일정</Text>
             </View>
             <TouchableOpacity onPress={onModal}>
-              <Text>수정</Text>
+              <Text style={{color: 'black'}}>수정</Text>
             </TouchableOpacity>
           </View>
         ) : null}
@@ -135,9 +135,7 @@ export default function ScheduleItem({startDate, scheduleId}) {
           />
           {/* 제목 */}
           <View style={styles.scheduleTitle}>
-            <Text style={{fontSize: 25, fontWeight: '600'}}>
-              {schedule.title}
-            </Text>
+            <Text style={styles.scheduleSubTitle}>{schedule.title}</Text>
           </View>
           {/* 준비 상태 */}
           <View style={styles.ready}>
@@ -176,15 +174,24 @@ const styles = StyleSheet.create({
 
     marginVertical: 10,
   },
+
+  scheduleSubTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    padding: 5,
+  },
+
   // 일정 아이템 스타일
   eachSchedule: {
+    gap: 10,
     backgroundColor: 'white',
     borderRadius: 16,
-
     width: '100%',
-    height: '100%',
+    height: 71,
+    padding: 10,
 
-    padding: 15,
+    borderWidth: 1,
+    borderColor: 'black',
   },
   // 확장 되었을 때 스타일
   expandedItem: {
@@ -207,10 +214,27 @@ const styles = StyleSheet.create({
     alignItems: 'baseline',
   },
   scheduleHeader: {
+    // borderWidth: 1,
+    // borderColor: 'black',
+    marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  scheduleDate: {
+  scheduleDay: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    width: 30,
+  },
+  scheduleDayFont: {
+    fontSize: 30,
+    fontWeight: 'bold',
+
+    textAlignVertical: 'bottom',
+  },
+  scheduleTitle: {
     flex: 2,
   },
   scheduleTitle: {
