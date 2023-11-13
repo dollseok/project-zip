@@ -36,6 +36,7 @@ spring:
       max-request-size: 200MB
   jackson:
     time-zone: Asia/Seoul
+
 # S3
 cloud:
   aws:

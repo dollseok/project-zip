@@ -39,7 +39,7 @@ public class FamilyController {
     @PostMapping("/register")
     public ResponseEntity<ResponseTemplate<FamilyRegisterResponseDto>> registFamily(
             HttpServletRequest httpServletRequest,
-            @RequestPart(name = "familyRegisterRequest") String jsonString,
+            @RequestParam(name = "familyRegisterRequest") String jsonString,
             @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         FamilyRegisterRequestDto familyRegisterRequest = mapper.readValue(jsonString, FamilyRegisterRequestDto.class);
@@ -165,7 +165,7 @@ public class FamilyController {
     @PostMapping("/modify")
     public ResponseEntity<ResponseTemplate<FamilyModifyResponseDto>> modifyFamily(
         HttpServletRequest httpServletRequest,
-        @RequestPart(name = "familyModifyRequest") String jsonString,
+        @RequestParam(name = "familyModifyRequest") String jsonString,
         @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
 
         ObjectMapper mapper = new ObjectMapper();

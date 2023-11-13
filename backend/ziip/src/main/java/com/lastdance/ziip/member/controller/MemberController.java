@@ -107,7 +107,7 @@ public class MemberController {
     @Operation(summary = "멤버 정보 수정", description = "멤버 정보(프로필사진,닉네임) 수정")
     @PutMapping("/{id}")
     private BaseResponseDto updateMemberInfo(@PathVariable Long id,
-                                             @RequestPart(name = "name", required = false) MemberInfoUpdateRequestDto memberInfoUpdateRequestDto,
+                                             @RequestParam(name = "name", required = false) MemberInfoUpdateRequestDto memberInfoUpdateRequestDto,
                                              @RequestParam(value = "file", required = false) MultipartFile file
             , HttpServletRequest httpServletRequest) throws IOException {
 
