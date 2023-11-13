@@ -31,6 +31,34 @@ export default function ScheduleItem({startDate, scheduleId}) {
   // console.log('ScheduleItem - 할일 정보: ', plans);
   // console.log('ScheduleItem - 사진 정보: ', photos);
 
+  // 일정 날짜 컴포넌트
+  const ScheduleDate = ({startDate, endDate}) => {
+    const startMonth = new Date(startDate).getMonth() + 1;
+    const startDay = new Date(startDate).getDate();
+    // console.log('시작월:', startMonth);
+    // console.log('시작일:', startDay);
+    const endMonth = new Date(endDate).getMonth() + 1;
+    const endDay = new Date(endDate).getDate();
+
+    return (
+      <View style={styles.scheduleDate}>
+        <View style={styles.scheduleStartDate}>
+          <Text style={styles.dateFont}>{startMonth}</Text>
+          <Text style={styles.dateUnitFont}>월</Text>
+          <Text style={styles.dateFont}>{startDay}</Text>
+          <Text style={styles.dateUnitFont}>일</Text>
+        </View>
+        <View style={styles.scheduleEndDate}>
+          <Text style={styles.dateFont}>-</Text>
+          <Text style={styles.dateFont}>{endMonth}</Text>
+          <Text style={styles.dateUnitFont}>월</Text>
+          <Text style={styles.dateFont}>{endDay}</Text>
+          <Text style={styles.dateUnitFont}>일</Text>
+        </View>
+      </View>
+    );
+  };
+
   // 일정 상세 데이터 가져오기
   const getScheduleDetail = scheduleId => {
     axiosInstance
@@ -86,7 +114,7 @@ export default function ScheduleItem({startDate, scheduleId}) {
         {expanded ? (
           <View style={styles.scheduleHeader}>
             <View style={styles.scheduleSubTitle}>
-              <Text>일정</Text>
+              <Text style={styles.subtitleFont}>일정</Text>
             </View>
             <TouchableOpacity onPress={onModal}>
               <Text>수정</Text>
@@ -97,29 +125,25 @@ export default function ScheduleItem({startDate, scheduleId}) {
           style={styles.scheduleInfo}
           onPress={() => toggleExpanded()}>
           {/* 일자 */}
-          <View style={styles.scheduleDay}>
-            <View style={styles.dayText}>
-              <Text style={styles.scheduleDayFont}>
-                {startDate.split('-')[2]}
-              </Text>
-              <Text style={{fontSize: 15}}>일</Text>
-            </View>
-          </View>
+          <ScheduleDate
+            startDate={schedule.startDate}
+            endDate={schedule.endDate}
+          />
           {/* 제목 */}
           <View style={styles.scheduleTitle}>
-            <Text style={{fontSize: 20, fontWeight: '600'}}>
+            <Text style={{fontSize: 25, fontWeight: '600'}}>
               {schedule.title}
             </Text>
           </View>
           {/* 준비 상태 */}
           <View style={styles.ready}>
-            <View style={{flexDirection: 'row', gap: 3, alignItems: 'center'}}>
-              <Ionicons name="checkbox-outline" size={16} color="black" />
-              <Text>준비중</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Ionicons name="checkbox-outline" size={10} color="black" />
+              <Text style={{fontSize: 10}}>준비중</Text>
             </View>
-            <View style={{flexDirection: 'row', gap: 3, alignItems: 'center'}}>
-              <Ionicons name="checkbox-outline" size={16} color="black" />
-              <Text>준비완료</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Ionicons name="checkbox-outline" size={10} color="black" />
+              <Text style={{fontSize: 10}}>준비완료</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -144,19 +168,19 @@ export default function ScheduleItem({startDate, scheduleId}) {
 const styles = StyleSheet.create({
   eachItem: {
     width: '100%',
-    height: 71,
+    height: 90,
+
+    marginVertical: 10,
   },
   // 일정 아이템 스타일
   eachSchedule: {
-    gap: 10,
-
     backgroundColor: 'white',
     borderRadius: 16,
 
     width: '100%',
-    height: 71,
+    height: '100%',
 
-    padding: 10,
+    padding: 15,
   },
   // 확장 되었을 때 스타일
   expandedItem: {
@@ -177,36 +201,46 @@ const styles = StyleSheet.create({
   dayText: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    gap: 3,
   },
   scheduleHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  scheduleDay: {
-    flexDirection: 'row',
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    flex: 1,
-    width: 30,
-  },
-  scheduleDayFont: {
-    fontSize: 30,
-    fontWeight: 'bold',
-
-    textAlignVertical: 'bottom',
-  },
-  scheduleTitle: {
+  scheduleDate: {
     flex: 2,
   },
+  scheduleTitle: {
+    flex: 3,
+  },
   ready: {
+    marginLeft: 10,
     flex: 1,
   },
   scheduleInfo: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   planInfo: {
     borderColor: 'black',
     borderWidth: 1,
+  },
+  scheduleStartDate: {
+    flexDirection: 'row',
+  },
+  scheduleEndDate: {
+    flexDirection: 'row',
+    // borderWidth: 1,
+  },
+  dateFont: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  dateUnitFont: {
+    fontSize: 10,
+    textAlignVertical: 'bottom',
+  },
+  subtitleFont: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });

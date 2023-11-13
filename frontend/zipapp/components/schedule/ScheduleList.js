@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderColor: 'black',
     alignItems: 'center',
-    width: '80%',
+    width: '90%',
     height: '60%',
     gap: 10, // 일정별 간격
   },

@@ -3,6 +3,7 @@ import {
   View,
   StyleSheet,
   Text,
+  FlatList,
   Modal,
   Animated,
   TouchableOpacity,
@@ -12,6 +13,7 @@ import {
 } from 'react-native';
 import axiosInstance from '../../util/Interceptor';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 export default function SchedulePreview(props) {
   const {modalVisible, setModalVisible, selectedDate, navigation} = props;
@@ -31,11 +33,11 @@ export default function SchedulePreview(props) {
         },
       })
       .then(res => {
-        // console.log(
-        //   '선택한 날의 일정 정보',
-        //   res.data.data.calendarDayScheduleResponseDtoList,
-        // );
-        console.log('선택한 날의 일정 및 일기 정보', res.data.data);
+        console.log(
+          '선택한 날의 일정 정보',
+          res.data.data.calendarDayScheduleResponseDtoList,
+        );
+        // console.log('선택한 날의 일정 및 일기 정보', res.data.data);
         const todayScheduleInfo =
           res.data.data.calendarDayScheduleResponseDtoList;
         setTodaySchedule(todayScheduleInfo);
@@ -46,8 +48,10 @@ export default function SchedulePreview(props) {
   };
 
   useEffect(() => {
-    getTodaySchedule(selectedDate);
-  }, [selectedDate]);
+    if (modalVisible) {
+      getTodaySchedule(selectedDate);
+    }
+  }, [modalVisible]);
 
   // 모달 관련 설정
   const screenHeight = Dimensions.get('screen').height;
@@ -134,7 +138,21 @@ export default function SchedulePreview(props) {
           <View style={styles.previewContent}>
             <View>
               {todaySchedule.length > 0 ? (
-                <Text style={styles.contentTitleFont}>일정 </Text>
+                <View>
+                  <Text style={styles.contentTitleFont}>일정 </Text>
+                  <FlatList
+                    style={{maxHeight: 50}}
+                    data={todaySchedule}
+                    renderItem={({item}) => (
+                      <View
+                        style={{flexDirection: 'row'}}
+                        key={item.scheduleId}>
+                        <Entypo name="dot-single" size={24} color="black" />
+                        <Text>{item.title}</Text>
+                      </View>
+                    )}
+                  />
+                </View>
               ) : (
                 <Text style={styles.contentTitleFont}>일정 없음</Text>
               )}
