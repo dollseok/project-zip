@@ -22,14 +22,14 @@ public class Messaging {
 	@Value("${oauth2.google.scopes}")
 	private String SCOPES;
 
-	@Value("${oauth2.google.service-key}")
-	private String GOOGLE_SERVICE_KEY;
+//	@Value("${oauth2.google.service-key}")
+//	private String GOOGLE_SERVICE_KEY;
 
 	@Value("${oauth2.google.target-directory}")
 	private String GOOGLE_SERVICE_KEY_DIRECTORY;
 
 	public String getAccessToken() throws IOException {
-		downloadFile(GOOGLE_SERVICE_KEY, GOOGLE_SERVICE_KEY_DIRECTORY);
+//		downloadFile(GOOGLE_SERVICE_KEY, GOOGLE_SERVICE_KEY_DIRECTORY);
 
 		GoogleCredentials googleCredentials = GoogleCredentials
 			.fromStream(new FileInputStream(GOOGLE_SERVICE_KEY_DIRECTORY))
