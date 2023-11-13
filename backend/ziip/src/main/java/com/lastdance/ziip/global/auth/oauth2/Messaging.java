@@ -23,7 +23,7 @@ public class Messaging {
 
 	public String getAccessToken() throws IOException {
 		GoogleCredentials googleCredentials = GoogleCredentials
-			.fromStream(new FileInputStream("/serviceAccountKey.json"))
+			.fromStream(new FileInputStream("src/main/resources/serviceAccountKey.json"))
 			.createScoped(Arrays.asList(SCOPES));
 
 		googleCredentials.refreshIfExpired();
