@@ -19,6 +19,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+
 @Tag(name = "Notification", description = "Notification 관련 API")
 @RestController
 @RequiredArgsConstructor
@@ -50,7 +52,7 @@ public class NotificationController {
 	}
 
 	@GetMapping("/gpttest")
-	public void testGpt(){
+	public void testGpt() throws IOException {
 		gptService.postNotification();
 //		GptResponseDto responseDto = gptService.postNotification();
 //		return responseDto;
