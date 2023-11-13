@@ -2,12 +2,11 @@ package com.lastdance.ziip.notification.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.lastdance.ziip.notification.dto.response.GptResponseDto;
+import com.lastdance.ziip.notification.service.GptService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.lastdance.ziip.global.util.ResponseTemplate;
@@ -28,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/notification")
 public class NotificationController {
 
+	private final GptService gptService;
+
 	@Operation(summary = "FCM Token 테스트", description = "기기별 FCM Token을 프론트에게 받는 API")
 	@PostMapping("/saveToken")
 	public ResponseEntity<ResponseTemplate<ReceiveFCMTokenResponseDto>> receiveFCMToken(HttpServletRequest httpServletRequest,
@@ -46,5 +47,12 @@ public class NotificationController {
 				.result(true)
 				.build(), HttpStatus.OK
 		);
+	}
+
+	@GetMapping("/gpttest")
+	public void testGpt(){
+		gptService.postNotification();
+//		GptResponseDto responseDto = gptService.postNotification();
+//		return responseDto;
 	}
 }
