@@ -10,7 +10,5 @@ import lombok.Data;
 public class KakaoMemberDto {
     private String socialId;
     private String email;
-    private String gender;
-    private String birth;
 
 }

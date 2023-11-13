@@ -78,10 +78,7 @@ public class AlbumServiceImpl implements AlbumService{
     }
 
     @Override
-    public AlbumMonthResponseDto monthAlbum(Member fineMember, AlbumMonthRequestDto albumMonthRequestDto) {
-
-        int year = albumMonthRequestDto.getYear();
-        int month = albumMonthRequestDto.getMonth();
+    public AlbumMonthResponseDto monthAlbum(Member fineMember, int year, int month, Long familyId) {
 
         // 해당 월의 시작날짜와 마지막 날짜 계산
         LocalDateTime startOfMonth = LocalDateTime.of(year,month,1,0,0,0);
@@ -92,7 +89,7 @@ public class AlbumServiceImpl implements AlbumService{
 
         List<SchedulePhoto> schedulePhotos = jpaQueryFactory
                 .selectFrom(qSchedulePhoto)
-                .where(qSchedulePhoto.schedule.family.id.eq(albumMonthRequestDto.getFamilyId()))
+                .where(qSchedulePhoto.schedule.family.id.eq(familyId))
                 .where(qSchedulePhoto.createdAt.between(startOfMonth,endOfMonth))
                 .fetch();
 
@@ -101,7 +98,7 @@ public class AlbumServiceImpl implements AlbumService{
 
         List<DiaryPhoto> diaryPhotos = jpaQueryFactory
                 .selectFrom(qDiaryPhoto)
-                .where(qDiaryPhoto.diary.family.id.eq(albumMonthRequestDto.getFamilyId()))
+                .where(qDiaryPhoto.diary.family.id.eq(familyId))
                 .where(qDiaryPhoto.createdAt.between(startOfMonth,endOfMonth))
                 .fetch();
 
