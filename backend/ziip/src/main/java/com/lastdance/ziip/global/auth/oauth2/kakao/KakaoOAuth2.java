@@ -76,15 +76,13 @@ public class KakaoOAuth2 {
         String email = kakaoAccount.getString("email");
         //String nickname = body.getJSONObject("properties").getString("nickname");
         //String profilePhoto = profile.getString("profile_image_url");
-        String gender = kakaoAccount.getString("gender");
-        String birth = kakaoAccount.getString("age_range");
+        //String gender = kakaoAccount.getString("gender");
+        //String birth = kakaoAccount.getString("age_range");
 
 
         return KakaoMemberDto.builder()
                 .socialId(Long.toString((Long) body.get("id")))
                 .email(email)
-                .gender(gender)
-                .birth(birth)
                 .build();
     }
 
