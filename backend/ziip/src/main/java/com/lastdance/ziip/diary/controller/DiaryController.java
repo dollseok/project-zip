@@ -2,11 +2,9 @@ package com.lastdance.ziip.diary.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lastdance.ziip.diary.dto.request.DiaryDeleteRequestDto;
+import com.lastdance.ziip.diary.dto.request.DiaryModifyRequestDto;
 import com.lastdance.ziip.diary.dto.request.DiaryWriteRequestDto;
-import com.lastdance.ziip.diary.dto.response.DiaryDeleteResponseDto;
-import com.lastdance.ziip.diary.dto.response.DiaryDetailResponseDto;
-import com.lastdance.ziip.diary.dto.response.DiaryListResponseDto;
-import com.lastdance.ziip.diary.dto.response.DiaryWriteResponseDto;
+import com.lastdance.ziip.diary.dto.response.*;
 import com.lastdance.ziip.diary.enums.DiaryResponseMessage;
 import com.lastdance.ziip.diary.service.DiaryService;
 import com.lastdance.ziip.family.service.FamilyService;
@@ -130,6 +128,31 @@ public class DiaryController {
                         .result(true)
                         .build(),HttpStatus.OK
         );
+    }
+
+    @Operation(summary = "일기 수정", description = "일기 수정 API")
+    @PutMapping("/modify")
+    public ResponseEntity<ResponseTemplate<DiaryModifyResponseDto>> diaryModify(
+            HttpServletRequest httpServletRequest,
+            @RequestPart(value="diaryModifyRequest") String jsonString,
+            @RequestPart(value="file", required = false) MultipartFile file) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        DiaryModifyRequestDto diaryModifyRequestDto = mapper.readValue(jsonString, DiaryModifyRequestDto.class);
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if(token == null) {
+            return null;
+        }
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        DiaryModifyResponseDto diaryModifyResponseDto = diaryService.modifyDiary(findMember, diaryModifyRequestDto, file);
+
+        return new ResponseEntity<>(ResponseTemplate.<DiaryModifyResponseDto>builder()
+                .msg(DiaryResponseMessage.DIARY_MODIFY_SUCCESS.getMessage())
+                .data(diaryModifyResponseDto)
+                .result(true)
+                .build(), HttpStatus.OK);
     }
 
 

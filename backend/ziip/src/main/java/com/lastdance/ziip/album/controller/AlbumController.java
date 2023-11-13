@@ -56,7 +56,9 @@ public class AlbumController {
     @GetMapping("/month")
     public ResponseEntity<ResponseTemplate<AlbumMonthResponseDto>> albumMonth(
             HttpServletRequest httpServletRequest,
-            @RequestBody AlbumMonthRequestDto albumMonthRequestDto){
+            @RequestParam(name = "year") int year,
+            @RequestParam(name = "month") int month ,
+            @RequestParam(name = "familyId") Long familyId){
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null){
@@ -64,7 +66,7 @@ public class AlbumController {
         }
         Member fineMember = memberService.findMemberByJwtToken(token);
 
-        AlbumMonthResponseDto albumMonthResponseDto = albumService.monthAlbum(fineMember, albumMonthRequestDto);
+        AlbumMonthResponseDto albumMonthResponseDto = albumService.monthAlbum(fineMember, year, month, familyId);
 
         return new ResponseEntity<>(ResponseTemplate.<AlbumMonthResponseDto>builder()
                 .msg(AlbumResponseMessage.ALBUM_MONTH_SUCCESS.getMessage())

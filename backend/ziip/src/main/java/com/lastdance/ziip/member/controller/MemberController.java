@@ -1,6 +1,7 @@
 package com.lastdance.ziip.member.controller;
 
 import com.lastdance.ziip.global.auth.jwt.JwtTokenProvider;
+import com.lastdance.ziip.global.auth.oauth2.Messaging;
 import com.lastdance.ziip.global.util.ResponseTemplate;
 import com.lastdance.ziip.global.util.property.RedirectUrlProperties;
 import com.lastdance.ziip.member.dto.LoginDto;
@@ -36,6 +37,7 @@ public class MemberController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
+    private final Messaging messaging;
 
 
     @Value("${oauth2.naver.state}")
@@ -45,7 +47,7 @@ public class MemberController {
     // 회원가입 또는 로그인
     @Operation(summary = "카카오로 로그인 및 회원가입", description = "카카오로 로그인 및 회원가입 하는 API")
     @PostMapping("/kakao/login")
-    public ResponseEntity<LoginResponseDto> loginKakao(@RequestBody LoginRequestDto codeRequest) {
+    public ResponseEntity<LoginResponseDto> loginKakao(@RequestBody LoginRequestDto codeRequest) throws IOException {
         LoginDto member = memberService.findKakaoMemberByAuthorizedCode(codeRequest.getCode(), RedirectUrlProperties.KAKAO_REDIRECT_URL, codeRequest.getFcmToken());
 
         String accessToken = jwtTokenProvider.createAccessToken(member.getId(), member.getSocialId(), member.getSocialType());
@@ -200,6 +202,25 @@ public class MemberController {
         return memberService.updateMemberProfileImage(findMember, file);
     }
 
+    @Operation(summary = "가족별 멤버 Firebase 토큰 조회", description = "가족별 멤버 Firebase 토큰 조회")
+    @GetMapping("/getFcmToken")
+    private ResponseEntity<ResponseTemplate<FcmTokenResponseDto>> findFcmTokensByFamilyIdAndExcludeMemberId(@RequestParam(value = "familyId", required = false) Long familyId
+        , HttpServletRequest httpServletRequest) throws IOException {
+
+        String token = httpServletRequest.getHeader("Authorization");
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        FcmTokenResponseDto responseDto =  memberService.findFcmTokensByFamilyIdAndExcludeMemberId(findMember, familyId);
+
+        return new ResponseEntity<>(
+            ResponseTemplate.<FcmTokenResponseDto>builder()
+                .result(true)
+                .msg(MemberResponseMessage.MEMBER_FCMTOKEN_SUCCESS.getMessage())
+                .data(responseDto)
+                .build(),
+            HttpStatus.OK);
+    }
+
 
     //mypage 조회(기록 페이지 상단 조회)
 //    @Operation(summary = "기록 페이지 사용자 정보 조회", description = "기록 페이지 사용자 정보 조회")
@@ -231,6 +252,4 @@ public class MemberController {
 //                        .memberId(findMember.getMemberId())
 //                        .message("Token 테스트 성공").build());
 //    }
-
-
 }

@@ -82,4 +82,3 @@ oauth2:
     redirect-uri: https://auth.expo.io/@hyeongseoklee/zip-app/auth/kakao/callback
   google:
     scopes: ${SCOPES}
-

@@ -1,5 +1,7 @@
 package com.lastdance.ziip.diary.repository.entity;
 
+import com.lastdance.ziip.diary.dto.request.DiaryModifyRequestDto;
+import com.lastdance.ziip.diary.repository.EmotionRepository;
 import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.global.entity.BaseEntity;
 import java.util.List;
@@ -46,4 +48,10 @@ public class Diary extends BaseEntity {
 
     @OneToMany(mappedBy = "diary", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<DiaryAlert> diaryAlerts;
+
+    public void updateDiary(DiaryModifyRequestDto diaryModifyRequestDto, Emotion emotion){
+        this.content = diaryModifyRequestDto.getContent();
+        this.title = diaryModifyRequestDto.getTitle();
+        this.emotion = emotion;
+    }
 }

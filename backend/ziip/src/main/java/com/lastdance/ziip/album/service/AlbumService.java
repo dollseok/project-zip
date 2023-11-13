@@ -7,5 +7,6 @@ import com.lastdance.ziip.member.repository.entity.Member;
 
 public interface AlbumService {
     AlbumListResponseDto listAlbum(Member findMember, Long familyId);
-    AlbumMonthResponseDto monthAlbum(Member fineMember, AlbumMonthRequestDto albumMonthRequestDto);
+
+    AlbumMonthResponseDto monthAlbum(Member fineMember, int year, int month, Long familyId);
 }

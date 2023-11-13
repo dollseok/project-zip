@@ -3,6 +3,7 @@ package com.lastdance.ziip.member.service;
 import com.lastdance.ziip.diary.repository.DiaryRepository;
 import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.global.auth.jwt.JwtTokenProvider;
+import com.lastdance.ziip.global.auth.oauth2.Messaging;
 import com.lastdance.ziip.global.auth.oauth2.kakao.KakaoMemberDto;
 import com.lastdance.ziip.global.auth.oauth2.kakao.KakaoOAuth2;
 import com.lastdance.ziip.global.auth.oauth2.naver.NaverMemberDto;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -63,6 +65,7 @@ public class MemberServiceImpl implements MemberService {
     //private final RecordRepository recordRepository;
     //private final DiaryRepository diaryRepository;
     private final S3Uploader s3Uploader;
+    private final Messaging messaging;
 
     // authorizedCode로 가입된 사용자 조회
     @Transactional
@@ -88,22 +91,22 @@ public class MemberServiceImpl implements MemberService {
         else {
 
             // 성별 남성 : F, 여성 : M
-            String kakaoGender = kakaoUserDto.getGender();
-            System.out.println("kakaoGender = " + kakaoGender);
-            Gender gender;
-            if (kakaoGender.equals("male")) {
-                gender = Gender.M;
-            } else if (kakaoGender.equals("female")) {
-                gender = Gender.F;
-            } else {
-                gender = null;
-            }
-            System.out.println(gender);
+//            String kakaoGender = kakaoUserDto.getGender();
+//            System.out.println("kakaoGender = " + kakaoGender);
+//            Gender gender;
+//            if (kakaoGender.equals("male")) {
+//                gender = Gender.M;
+//            } else if (kakaoGender.equals("female")) {
+//                gender = Gender.F;
+//            } else {
+//                gender = null;
+//            }
+//            System.out.println(gender);
 
 
             Member member = Member.builder()
                     .email(email)
-                    .gender(gender)
+                    .gender(Gender.M)
                     .name("")
                     .profileImgName(null)
                     .profileImgUrl(null)
@@ -238,16 +241,16 @@ public class MemberServiceImpl implements MemberService {
     public MemberAllInfoResponse getALlMemberInfo(Member findMember) {
 
         MemberAllInfoResponse memberAllInfoResponse = MemberAllInfoResponse.builder()
-                .id(findMember.getId())
-                .email(findMember.getEmail())
-                .name(findMember.getName())
-                .gender(findMember.getGender().name())
-                .profileImgName(findMember.getProfileImgName())
-                .profileImgUrl(findMember.getProfileImgUrl())
-                .socialId(findMember.getSocialId())
-                .socialType(findMember.getSocialType())
-                .role(findMember.getRole().getValue())
-                .build();
+            .id(findMember.getId())
+            .email(findMember.getEmail())
+            .name(findMember.getName())
+            .gender(findMember.getGender().name())
+            .profileImgName(findMember.getProfileImgName())
+            .profileImgUrl(findMember.getProfileImgUrl())
+            .socialId(findMember.getSocialId())
+            .socialType(findMember.getSocialType())
+            .role(findMember.getRole().getValue())
+            .build();
         return memberAllInfoResponse;
     }
 
@@ -482,5 +485,16 @@ public class MemberServiceImpl implements MemberService {
     private boolean isValidNickname(String nickname) {
 
         return Pattern.matches("[a-zA-Z0-9[가-힣]]*$", nickname);
+    }
+
+    @Override
+    public FcmTokenResponseDto findFcmTokensByFamilyIdAndExcludeMemberId(Member findMember, Long familyId) throws
+        IOException {
+        List<String> fcmTokens =  memberRepository.findFcmTokensByFamilyIdAndExcludeMemberId(findMember.getId(), familyId);
+
+        return FcmTokenResponseDto.builder()
+            .fcmToken(fcmTokens)
+            .googleAccessToken(messaging.getAccessToken())
+            .build();
     }
 }
