@@ -33,16 +33,12 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderColor: 'black',
     alignItems: 'center',
-<<<<<<< HEAD
-    width: '90%',
-=======
     width: '85%',
->>>>>>> 54836037f51088e5e51a02db63599ccc8c7ec3d1
     height: '60%',
     gap: 10, // 일정별 간격
   },
 
-  scheduleItem:{
+  scheduleItem: {
     marginBottom: 16,
-  }
+  },
 });
