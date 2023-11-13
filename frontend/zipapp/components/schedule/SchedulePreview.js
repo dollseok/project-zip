@@ -21,7 +21,8 @@ export default function SchedulePreview(props) {
 
   const getTodaySchedule = async today => {
     const familyId = await AsyncStorage.getItem('familyId');
-
+    console.log('조회할 날짜: ', selectedDate);
+    console.log('가족 id: ', familyId);
     axiosInstance
       .get(`/calendar/day`, {
         params: {
@@ -30,10 +31,11 @@ export default function SchedulePreview(props) {
         },
       })
       .then(res => {
-        console.log(
-          '선택한 날의 일정 정보',
-          res.data.data.calendarDayScheduleResponseDtoList,
-        );
+        // console.log(
+        //   '선택한 날의 일정 정보',
+        //   res.data.data.calendarDayScheduleResponseDtoList,
+        // );
+        console.log('선택한 날의 일정 및 일기 정보', res.data.data);
         const todayScheduleInfo =
           res.data.data.calendarDayScheduleResponseDtoList;
         setTodaySchedule(todayScheduleInfo);
@@ -131,8 +133,11 @@ export default function SchedulePreview(props) {
           </View>
           <View style={styles.previewContent}>
             <View>
-              <Text style={styles.contentTitleFont}>일정</Text>
-              {todaySchedule ? <Text>일정 있음</Text> : <Text>일정 없음</Text>}
+              {todaySchedule.length > 0 ? (
+                <Text style={styles.contentTitleFont}>일정 </Text>
+              ) : (
+                <Text style={styles.contentTitleFont}>일정 없음</Text>
+              )}
             </View>
           </View>
         </Animated.View>
