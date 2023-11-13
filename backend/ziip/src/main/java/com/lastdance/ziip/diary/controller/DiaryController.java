@@ -160,7 +160,7 @@ public class DiaryController {
     @DeleteMapping("/delete")
     public ResponseEntity<ResponseTemplate<DiaryDeleteResponseDto>> diaryDelete(
             HttpServletRequest httpServletRequest,
-            @RequestBody DiaryDeleteRequestDto diaryDeleteRequestDto){
+            @RequestParam Long diaryId){
 
         String token = httpServletRequest.getHeader("Authorization");
         if (token == null) {
@@ -168,7 +168,7 @@ public class DiaryController {
         }
         Member findMember = memberService.findMemberByJwtToken(token);
 
-        DiaryDeleteResponseDto diaryDeleteResponseDto = diaryService.deleteDiary(findMember, diaryDeleteRequestDto);
+        DiaryDeleteResponseDto diaryDeleteResponseDto = diaryService.deleteDiary(findMember, diaryId);
 
         return new ResponseEntity<>(
                 ResponseTemplate.<DiaryDeleteResponseDto>builder()

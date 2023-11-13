@@ -180,9 +180,9 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public DiaryDeleteResponseDto deleteDiary(Member findMember, DiaryDeleteRequestDto diaryDeleteRequestDto) {
+    public DiaryDeleteResponseDto deleteDiary(Member findMember, Long diaryId) {
 
-        Optional<Diary> tmpDiary = diaryRepository.findById(diaryDeleteRequestDto.getDiaryId());
+        Optional<Diary> tmpDiary = diaryRepository.findById(diaryId);
         diaryValidator.checkDiaryExist(tmpDiary);
         Diary diary = tmpDiary.get();
 
