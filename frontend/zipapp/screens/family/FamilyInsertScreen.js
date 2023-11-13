@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
 		top: 40,
 		alignSelf: 'center',
 		transform: [{ rotate: '-15deg' }],
+		color: 'black'
 	},
 	conditionalContent: {
 		justifyContent: 'center',
@@ -268,6 +269,7 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		fontWeight: 'bold',
 		marginTop: 20,
+		color: 'black'
 	},
 	inputContainer: {
 		flexDirection: 'row',
@@ -282,6 +284,7 @@ const styles = StyleSheet.create({
 	inputText: {
 		borderBottomWidth: 1,
 		width: 180,
+		color: 'black'
 	},
 	button: {
 		padding: 5,

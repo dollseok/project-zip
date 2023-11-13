@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
 		top: 40,
 		alignSelf: 'center',
 		transform: [{ rotate: '-15deg' }], // 이 부분을 추가합니다.
+		color: 'black'
 	},
 	conditionalContent: {
 		justifyContent: 'center',
@@ -144,6 +145,7 @@ const styles = StyleSheet.create({
 		fontSize: 30,
 		fontWeight: 'bold',
 		marginTop: 20,
+		color: 'black'
 	},
 	plusButton: {
 		fontSize: 30,

@@ -13,7 +13,6 @@ export default function KakaoLoginScreen({navigation}) {
     const condition = target.indexOf(exp);
     if (condition !== -1) {
       const requestCode = target.substring(condition + exp.length);
-      console.log('code = ', requestCode);
       requestToken(requestCode);
     }
   };
@@ -26,8 +25,6 @@ export default function KakaoLoginScreen({navigation}) {
       // FCM 토큰 가져오기 및 서버로 전송
       await firebase.messaging().registerDeviceForRemoteMessages();
       const fcmToken = await firebase.messaging().getToken();
-
-      // console.log('firebase 토큰 : ', fcmToken);
 
       const codeRequest = {
         code: code,
@@ -48,8 +45,6 @@ export default function KakaoLoginScreen({navigation}) {
         // AsyncStorage에 refreshToken 저장
         await AsyncStorage.setItem('refreshToken', refreshToken);
       }
-
-      console.log(response);
 
       await navigation.navigate('가족선택');
     } catch (e) {
