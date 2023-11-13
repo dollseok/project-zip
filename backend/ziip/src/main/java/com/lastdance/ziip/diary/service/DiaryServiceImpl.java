@@ -13,6 +13,7 @@ import com.lastdance.ziip.diary.repository.EmotionRepository;
 import com.lastdance.ziip.diary.repository.entity.Diary;
 import com.lastdance.ziip.diary.repository.entity.DiaryPhoto;
 import com.lastdance.ziip.diary.repository.entity.Emotion;
+import com.lastdance.ziip.family.repository.FamilyMemberRepository;
 import com.lastdance.ziip.family.repository.FamilyRepository;
 import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.family.repository.entity.FamilyMember;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 public class DiaryServiceImpl implements DiaryService{
 
     private final FamilyRepository familyRepository;
+    private final FamilyMemberRepository familyMemberRepository;
     private final EmotionRepository emotionRepository;
     private final DiaryRepository diaryRepository;
     private final DiaryPhotoRepository diaryPhotoRepository;
@@ -138,32 +140,39 @@ public class DiaryServiceImpl implements DiaryService{
 
         QFamilyMember qFamilyMember = QFamilyMember.familyMember;
 
-        List<FamilyMember> familyMemberData = jpaQueryFactory
+        List<FamilyMember> diaryFamilyMember = jpaQueryFactory
                 .selectFrom(qFamilyMember)
                 .where(qFamilyMember.family.id.eq(diary.getFamily().getId())
-                        .and (qFamilyMember.member.id.eq(diary.getMember().getId())))
+                        .and(qFamilyMember.member.id.eq(diary.getMember().getId())))
                 .fetch();
-
 
         // 댓글 리스트
         List<DiaryDetailCommentResponseDto> diaryDetailCommentResponseDtos =
                 diaryCommentRepository.findAllByDiary(diary)
                         .stream()
-                        .map(diaryComment -> DiaryDetailCommentResponseDto.builder()
+                        .map(diaryComment -> {
+                            List<FamilyMember> commentFamilyMember = jpaQueryFactory
+                                    .selectFrom(qFamilyMember)
+                                    .where(qFamilyMember.family.id.eq(diary.getFamily().getId())
+                                            .and(qFamilyMember.member.id.eq(diaryComment.getMember().getId())))
+                                    .fetch();
+
+                            return DiaryDetailCommentResponseDto.builder()
                                 .commentId(diaryComment.getId())
-                                .name(familyMemberData.get(0).getNickname())
+                                .name(commentFamilyMember.get(0).getNickname())
                                 .content(diaryComment.getContent())
                                 .createdAt(diaryComment.getCreatedAt())
                                 .updatedAt(diaryComment.getUpdatedAt())
-                                .build())
-                        .collect(Collectors.toList());
+                                .build();
+                        }).collect(Collectors.toList());
+
 
 
 
 
         return DiaryDetailResponseDto.builder()
                 .diaryId(diary.getId())
-                .name(familyMemberData.get(0).getNickname())
+                .name(diaryFamilyMember.get(0).getNickname())
                 .title(diary.getTitle())
                 .content(diary.getContent())
                 .emotionId(diary.getEmotion().getId())
