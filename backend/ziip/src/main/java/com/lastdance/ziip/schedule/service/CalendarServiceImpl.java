@@ -70,7 +70,7 @@ public class CalendarServiceImpl implements CalendarService {
         // 해당하는 날짜의 스케줄 조회 및 스케줄의 플랜 조회
         List<CalendarDayScheduleResponseDto> calendarDayScheduleResponseDtoList =
                 scheduleRepository.findAllByStartDateBeforeAndEndDateAfterAndFamilyId(
-                                getTodayDateAsLocalDate(todayDate), getTodayDateAsLocalDate(todayDate), familyId)
+                                getTodayDateAsLocalDate(todayDate).plusDays(1), getTodayDateAsLocalDate(todayDate).minusDays(1), familyId)
                         .stream()
                         .map(schedule -> {
                             List<Plan> plans = planRepository.findAllBySchedule(schedule);
@@ -101,7 +101,7 @@ public class CalendarServiceImpl implements CalendarService {
 
         // 해당 일자의 다이어리 조회 및 다이어리의 코멘트 조회
         List<CalendarDayDiaryResponseDto> calendarDayDiaryResponseDtos =
-                diaryRepository.findAllByCreatedAtBetweenAndFamilyId(startOfDay, endOfDay, familyId)
+                diaryRepository.findAllByCreatedAtBetweenAndFamilyId(startOfDay.plusDays(1), endOfDay.minusDays(1), familyId)
                         .stream()
                         .map(diary -> {
                             List<CalendarDayCommentResponseDto> calendarDayCommentResponseDtoList =
