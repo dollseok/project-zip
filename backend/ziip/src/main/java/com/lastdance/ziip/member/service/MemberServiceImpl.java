@@ -91,22 +91,22 @@ public class MemberServiceImpl implements MemberService {
         else {
 
             // 성별 남성 : F, 여성 : M
-            String kakaoGender = kakaoUserDto.getGender();
-            System.out.println("kakaoGender = " + kakaoGender);
-            Gender gender;
-            if (kakaoGender.equals("male")) {
-                gender = Gender.M;
-            } else if (kakaoGender.equals("female")) {
-                gender = Gender.F;
-            } else {
-                gender = null;
-            }
-            System.out.println(gender);
+//            String kakaoGender = kakaoUserDto.getGender();
+//            System.out.println("kakaoGender = " + kakaoGender);
+//            Gender gender;
+//            if (kakaoGender.equals("male")) {
+//                gender = Gender.M;
+//            } else if (kakaoGender.equals("female")) {
+//                gender = Gender.F;
+//            } else {
+//                gender = null;
+//            }
+//            System.out.println(gender);
 
 
             Member member = Member.builder()
                     .email(email)
-                    .gender(gender)
+                    .gender(Gender.M)
                     .name("")
                     .profileImgName(null)
                     .profileImgUrl(null)
