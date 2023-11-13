@@ -68,7 +68,7 @@ public class AlbumServiceImpl implements AlbumService{
 
         resultList.addAll(schedulePhotoList);
         resultList.addAll(diaryPhotoList);
-        Collections.sort(resultList, Comparator.comparing(AlbumImageResponseDto::getCreatedAt));
+        Collections.sort(resultList, Comparator.comparing(AlbumImageResponseDto::getStartDate));
 
         AlbumListResponseDto albumListResponseDto = AlbumListResponseDto.builder()
                 .images(resultList)
@@ -114,7 +114,7 @@ public class AlbumServiceImpl implements AlbumService{
 
         resultList.addAll(schedulePhotoList);
         resultList.addAll(diaryPhotoList);
-        Collections.sort(resultList, Comparator.comparing(AlbumImageResponseDto::getCreatedAt));
+        Collections.sort(resultList, Comparator.comparing(AlbumImageResponseDto::getStartDate));
 
         AlbumMonthResponseDto albumMonthResponseDto = AlbumMonthResponseDto.builder()
                 .images(resultList)
@@ -130,7 +130,8 @@ public class AlbumServiceImpl implements AlbumService{
                 .category(ImageCategory.SCHEDULE)
                 .detail(schedulePhoto.getSchedule().getTitle())
                 .imgUrl(schedulePhoto.getImgUrl())
-                .createdAt(schedulePhoto.getCreatedAt())
+                .startDate(schedulePhoto.getSchedule().getStartDate())
+                .endDate(schedulePhoto.getSchedule().getEndDate())
                 .build();
     }
 
@@ -150,7 +151,8 @@ public class AlbumServiceImpl implements AlbumService{
                 .category(ImageCategory.DIARY)
                 .detail(familyMemberData.get(0).getNickname() + "의 일기")
                 .imgUrl(diaryPhoto.getImgUrl())
-                .createdAt(diaryPhoto.getCreatedAt())
+                .startDate(diaryPhoto.getCreatedAt().toLocalDate())
+                .endDate(null)
                 .build();
     }
 
