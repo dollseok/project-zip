@@ -35,10 +35,6 @@ function CalendarStack() {
   );
 }
 
-const tabBarStyle = {
-  backgroundColor: 'black',
-};
-
 export default function HomeScreen() {
   return (
     <Tab.Navigator
@@ -46,9 +42,14 @@ export default function HomeScreen() {
       screenOptions={({route}) => ({
         tabBarShowLabel: false, // 아이콘 별 이름 안보이게
         tabBarStyle: {
-          backgroundColor: 'white', // 하단 탭 배경색상
-          height: '10%', // 하단 탭 높이
-          borderColor: 'white', // 경계선 안보이게
+          backgroundColor: 'transparent', // 하단 탭 배경색상
+          height: 100, // 하단 탭 높이
+          borderTopWidth: 0,
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          elevation: 0,
         },
         tabBarActiveTintColor: 'black', // 탭 활성화 아이콘 색상
         tabBarInactiveTintColor: 'rgba(0, 0, 0, 0.15)', // 탭 비활성화 아이콘 색상

@@ -5,8 +5,10 @@ import messaging from '@react-native-firebase/messaging';
 
 // 화면이동
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
-
 import StackNavigator from './screens/navigation/StackNavigator';
+
+// Recoil
+import {RecoilRoot} from 'recoil';
 
 // 화면 배경색 변경
 const navTheme = {
@@ -27,8 +29,10 @@ export default function App() {
   }, []);
 
   return (
-    <NavigationContainer theme={navTheme}>
-      <StackNavigator />
-    </NavigationContainer>
+    <RecoilRoot>
+      <NavigationContainer theme={navTheme}>
+        <StackNavigator />
+      </NavigationContainer>
+    </RecoilRoot>
   );
 }
