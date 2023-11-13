@@ -208,8 +208,8 @@ export default function FamilyMainScreen({navigation}) {
 
       if (response.data.data.familyProfileImgUrl == null) {
         setBackgroundImageUri(
-          // 'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png',
-          'https://blog.kakaocdn.net/dn/cckdnY/btqDogEdAS4/7kJZCk4ZhTYhNQMl6RkIU1/img.png',
+          'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png',
+          // 'https://blog.kakaocdn.net/dn/cckdnY/btqDogEdAS4/7kJZCk4ZhTYhNQMl6RkIU1/img.png',
         );
       } else {
         setBackgroundImageUri(response.data.data.familyProfileImgUrl);

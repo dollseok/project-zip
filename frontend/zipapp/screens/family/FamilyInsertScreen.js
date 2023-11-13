@@ -247,6 +247,7 @@ export default function FamilyInsertScreen({navigation}) {
   );
 }
 const styles = StyleSheet.create({
+<<<<<<< HEAD
   container: {
     justifyContent: 'center',
     backgroundColor: 'white',
@@ -298,4 +299,56 @@ const styles = StyleSheet.create({
   buttonEnabled: {
     backgroundColor: 'black',
   },
+=======
+	container: {
+		justifyContent: 'center',
+		backgroundColor: 'white',
+	},
+	logo: {
+		fontSize: 50,
+		fontWeight: 'bold',
+		position: 'absolute',
+		top: 40,
+		alignSelf: 'center',
+		transform: [{ rotate: '-15deg' }],
+		color: 'black'
+	},
+	conditionalContent: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginTop: 150,
+	},
+	familyText: {
+		fontSize: 20,
+		fontWeight: 'bold',
+		marginTop: 20,
+		color: 'black'
+	},
+	inputContainer: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginTop: 30,
+	},
+	imageContainer: {
+		flexDirection: 'column',
+		alignItems: 'center',
+		marginTop: 30,
+	},
+	inputText: {
+		borderBottomWidth: 1,
+		width: 180,
+		color: 'black'
+	},
+	button: {
+		padding: 5,
+		marginLeft: 10,
+		borderRadius: 5, // 버튼 모서리 둥글게
+	},
+	buttonDisabled: {
+		backgroundColor: 'gray',
+	},
+	buttonEnabled: {
+		backgroundColor: 'black',
+	},
+>>>>>>> 494e7f8 (feat: 일정 리스트 유저 닉네임, 메인화면에서 가족 리스트로 이동하는 버튼 추가)
 });
