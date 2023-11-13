@@ -1,17 +1,17 @@
 import Axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import StackNavigator from '../screens/navigation/StackNavigator';
 
 const axiosFileInstance = Axios.create({
   // baseURL: 'http://localhost:9090/api',
-  // baseURL: 'http://10.0.2.2:9090/api',
-  baseURL: 'https://lastdance.kr/api',
-  // timeout: 5000,
+  baseURL: 'http://10.0.2.2:9090/api',
+  // baseURL: 'https://lastdance.kr/api',
 });
 
 axiosFileInstance.interceptors.request.use(
   async config => {
     const accessToken = await AsyncStorage.getItem('accessToken');
-    config.headers['Content-Type'] = 'multipart/form-data';
+    config.headers['Content-Type'] = 'multipart/form-data; charset=UTF-8';
     config.headers['Authorization'] = accessToken;
     return config;
   },

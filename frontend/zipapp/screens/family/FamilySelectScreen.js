@@ -119,31 +119,33 @@ export default function FamilySelectScreen({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    backgroundColor: 'white',
-  },
-  logo: {
-    fontSize: 50,
-    fontWeight: 'bold',
-    position: 'absolute',
-    top: 40,
-    alignSelf: 'center',
-    transform: [{rotate: '-15deg'}], // 이 부분을 추가합니다.
-  },
-  conditionalContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 150,
-  },
-  familyText: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    marginTop: 20,
-  },
-  plusButton: {
-    fontSize: 30,
-    marginTop: 20,
-    color: 'gray',
-  },
+	container: {
+		justifyContent: 'center',
+		backgroundColor: 'white',
+	},
+	logo: {
+		fontSize: 50,
+		fontWeight: 'bold',
+		position: 'absolute',
+		top: 40,
+		alignSelf: 'center',
+		transform: [{ rotate: '-15deg' }], // 이 부분을 추가합니다.
+		color: 'black'
+	},
+	conditionalContent: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginTop: 150,
+	},
+	familyText: {
+		fontSize: 30,
+		fontWeight: 'bold',
+		marginTop: 20,
+		color: 'black'
+	},
+	plusButton: {
+		fontSize: 30,
+		marginTop: 20,
+		color: 'gray',
+	},
 });

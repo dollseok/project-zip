@@ -11,7 +11,7 @@ const axiosInstance = Axios.create({
 axiosInstance.interceptors.request.use(
   async config => {
     const accessToken = await AsyncStorage.getItem('accessToken');
-    config.headers['Content-Type'] = 'application/json; charset=utf-8';
+    config.headers['Content-Type'] = 'application/json; charset=UTF-8';
     config.headers['Authorization'] = accessToken;
     return config;
   },

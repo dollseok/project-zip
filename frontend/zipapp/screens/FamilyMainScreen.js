@@ -15,9 +15,10 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../util/Interceptor';
 import axiosFileInstance from '../util/FileInterceptor';
-import { launchImageLibrary } from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export default function FamilyMainScreen({route}) {
+export default function FamilyMainScreen({navigation}) {
   const [family, setFamily] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [diaries, setDiaries] = useState([]);
@@ -43,16 +44,14 @@ export default function FamilyMainScreen({route}) {
   const [modalVisible, setModalVisible] = useState(false);
   const translateY = useRef(new Animated.Value(300)).current;
 
-  const selectImage = async BackgroudOrProfile =>  {
-    console.log('변경할 요소 : ', BackgroudOrProfile);
-
+  const selectImage = async BackgroudOrProfile => {
     const options = {
       storageOptions: {
         skipBackup: true,
         path: 'images',
       },
     };
-  
+
     launchImageLibrary(options, response => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -61,7 +60,7 @@ export default function FamilyMainScreen({route}) {
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
-        const uri = response.assets[0].uri ;
+        const uri = response.assets[0].uri;
 
         console.log(uri);
 
@@ -82,7 +81,6 @@ export default function FamilyMainScreen({route}) {
 
   // 모달창 가리기 함수
   const hideButtons = () => {
-    console.log('모달창 가리기');
     Animated.timing(translateY, {
       toValue: 300,
       duration: 300,
@@ -114,7 +112,6 @@ export default function FamilyMainScreen({route}) {
       type: `image/jpeg`,
     });
 
-    console.log('수정할 이미지 : ', image);
     if (BackgroudOrProfile == 'Background') {
       setBackgroundImageUri(uri);
     } else {
@@ -123,8 +120,6 @@ export default function FamilyMainScreen({route}) {
   };
 
   const modifyFamily = async () => {
-    console.log('modifyFamily 함수 시작!');
-
     const formData = new FormData();
 
     const familyModifyRequest = {
@@ -144,8 +139,6 @@ export default function FamilyMainScreen({route}) {
     await axiosFileInstance
       .post('/family/modify', formData)
       .then(response => {
-        console.log(response.data);
-        console.log('수정된 가족의 ID : ', response.data.data.familyId);
         AsyncStorage.setItem(
           'familyId',
           JSON.stringify(response.data.data.familyId),
@@ -167,7 +160,6 @@ export default function FamilyMainScreen({route}) {
     await axiosFileInstance
       .put(`/members/profile`, formData2)
       .then(response => {
-        console.log('수정 응답 데이터 : ', response.data);
         setMemberUpdated(true); // 성공적으로 가족 정보가 수정되었다는 표시
       })
       .catch(error => {
@@ -179,12 +171,9 @@ export default function FamilyMainScreen({route}) {
     async function fetchData() {
       const familyId = await AsyncStorage.getItem('familyId');
 
-      console.log('선택한 가족 ID : ', familyId);
-
       axiosInstance
         .get(`/family/choice?familyId=${familyId}`)
         .then(response => {
-          console.log('가족 정보 : ', response.data.data);
           setFamily(response.data.data);
           setModifiedFamilyName(response.data.data.familyName);
           setModifiedFamilyContent(response.data.data.familyContent);
@@ -263,15 +252,20 @@ export default function FamilyMainScreen({route}) {
             </TouchableOpacity>
           </>
         ) : (
-          <TouchableOpacity
-            onPress={() => {
-              setIsEditMode(true);
-            }}>
-            <Image
-              source={require('../assets/geer.png')}
-              style={styles.editButton}
-            />
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity
+              onPress={() => {
+                setIsEditMode(true);
+              }}>
+              <Ionicons name="settings-outline" size={30} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('가족선택');
+              }}>
+              <Ionicons name="list" size={30} color="white" />
+            </TouchableOpacity>
+          </>
         )}
       </View>
       <View
@@ -377,7 +371,7 @@ export default function FamilyMainScreen({route}) {
               source={require('../assets/user.png')}
               style={styles.userImage}
             />
-            <Text style={styles.whiteText}>{item.memberId}</Text>
+            <Text style={styles.whiteText}>{item.nickname}</Text>
             <Text style={styles.whiteText}>{item.name}</Text>
           </View>
         )}
@@ -546,8 +540,8 @@ const styles = StyleSheet.create({
   userImage: {
     width: 40,
     height: 40,
-    marginRight: 30
-  }
+    marginRight: 30,
+  },
 });
 
 const familyStyles = StyleSheet.create({
