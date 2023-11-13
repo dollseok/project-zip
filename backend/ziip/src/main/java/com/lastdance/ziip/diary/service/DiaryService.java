@@ -19,7 +19,7 @@ public interface DiaryService {
 
     DiaryDetailResponseDto getDiaryDetail(Member findMember, Long diaryId);
 
-    DiaryDeleteResponseDto deleteDiary(Member findMember, DiaryDeleteRequestDto diaryDeleteRequestDto);
+    DiaryDeleteResponseDto deleteDiary(Member findMember, Long diaryId);
 
     DiaryModifyResponseDto modifyDiary(Member findMember, DiaryModifyRequestDto diaryModifyRequestDto, MultipartFile file);
 }
