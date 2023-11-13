@@ -83,3 +83,4 @@ oauth2:
   google:
     scopes: ${SCOPES}
     service-key: ${GOOGLE_SERVICE_KEY}
+    target-directory: ${GOOGLE_SERVICE_KEY_DIRECTORY}
