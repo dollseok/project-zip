@@ -490,7 +490,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public FcmTokenResponseDto findFcmTokensByFamilyIdAndExcludeMemberId(Member findMember, Long familyId) throws
         IOException {
-        List<String> fcmTokens =  memberRepository.findFcmTokensByFamilyIdAndExcludeMemberId(findMember.getId(), familyId);
+        List<String> fcmTokens =  memberRepository.findFcmTokensByFamilyIdAndExcludeMemberId(familyId, findMember.getId());
 
         return FcmTokenResponseDto.builder()
             .fcmToken(fcmTokens)

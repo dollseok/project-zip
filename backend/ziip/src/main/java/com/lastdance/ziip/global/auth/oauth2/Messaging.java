@@ -2,6 +2,8 @@ package com.lastdance.ziip.global.auth.oauth2;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -17,13 +19,14 @@ public class Messaging {
 
 	@Value("${oauth2.google.scopes}")
 	private String SCOPES;
-	private String type;
-	private String project_id;
+
+	@Value("${oauth2.google.service-key}")
+	private String GOOGLE_SERVICE_KEY;
 
 
 	public String getAccessToken() throws IOException {
 		GoogleCredentials googleCredentials = GoogleCredentials
-			.fromStream(new FileInputStream("/serviceAccountKey.json"))
+			.fromStream(new FileInputStream("src/main/resources/serviceAccountKey.json"))
 			.createScoped(Arrays.asList(SCOPES));
 
 		googleCredentials.refreshIfExpired();

@@ -12,7 +12,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByName(String nickname);
 
-    @Query("SELECT m.fcmToken FROM Member m JOIN FamilyMember fm ON m.id = fm.member.id " +
-        "WHERE fm.family.id = :familyId AND fm.member.id <> :memberId")
+    @Query(value = "SELECT m.fcmToken FROM Member m JOIN FamilyMember fm ON m.id = fm.member.id " +
+        "WHERE fm.family.id = :familyId AND fm.member.id != :memberId")
     List<String> findFcmTokensByFamilyIdAndExcludeMemberId(Long familyId, Long memberId);
 }
