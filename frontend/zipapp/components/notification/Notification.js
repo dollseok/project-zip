@@ -1,12 +1,13 @@
 import axios from 'axios';
 import {useRef, useEffect, useState} from 'react';
+import axiosInstance from '../../util/Interceptor';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function sendNotification(purpose) {
   const familyId = AsyncStorage.getItem('familyId');
   const [fcmToken, setFcmToken] = useState([]);
   const [googleAccessToken, setGoogleAccessToken] = useState([]);
-
+  console.log('알림 메서드입장');
   axiosInstance
     .get(`/members/getFcmToken?familyId=${familyId}`)
     .then(response => {

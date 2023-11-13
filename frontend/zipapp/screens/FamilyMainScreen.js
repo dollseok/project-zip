@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../util/Interceptor';
 import axiosFileInstance from '../util/FileInterceptor';
 import { launchImageLibrary } from 'react-native-image-picker';
+import Notification from '../components/notification/Notification';
 
 export default function FamilyMainScreen({route}) {
   const [family, setFamily] = useState([]);
@@ -178,6 +179,8 @@ export default function FamilyMainScreen({route}) {
   useEffect(() => {
     async function fetchData() {
       const familyId = await AsyncStorage.getItem('familyId');
+
+      // Notification.sendNotification('형석이 입장');
 
       console.log('선택한 가족 ID : ', familyId);
 
