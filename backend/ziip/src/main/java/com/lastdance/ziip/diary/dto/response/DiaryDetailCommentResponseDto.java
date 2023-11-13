@@ -16,6 +16,7 @@ public class DiaryDetailCommentResponseDto {
 
     private Long commentId;
     private String name;
+    private Long commentWriterId;
     private String content;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
