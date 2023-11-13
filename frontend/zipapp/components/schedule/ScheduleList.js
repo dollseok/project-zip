@@ -14,10 +14,12 @@ export default function ScheduleList(props) {
       <ScrollView style={{width: '100%'}}>
         {schedules.map(schedule => {
           return (
-            <ScheduleItem
-              startDate={schedule.startDate}
-              scheduleId={schedule.scheduleId}
-              key={schedule.scheduleId}></ScheduleItem>
+            <View style={styles.scheduleItem}>
+              <ScheduleItem
+                startDate={schedule.startDate}
+                scheduleId={schedule.scheduleId}
+                key={schedule.scheduleId}></ScheduleItem>
+            </View>
           );
         })}
       </ScrollView>
@@ -31,8 +33,12 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderColor: 'black',
     alignItems: 'center',
-    width: '80%',
+    width: '85%',
     height: '60%',
     gap: 10, // 일정별 간격
   },
+
+  scheduleItem:{
+    marginBottom: 16,
+  }
 });

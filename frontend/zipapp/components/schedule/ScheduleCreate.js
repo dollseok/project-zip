@@ -16,7 +16,7 @@ import DatePicker from 'react-native-date-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../../util/Interceptor';
 import {response} from 'express';
-import * as Notification from '../notification/Notification';
+// import * as Notification from '../notification/Notification';
 
 export default function ScheduleCreate(props) {
   // 일정 등록에 필요한 데이터
@@ -48,7 +48,7 @@ export default function ScheduleCreate(props) {
         console.log(err);
       });
 
-	  Notification.sendNotification('새로운 일정이 등록되었습니다.');
+	  // Notification.sendNotification('새로운 일정이 등록되었습니다.');
   };
 
   // 시작일 종료일 모달 오픈 여부
@@ -128,15 +128,13 @@ export default function ScheduleCreate(props) {
             <View style={styles.buttonContainer}>
               {/* 취소 버튼 */}
               <TouchableOpacity
-                style={styles.cancelButton}
                 onPress={closeModal}>
-                <Text>취소</Text>
+                <Text style={styles.cancelButton}>취소</Text>
               </TouchableOpacity>
               {/* 등록 버튼 */}
               <TouchableOpacity
-                style={styles.writeButton}
                 onPress={createSchedule}>
-                <Text>완료</Text>
+                <Text style={styles.writeButton}>완료</Text>
               </TouchableOpacity>
             </View>
             {/* 일정 이름 입력 */}
@@ -157,7 +155,7 @@ export default function ScheduleCreate(props) {
                 <TouchableOpacity
                   style={styles.selectDateInput}
                   onPress={() => setOpenPickStart(true)}>
-                  <Text>{format(new Date(startDate), 'yyyy.M.d')}</Text>
+                  <Text style={styles.selectDateInputText}>{format(new Date(startDate), 'yyyy.M.d')}</Text>
                 </TouchableOpacity>
                 <DatePicker
                   modal
@@ -183,7 +181,7 @@ export default function ScheduleCreate(props) {
                 <TouchableOpacity
                   style={styles.selectDateInput}
                   onPress={() => setOpenPickEnd(true)}>
-                  <Text>{format(new Date(endDate), 'yyyy.M.d')}</Text>
+                  <Text style={styles.selectDateInputText}>{format(new Date(endDate), 'yyyy.M.d')}</Text>
                 </TouchableOpacity>
                 <DatePicker
                   modal
@@ -232,19 +230,20 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   createFormContainer: {
-    padding: 20,
+    padding: 30,
     gap: 10,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 30,
   },
   titleInput: {
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: 30,
+    marginBottom: 70,
     paddingHorizontal: 10,
-    height: 40,
-
+    height: 50,
+    fontSize: 20,
     borderBottomWidth: 1,
     borderColor: 'gray',
   },
@@ -253,7 +252,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   selectDateInput: {
-    borderWidth: 1,
-    borderColor: 'black',
+    marginBottom:20,
+  },
+  selectDateInputText: {
+    fontSize: 23,
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  selectDateLabel: {
+    fontSize: 23,
+  },
+
+  // 버튼
+  cancelButton: {
+    fontSize: 20,
+  },
+  writeButton: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: 'black',
   },
 });

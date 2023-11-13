@@ -85,11 +85,11 @@ export default function ScheduleItem({startDate, scheduleId}) {
         {/* 일정 소제목과 수정 버튼 */}
         {expanded ? (
           <View style={styles.scheduleHeader}>
-            <View style={styles.scheduleSubTitle}>
-              <Text>일정</Text>
+            <View>
+              <Text style={styles.scheduleSubTitle}>일정</Text>
             </View>
             <TouchableOpacity onPress={onModal}>
-              <Text>수정</Text>
+              <Text style={{color: 'black'}}>수정</Text>
             </TouchableOpacity>
           </View>
         ) : null}
@@ -107,7 +107,7 @@ export default function ScheduleItem({startDate, scheduleId}) {
           </View>
           {/* 제목 */}
           <View style={styles.scheduleTitle}>
-            <Text style={{fontSize: 20, fontWeight: '600'}}>
+            <Text style={styles.scheduleSubTitle}>
               {schedule.title}
             </Text>
           </View>
@@ -146,17 +146,23 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 71,
   },
+
+  scheduleSubTitle:{
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+
   // 일정 아이템 스타일
   eachSchedule: {
     gap: 10,
-
     backgroundColor: 'white',
     borderRadius: 16,
-
     width: '100%',
     height: 71,
-
     padding: 10,
+
+    borderWidth: 1,
+    borderColor: 'black',
   },
   // 확장 되었을 때 스타일
   expandedItem: {
@@ -180,13 +186,17 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   scheduleHeader: {
+    // borderWidth: 1,
+    // borderColor: 'black',
+    marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   scheduleDay: {
     flexDirection: 'row',
-    // justifyContent: 'center',
-    // alignItems: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
     width: 30,
   },
@@ -204,6 +214,7 @@ const styles = StyleSheet.create({
   },
   scheduleInfo: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   planInfo: {
     borderColor: 'black',
