@@ -16,7 +16,9 @@ import DatePicker from 'react-native-date-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../../util/Interceptor';
 import {response} from 'express';
-import * as Notification from '../notification/Notification';
+// import * as Notification from '../notification/Notification';
+import refreshState from '../../atoms/refreshState';
+import {useRecoilState} from 'recoil';
 
 export default function ScheduleCreate(props) {
   // 일정 등록에 필요한 데이터
@@ -24,15 +26,17 @@ export default function ScheduleCreate(props) {
   const [startDate, setStartDate] = useState(new Date()); // 시작일
   const [endDate, setEndDate] = useState(new Date()); // 종료일
 
+  const [refresh, setRefresh] = useRecoilState(refreshState);
+
   // 일정 등록
   const createSchedule = async () => {
     const familyId = await AsyncStorage.getItem('familyId');
     const scheduleStart = format(new Date(startDate), 'yyyy-MM-dd');
     const scheduleEnd = format(new Date(endDate), 'yyyy-MM-dd');
-    console.log('가족 Id: ', familyId);
-    console.log('일정 제목: ', scheduleTitle);
-    console.log('일정 시작일: ', format(new Date(startDate), 'yyyy-MM-dd'));
-    console.log('일정 종료일: ', format(new Date(endDate), 'yyyy-MM-dd'));
+    // console.log('가족 Id: ', familyId);
+    // console.log('일정 제목: ', scheduleTitle);
+    // console.log('일정 시작일: ', format(new Date(startDate), 'yyyy-MM-dd'));
+    // console.log('일정 종료일: ', format(new Date(endDate), 'yyyy-MM-dd'));
 
     axiosInstance
       .post(`/schedule/register`, {
@@ -42,13 +46,17 @@ export default function ScheduleCreate(props) {
         endDate: scheduleEnd,
       })
       .then(res => {
-        console.log(res.data);
+        console.log(res.data.msg);
+        if (res.data.msg === '일정 등록 성공') {
+          closeModal();
+          setRefresh(refresh => refresh * -1);
+        }
       })
       .catch(err => {
         console.log(err);
       });
 
-	  Notification.sendNotification('새로운 일정이 등록되었습니다.');
+    // Notification.sendNotification('새로운 일정이 등록되었습니다.');
   };
 
   // 시작일 종료일 모달 오픈 여부

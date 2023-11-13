@@ -8,11 +8,16 @@ import DatePicker from 'react-native-modern-datepicker';
 import axiosInstance from '../../util/Interceptor';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// 새로고침을 위한 refreshState
+import {useRecoilState} from 'recoil';
+import refreshState from '../../atoms/refreshState';
+
 export default function DiaryScreen() {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // 초기 년도 설정
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // 초기 월 설정 (0은 1월을 의미)
   const [diarys, setDiarys] = useState([]);
 
+  const [refresh, setRefresh] = useRecoilState(refreshState); // 값이 바뀔때마다 새로고침
   // 연월 선택창 모달 설정
   const [isModalVisible, setisModalVisible] = useState(false);
   const showPickerModal = () => {
@@ -57,7 +62,7 @@ export default function DiaryScreen() {
 
   useEffect(() => {
     getDiaryData();
-  }, [selectedYear, selectedMonth]);
+  }, [selectedYear, selectedMonth, refresh]);
 
   return (
     <View style={styles.container}>

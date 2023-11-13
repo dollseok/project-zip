@@ -9,12 +9,18 @@ import DatePicker from 'react-native-modern-datepicker';
 import axiosInstance from '../util/Interceptor';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import refreshState from '../../atoms/refreshState';
+import {useRecoilState} from 'recoil';
+
 export default function ScheduleScreen({route, navigation}) {
   const [schedules, setSchedules] = useState([]);
+
+  const [refresh, setRefresh] = useRecoilState(refreshState);
 
   const getScheduleList = async () => {
     const familyId = await AsyncStorage.getItem('familyId');
 
+    console.log('월별 일정 불러오기!');
     if (selectedYear && selectedMonth) {
       axiosInstance
         .get(`/calendar/month`, {
@@ -65,7 +71,7 @@ export default function ScheduleScreen({route, navigation}) {
 
   useEffect(() => {
     getScheduleList();
-  }, [selectedYear, selectedMonth]);
+  }, [selectedYear, selectedMonth, refresh]);
 
   // 연월 선택창 모달 설정
   const [isModalVisible, setisModalVisible] = useState(false);

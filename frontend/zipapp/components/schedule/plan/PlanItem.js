@@ -1,12 +1,17 @@
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axiosInstance from '../../../util/Interceptor';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import refreshState from '../../atoms/refreshState';
+import {useRecoilState} from 'recoil';
+
 export default function PlanItem(props) {
   const plan = props.plan;
   const [manager, setManager] = useState('');
+
+  const [refresh, setRefresh] = useRecoilState(refreshState);
 
   // 멤버 id로 담당자 닉네임 가져오기
   const getManagerNickname = async managerId => {
@@ -32,7 +37,7 @@ export default function PlanItem(props) {
       });
   };
 
-  const deletePlan = planId => {
+  const onDelete = planId => {
     axiosInstance
       .delete(`/plan/delete`, {
         params: {
@@ -41,10 +46,34 @@ export default function PlanItem(props) {
       })
       .then(res => {
         console.log(res);
+        if (res.data.msg === '계획 삭제 성공') {
+          setRefresh(refresh => refresh * -1);
+        }
       })
       .catch(err => {
         console.log(err);
       });
+  };
+
+  const deletePlan = planId => {
+    Alert.alert(
+      '',
+      '정말로 삭제하시겠습니까?',
+      [
+        {text: '취소', onPress: () => {}, style: 'cancel'},
+        {
+          text: '삭제',
+          onPress: () => {
+            onDelete(planId);
+          },
+          style: 'destructive',
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => {},
+      },
+    );
   };
 
   useEffect(() => {

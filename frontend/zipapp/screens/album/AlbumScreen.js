@@ -185,7 +185,9 @@ const styles = StyleSheet.create({
     width: '80%',
     alignItems: 'flex-end',
   },
-  albumContainer: {},
+  albumContainer: {
+    maxHeight: 400,
+  },
   eachPhotoContainer: {
     width: '47%',
     height: 200,

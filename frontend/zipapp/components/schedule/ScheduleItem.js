@@ -14,6 +14,8 @@ import PlanList from './plan/PlanList';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axiosInstance from '../../util/Interceptor';
 import PhotoList from './photo/PhotoList';
+import refreshState from '../../atoms/refreshState';
+import {useRecoilState} from 'recoil';
 
 // if (
 //   Platform.OS === 'android' &&
@@ -26,6 +28,8 @@ export default function ScheduleItem({startDate, scheduleId}) {
   const [schedule, setSchedule] = useState([]);
   const [plans, setPlans] = useState([]);
   const [photos, setPhotos] = useState([]);
+
+  const [refresh, setRefresh] = useRecoilState(refreshState);
 
   // console.log('ScheduleItem - 일정 정보: ', schedule);
   // console.log('ScheduleItem - 할일 정보: ', plans);
@@ -85,7 +89,7 @@ export default function ScheduleItem({startDate, scheduleId}) {
 
   useEffect(() => {
     getScheduleDetail(scheduleId);
-  }, []);
+  }, [refresh]);
 
   // 일정 수정 모달 설정
   const [updateModalVisible, setUpdateModalVisible] = useState(false);

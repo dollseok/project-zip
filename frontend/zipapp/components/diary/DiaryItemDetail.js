@@ -1,6 +1,7 @@
 import {useRef, useEffect, useState} from 'react';
 import {
   View,
+  Alert,
   StyleSheet,
   Image,
   ImageBackground,
@@ -25,6 +26,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosFileInstance from '../../util/FileInterceptor';
 import axiosInstance from '../../util/Interceptor';
 
+import refreshState from '../../atoms/refreshState';
+import {useRecoilState} from 'recoil';
+import {createIconSetFromFontello} from 'react-native-vector-icons';
+
 export default function DiaryItemDetail(props) {
   const {
     selectedYear,
@@ -33,8 +38,6 @@ export default function DiaryItemDetail(props) {
     setCreateModalVisible,
     diary,
   } = props;
-
-  console.log('일기 상세 데이터: ', diary);
 
   const formatDiaryDay = createdAt => {
     return new Date(createdAt).getDate();
@@ -113,7 +116,11 @@ export default function DiaryItemDetail(props) {
     axiosInstance
       .post(`/diary/comment/write`, JSON.stringify(diaryCommentWriteRequestDto))
       .then(res => {
-        console.log(res);
+        console.log(res.data.msg);
+        if (res.data.msg === '일기 댓글 작성 성공') {
+          setRefresh(refresh => refresh * -1);
+          setDiaryComment('');
+        }
       })
       .catch(err => {
         console.log(err);
@@ -200,6 +207,107 @@ export default function DiaryItemDetail(props) {
     }
   }, [diary]);
 
+  // 일기 수정 화면에서의 배경이미지 uri
+  const imgOnModify = diary => {
+    if (image && image.uri) {
+      return {uri: image.uri};
+    }
+    if (diary.diaryPhotos && diary.diaryPhotos.length !== 0) {
+      console.log(diary.diaryPhotos[0].imgUrl);
+      return {uri: diary.diaryPhotos[0].imgUrl};
+    } else {
+      return require('../../assets/background.jpg');
+    }
+  };
+  console.log(imgOnModify(diary));
+
+  const [refresh, setRefresh] = useRecoilState(refreshState);
+
+  // 일기 수정 요청
+  const updateDiary = async () => {
+    const formData = new FormData();
+
+    const familyId = await AsyncStorage.getItem('familyId');
+
+    const diaryModifyRequestDto = {
+      diaryId: diary.diaryId,
+      familyId: familyId,
+      title: diaryTitle,
+      content: diaryContent,
+      emotionId: diaryEmotion,
+    };
+
+    // 이미지 파일 담기
+    if (image.uri) {
+      console.log('업로드할 사진: ', image);
+      formData.append('file', image);
+    } else {
+      console.log('이미지 없습니당');
+    }
+
+    // 파일 외 다른 값들 넣어주기
+    console.log('수정할 입력값들: ', diaryModifyRequestDto);
+    formData.append('diaryModifyRequest', {
+      string: JSON.stringify(diaryModifyRequestDto),
+      type: 'application/json',
+    });
+
+    axiosFileInstance
+      .put(`/diary/modify`, formData)
+      .then(res => {
+        console.log(res.data.msg);
+        if (res.data.msg === '일기 수정 성공') {
+          closeModal();
+          setRefresh(refresh => refresh * -1);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const onDelete = () => {
+    // console.log('일기 id: ', diary.diaryId);
+    axiosInstance
+      .delete(`/diary/delete`, {
+        params: {
+          diaryId: diary.diaryId,
+        },
+      })
+      .then(res => {
+        console.log(res.data.msg);
+        if (res.data.msg === '일기 삭제 성공') {
+          closeModal();
+          setRefresh(refresh => refresh * -1);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  // 일기 삭제 요청
+  const deleteDiary = () => {
+    Alert.alert(
+      '',
+      '정말로 삭제하시겠습니까?',
+      [
+        {text: '취소', onPress: () => {}, style: 'cancel'},
+        {
+          text: '삭제',
+          onPress: () => {
+            onDelete();
+          },
+          style: 'destructive',
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => {},
+      },
+    );
+  };
+
   return (
     <Modal
       visible={createModalVisible}
@@ -223,11 +331,7 @@ export default function DiaryItemDetail(props) {
             <ImageBackground
               style={styles.bgImage}
               imageStyle={{opacity: 0.4}}
-              source={
-                image
-                  ? {uri: image.uri}
-                  : require('../../assets/background.jpg')
-              }>
+              source={imgOnModify(diary)}>
               <View style={styles.createFormContainer}>
                 {/* 취소 / 완료 버튼 */}
                 <View style={styles.buttonContainer}>
@@ -236,7 +340,9 @@ export default function DiaryItemDetail(props) {
                     onPress={toggleUpdateMode}>
                     <Text>취소</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.writeButton}>
+                  <TouchableOpacity
+                    style={styles.writeButton}
+                    onPress={updateDiary}>
                     <Text>완료</Text>
                   </TouchableOpacity>
                 </View>
@@ -344,6 +450,9 @@ export default function DiaryItemDetail(props) {
                     <Ionicons name="camera-outline" size={40} color="black" />
                   </TouchableOpacity>
                 </View>
+                <TouchableOpacity onPress={deleteDiary}>
+                  <Text>삭제</Text>
+                </TouchableOpacity>
               </View>
             </ImageBackground>
           ) : (
@@ -423,10 +532,25 @@ export default function DiaryItemDetail(props) {
                         <View onStartShouldSetResponder={() => true}>
                           {diary?.diaryComments?.map(comment => {
                             return (
-                              <View key={comment.commentId}>
-                                <Text>
-                                  {comment.name}: {comment.content}
-                                </Text>
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-between',
+                                }}
+                                key={comment.commentId}>
+                                <View>
+                                  <Text>
+                                    {comment.name}: {comment.content}
+                                  </Text>
+                                </View>
+                                <View style={{flexDirection: 'row'}}>
+                                  {/* <TouchableOpacity>
+                                    <Text>수정</Text>
+                                  </TouchableOpacity>
+                                  <TouchableOpacity>
+                                    <Text>삭제</Text>
+                                  </TouchableOpacity> */}
+                                </View>
                               </View>
                             );
                           })}
@@ -440,7 +564,7 @@ export default function DiaryItemDetail(props) {
                         style={{
                           borderBottomWidth: 1,
                           borderColor: 'gray',
-                          width: '60%',
+                          width: '90%',
                           height: 35,
                         }}
                         onChangeText={text => {
