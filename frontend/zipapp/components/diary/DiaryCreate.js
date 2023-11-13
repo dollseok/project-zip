@@ -21,6 +21,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import SelectDropdown from 'react-native-select-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosFileInstance from '../../util/FileInterceptor';
+import * as Notification from '../notification/Notification';
 
 export default function DiaryCreate(props) {
   const {
@@ -164,17 +165,17 @@ export default function DiaryCreate(props) {
       type: 'application/json',
     });
 
-    console.log(formData);
+		await axiosFileInstance
+			.post(`/diary/write`, formData)
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 
-    await axiosFileInstance
-      .post('/diary/write', formData)
-      .then(res => {
-        console.log(res);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
+		Notification.sendNotification('새로운 일기가 작성되었습니다.');
+	};
 
   return (
     <Modal
