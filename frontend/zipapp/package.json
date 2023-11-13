@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@baronha/react-native-multiple-image-picker": "^1.1.6",
     "@expo/webpack-config": "^19.0.0",
     "@google-cloud/firestore": "^7.1.0",
     "@react-native-async-storage/async-storage": "^1.18.2",
@@ -61,6 +62,7 @@
     "react-native-webview": "^13.2.2",
     "react-native-windows": "^0.72.18",
     "react-navigation": "^5.0.0",
+    "recoil": "^0.7.7",
     "react-scripts": "^4.0.0",
     "stream": "^0.0.2",
     "util": "^0.12.5"
