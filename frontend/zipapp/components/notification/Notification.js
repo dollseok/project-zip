@@ -1,6 +1,4 @@
 import axios from 'axios';
-import axiosInstance from '../util/Interceptor';
-import {useRef, useEffect, useState} from 'react';
 import axiosInstance from '../../util/Interceptor';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -28,8 +26,6 @@ export async function sendNotification(purpose) {
             },
           },
         };
-
-        console.log('메시지 : ', message);
 
         axios
           .post(fcmUrl, message, {headers: headers})

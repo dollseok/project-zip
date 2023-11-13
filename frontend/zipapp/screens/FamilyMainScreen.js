@@ -181,8 +181,6 @@ export default function FamilyMainScreen({route}) {
 
       console.log('선택한 가족 ID : ', familyId);
 
-      Notification.sendNotification('형석이 입장');
-
       axiosInstance
         .get(`/family/choice?familyId=${familyId}`)
         .then(response => {
