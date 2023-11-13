@@ -159,16 +159,13 @@ public class DiaryServiceImpl implements DiaryService{
 
                             return DiaryDetailCommentResponseDto.builder()
                                 .commentId(diaryComment.getId())
+                                .commentWriterId(diaryComment.getMember().getId())
                                 .name(commentFamilyMember.get(0).getNickname())
                                 .content(diaryComment.getContent())
                                 .createdAt(diaryComment.getCreatedAt())
                                 .updatedAt(diaryComment.getUpdatedAt())
                                 .build();
                         }).collect(Collectors.toList());
-
-
-
-
 
         return DiaryDetailResponseDto.builder()
                 .diaryId(diary.getId())
