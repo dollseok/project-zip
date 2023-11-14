@@ -10,6 +10,8 @@ import {
 import React, {useState, useEffect, useRef} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../../util/Interceptor';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {Alert} from 'react-native';
 
 export default function FamilySelectScreen({navigation}) {
   const [familyList, setFamilyList] = useState(null);
@@ -24,6 +26,34 @@ export default function FamilySelectScreen({navigation}) {
     console.log('선택한 가족 ID : ', familyId);
     AsyncStorage.setItem('familyId', JSON.stringify(familyId));
     navigation.navigate('홈');
+  };
+
+  const logout = async () => {
+    // 알림 창을 표시
+    Alert.alert(
+      '로그아웃',
+      '로그아웃 하시겠습니까?',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          text: '확인',
+          onPress: async () => {
+            // AsyncStorage를 사용하여 데이터를 클리어
+            try {
+              await AsyncStorage.clear();
+              // 로그아웃 후 진입 화면으로 이동
+              navigation.navigate('진입화면');
+            } catch (error) {
+              console.error('로그아웃 중 오류 발생:', error);
+            }
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   useEffect(() => {
@@ -70,7 +100,12 @@ export default function FamilySelectScreen({navigation}) {
       <View style={styles.conditionalContent}>
         <View
           style={[
-            {alignSelf: 'stretch', alignSelf: 'flex-end', marginRight: 20},
+            {
+              alignSelf: 'stretch',
+              alignSelf: 'flex-end',
+              marginRight: 20,
+              marginTop: 10,
+            },
           ]}>
           <TouchableOpacity
             style={[
@@ -78,7 +113,7 @@ export default function FamilySelectScreen({navigation}) {
                 backgroundColor: '#000', // 검은색 배경
                 paddingHorizontal: 20,
                 paddingVertical: 10,
-                borderRadius: 20,
+                borderRadius: 10,
               },
             ]}
             onPress={() => {
@@ -121,6 +156,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     fontSize: 50,
+    flex: 1,
     fontWeight: 'bold',
     position: 'absolute',
     top: 40,
@@ -143,5 +179,18 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginTop: 20,
     color: 'gray',
+  },
+});
+
+const headerStyles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  logoutButton: {
+    position: 'absolute',
+    right: 0,
+    marginTop: 70,
+    marginRight: 10,
   },
 });

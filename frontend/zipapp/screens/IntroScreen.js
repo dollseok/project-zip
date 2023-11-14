@@ -9,6 +9,7 @@ import {
 import React, {useRef, useEffect} from 'react';
 import {Webview} from 'react-native-webview';
 import {REST_API_KEY, REDIRECT_URI} from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import * as SplashScreen from 'expo-splash-screen';
 
@@ -61,6 +62,7 @@ export default function IntroScreen({navigation}) {
         source={require('../assets/welcome.png')}
         style={styles.welcomeImage}
       />
+
       <TouchableOpacity
         onPress={() => navigation.navigate('카카오')}
         style={styles.outlinedButton}>
@@ -106,13 +108,14 @@ const styles = StyleSheet.create({
   outlinedButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'black',
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 5,
     marginVertical: 10,
     backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: 'black',
+    // elevation: 15,
   },
   icon: {
     width: 24,
