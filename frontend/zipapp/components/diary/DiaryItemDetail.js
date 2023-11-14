@@ -456,7 +456,9 @@ export default function DiaryItemDetail(props) {
               </View>
             </ImageBackground>
           ) : (
-            // 상세 페이지일 때
+            
+            // 상세 페이지인 경우 //
+
             <ImageBackground
               style={styles.bgImage}
               imageStyle={{opacity: 0.4}}
@@ -493,8 +495,8 @@ export default function DiaryItemDetail(props) {
                   </View>
                   <View style={styles.emotionContainer}>
                     {/* 닉네임 */}
-                    <View>
-                      <Text>{diary.name}</Text>
+                    <View style={{height: 32,padding: 5}}>
+                      <Text style={{fontSize: 15}}>{diary.name}</Text>
                     </View>
                     {/* 감정 이모티콘 */}
                     <View>
@@ -509,20 +511,20 @@ export default function DiaryItemDetail(props) {
                   {/* 제목 및 내용 */}
                   <View style={styles.contentContainer}>
                     <View style={styles.diaryTitleContainer}>
-                      <Text style={{fontSize: 18, fontWeight: '700'}}>
+                      <Text style={{fontSize: 20, fontWeight: '700'}}>
                         {diary.title}
                       </Text>
                     </View>
-                    <View style={{marginTop: 15}}>
+                    <ScrollView style={styles.diaryContentContainer}>
                       <Text style={{fontSize: 15, fontWeight: '300'}}>
                         {diary.content}
                       </Text>
-                    </View>
+                    </ScrollView>
                   </View>
                   {/* 댓글 */}
                   <View style={styles.commentContainer}>
                     <View style={styles.commentSubtitle}>
-                      <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+                      <Text style={{fontSize: 18, fontWeight: 'bold'}}>
                         댓글
                       </Text>
                     </View>
@@ -538,9 +540,13 @@ export default function DiaryItemDetail(props) {
                                   justifyContent: 'space-between',
                                 }}
                                 key={comment.commentId}>
-                                <View>
-                                  <Text>
-                                    {comment.name}: {comment.content}
+                                <View style={styles.commentContent}>
+                                  <Text style={styles.commentText}>
+                                    {comment.name}
+                                  </Text>
+                                  <Text style={styles.commentText}>:</Text>
+                                  <Text style={styles.commentText}>
+                                    {comment.content}
                                   </Text>
                                 </View>
                                 <View style={{flexDirection: 'row'}}>
@@ -624,8 +630,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
 
-    borderWidth: 1,
-    borderColor: 'black',
+    // borderWidth: 1,
+    // borderColor: 'black',
 
     marginTop: 10,
   },
@@ -641,6 +647,10 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
+    height: 50,
+    // borderWidth: 1,
+    // borderColor: 'black',
   },
   emotionIcon: {
     width: 28,
@@ -652,9 +662,15 @@ const styles = StyleSheet.create({
   contentContainer: {
     height: 200,
     marginTop: 20,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: 'black',
+    padding: 20,
+    // borderWidth: 1,
+    // borderColor: 'black',
+  },
+  diaryTitleContainer:{
+    marginBottom: 20,
+  },
+  diaryContentContainer:{
+
   },
   titleInput: {
     marginTop: 20,
@@ -684,17 +700,27 @@ const styles = StyleSheet.create({
   },
   commentContainer: {
     height: 130,
-    marginTop: 20,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: 'black',
+    marginTop: 10,
+    padding: 20,
+    // borderWidth: 1,
+    // borderColor: 'black',
   },
   commentList: {
     maxHeight: 50,
-    marginTop: 7,
+    marginTop: 8,
+  },
+  commentContent:{
+    flexDirection : 'row',
+  },
+  commentText:{
+    fontSize: 15,
+    height: 25,
+    marginRight : 10, 
   },
   // 일기 수정 관련
-  dayEmotionContainerU: {},
+  dayEmotionContainerU: {
+
+  },
   dayContainerU: {
     flexDirection: 'row',
     justifyContent: 'center',
