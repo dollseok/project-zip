@@ -20,6 +20,7 @@ public class DiaryListDetailResponseDto {
     private String title;
     private LocalDateTime createdAt;
     private Long emotionId;
+    private String profileImgUrl;
 
     public String getCreatedAt() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
