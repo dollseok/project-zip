@@ -72,12 +72,7 @@ public class KakaoOAuth2 {
         // 유저 정보 파싱
 
         JSONObject kakaoAccount = body.getJSONObject("kakao_account");
-//        JSONObject profile = kakaoAccount.getJSONObject("profile");
         String email = kakaoAccount.getString("email");
-        //String nickname = body.getJSONObject("properties").getString("nickname");
-        //String profilePhoto = profile.getString("profile_image_url");
-        //String gender = kakaoAccount.getString("gender");
-        //String birth = kakaoAccount.getString("age_range");
 
 
         return KakaoMemberDto.builder()

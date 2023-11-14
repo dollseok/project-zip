@@ -27,10 +27,6 @@ public interface MemberService {
     BaseResponseDto updateMemberProfileImage(Member findMember, MultipartFile file) throws IOException;
 
     BaseResponseDto validNickname(String nickname, Member findMember);
-//
-//    BaseResponseDto deleteMember(Member findMember);
-//
-//    MemberInfoResponseDto getMemberInfo(Member findMember);
 
     MemberAllInfoResponse getALlMemberInfo(Member findMember);
     FcmTokenResponseDto findFcmTokensByFamilyIdAndExcludeMemberId(Member findMember, Long familyId) throws IOException;

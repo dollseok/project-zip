@@ -144,31 +144,6 @@ public class MemberController {
 
         return memberService.validNickname(nickname, findMember);
     }
-//
-//    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴")
-//    @PutMapping("/withdrawal")
-//    public BaseResponseDto withdrawal(HttpServletRequest httpServletRequest) {
-//        System.out.println("탈퇴");
-//        String token = httpServletRequest.getHeader("Authorization");
-//        if (token == null) return null;
-//        Member findMember = memberService.findMemberByJwtToken(token);
-//        System.out.println("탈퇴 돌아감");
-//        return memberService.deleteMember(findMember);
-//    }
-//
-//    //마이페이지 사용자 정보 조회
-//    @Operation(summary = "마이페이지 사용자 정보 조회", description = "사용자 정보(닉네임,상테메세지,프로필사진경로)")
-//    @GetMapping("/getInfo")
-//    public MemberInfoResponseDto defaultMemberInfo(HttpServletRequest httpServletRequest) {
-//
-//        String token = httpServletRequest.getHeader("Authorization");
-//        if (token == null) return null;
-//
-//        Member findMember = memberService.findMemberByJwtToken(token);
-//
-//        return memberService.getMemberInfo(findMember);
-//
-//    }
 
     // 사용자 정보 전체 조회
     @Operation(summary = "사용자 정보 전체 조회", description = "사용자 정보 전체 조회")
@@ -220,36 +195,4 @@ public class MemberController {
                 .build(),
             HttpStatus.OK);
     }
-
-
-    //mypage 조회(기록 페이지 상단 조회)
-//    @Operation(summary = "기록 페이지 사용자 정보 조회", description = "기록 페이지 사용자 정보 조회")
-//    @GetMapping("/info/{memberId}")
-//    public ResponseEntity<ResponseTemplate<MyPageMemberInfoResponse>> getMyPageMemberInfo(@PathVariable("memberId") int memberId,
-//                                                                                          HttpServletRequest httpServletRequest) {
-//        String token = httpServletRequest.getHeader("Authorization");
-//        if (token == null) return null;
-//        Member findMember = memberService.findMemberByJwtToken(token);
-//        MyPageMemberInfoResponse myPageMemberInfoResponse = memberService.getMyPageMemberInfo(memberId);
-//        return new ResponseEntity<>(
-//                ResponseTemplate.<MyPageMemberInfoResponse>builder()
-//                        .result(true)
-//                        .msg(MemberResponseMessage.MEMBER_MYPAGE_INFO_SUCCESS.getMessage())
-//                        .data(myPageMemberInfoResponse)
-//                        .build(), HttpStatus.OK
-//        );
-//    }
-
-
-//    @GetMapping("/api/test")
-//    public ResponseEntity<RefreshTokenResponseDto> tokenTest(HttpServletRequest httpServletRequest) {
-//
-//        String token = httpServletRequest.getHeader("Authorization");
-//        if (token==null) return null;
-//        Member findMember = memberService.findMemberByJwtToken(token);
-//        return ResponseEntity.ok()
-//                .body(RefreshTokenResponseDto.builder()
-//                        .memberId(findMember.getMemberId())
-//                        .message("Token 테스트 성공").build());
-//    }
 }
