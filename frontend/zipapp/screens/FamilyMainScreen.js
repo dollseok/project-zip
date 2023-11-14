@@ -19,7 +19,6 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {validateText} from '../components/check/ValidateText';
 import {lengthText} from '../components/check/LengthText';
-// import LogoutOrFamilySelectModal from '../components/modal/LogoutOrFamilySelectModal';
 
 export default function FamilyMainScreen({navigation}) {
   const [family, setFamily] = useState([]);
@@ -46,9 +45,6 @@ export default function FamilyMainScreen({navigation}) {
 
   // 이미지 변경 모달창 관련 변수
   const [imageModalVisible, setImageModalVisible] = useState(false);
-
-  // 로그아웃 or 가족 선택 창으로 이동 관련 변수
-  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
   const translateY = useRef(new Animated.Value(300)).current;
 
@@ -273,10 +269,21 @@ export default function FamilyMainScreen({navigation}) {
           <>
             <TouchableOpacity
               onPress={() => {
+                setIsEditMode(false);
+                setIsFamilyNameEditMode(false);
+                setIsFamilyContentEditMode(false);
+
+                // 다시 useEffect 호출해야됨
+                setIsModifyFamilyComplete(true);
+              }}>
+              <Text style={{color: 'white', fontSize: 20}}>취소</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
                 setBasicImg('Background');
                 showButtons();
               }}>
-              <Image source={require('../assets/camera.png')} style={{}} />
+              <Ionicons name="camera-outline" size={30} color="white" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -391,14 +398,14 @@ export default function FamilyMainScreen({navigation}) {
               showButtons();
             }}
             style={memberStyles.button}>
-            <Image source={require('../assets/camera.png')} style={{}} />
+            <Ionicons name="camera-outline" size={25} color="white" />
           </TouchableOpacity>
         )}
       </View>
 
       <Text style={styles.headingSchedule}>일정</Text>
       <FlatList
-        data={schedules}
+        data={schedules.slice(0, 2)}
         renderItem={({item}) => (
           <View style={styles.scheduleItem}>
             <Image
@@ -418,7 +425,7 @@ export default function FamilyMainScreen({navigation}) {
       {/* 일기 리스트 출력 */}
       <Text style={styles.headingDiary}>일기</Text>
       <FlatList
-        data={diaries}
+        data={diaries.slice(0, 2)}
         renderItem={({item}) => (
           <View style={styles.diaryItem}>
             <Image
@@ -549,7 +556,9 @@ const styles = StyleSheet.create({
     width: 300,
     height: 50,
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.5)',
+    // backgroundColor: 'rgba(255,255,255,0.5)',
+    borderWidth: 1,
+    borderColor: 'white',
     // elevation: 15,
   },
   whiteText: {
@@ -565,7 +574,9 @@ const styles = StyleSheet.create({
     width: 300,
     height: 50,
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.5)',
+    // backgroundColor: 'rgba(255,255,255,0.5)',
+    borderWidth: 1,
+    borderColor: 'white',
   },
   modalContainer: {
     position: 'absolute',

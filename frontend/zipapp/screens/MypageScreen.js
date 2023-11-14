@@ -17,8 +17,10 @@ import axiosInstance from '../util/Interceptor';
 import axiosFileInstance from '../util/FileInterceptor';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {validateText} from '../components/check/ValidateText';
+import {lengthText} from '../components/check/LengthText';
 
-export default function MypageScreen({route}) {
+export default function MypageScreen({navigation}) {
   const [family, setFamily] = useState([]);
   const [schedules, setSchedules] = useState([]);
   const [diaries, setDiaries] = useState([]);
@@ -28,6 +30,7 @@ export default function MypageScreen({route}) {
   const [backgroundImageUri, setBackgroundImageUri] = useState(null);
   const [modifiedNickName, setModifiedNickName] = useState([]);
   const [modifiedFamilyContent, setModifiedFamilyContent] = useState([]);
+  const [isModifyFamilyComplete, setIsModifyFamilyComplete] = useState(false);
 
   const outside = useRef();
 
@@ -124,7 +127,13 @@ export default function MypageScreen({route}) {
 
   // 가족은 배경사진만 변경, 유저는 닉네임, 프로필사진 변경
   const modifyFamily = async () => {
-    console.log('modifyFamily 함수 시작!');
+    console.log(modifiedNickName);
+    if (
+      (await validateText(modifiedNickName)) == false ||
+      (await lengthText(modifiedNickName, 'Nickname')) == false
+    ) {
+      return false;
+    }
 
     const formData = new FormData();
 
@@ -180,7 +189,7 @@ export default function MypageScreen({route}) {
       nickname: modifiedNickName,
     };
 
-    console.log("수정 버튼 클릭 : ", familyNickNameRequest);
+    console.log('수정 버튼 클릭 : ', familyNickNameRequest);
 
     await axiosInstance
       .put(`/family/nickname`, familyNickNameRequest)
@@ -191,49 +200,46 @@ export default function MypageScreen({route}) {
       .catch(error => {
         console.error('회원 닉네임 수정 에러: ', error);
       });
+
+    setIsEditMode(false);
+    setIsNickNameEditMode(false);
+
+    // 다시 useEffect 호출해야됨
+    setIsModifyFamilyComplete(true);
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      const familyId = await AsyncStorage.getItem('familyId');
+  const fetchData = async () => {
+    const familyId = await AsyncStorage.getItem('familyId');
 
-      console.log('선택한 가족 ID : ', familyId);
+    console.log('선택한 가족 ID : ', familyId);
 
-      axiosInstance
-        .get(`/family/choice?familyId=${familyId}`)
-        .then(response => {
-          console.log('가족 정보 : ', response.data.data);
-          setFamily(response.data.data);
+    axiosInstance.get(`/family/choice?familyId=${familyId}`).then(response => {
+      console.log('가족 정보 : ', response.data.data);
+      setFamily(response.data.data);
 
-          if (response.data.data.memberProfileImgUrl == null) {
-            setMemberProfileImgUrl(
-              'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png',
-            );
-          } else {
-            setMemberProfileImgUrl(response.data.data.memberProfileImgUrl);
-          }
+      if (response.data.data.memberProfileImgUrl == null) {
+        setMemberProfileImgUrl(
+          'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png',
+        );
+      } else {
+        setMemberProfileImgUrl(response.data.data.memberProfileImgUrl);
+      }
 
-          if (response.data.data.familyProfileImgUrl == null) {
-            setBackgroundImageUri(
-              'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png',
-            );
-          } else {
-            setBackgroundImageUri(response.data.data.familyProfileImgUrl);
-          }
-        });
+      if (response.data.data.familyProfileImgUrl == null) {
+        setBackgroundImageUri(
+          'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png',
+        );
+      } else {
+        setBackgroundImageUri(response.data.data.familyProfileImgUrl);
+      }
+    });
 
-      axiosInstance
-        .get(`/family/mypage?familyId=${familyId}`)
-        .then(response => {
-          console.log('본인 닉네임 : ', response.data.data);
-          setNickname(response.data.data.nickname);
-          setModifiedNickName(response.data.data.nickname);
-        });
-    }
+    axiosInstance.get(`/family/mypage?familyId=${familyId}`).then(response => {
+      console.log('본인 닉네임 : ', response.data.data);
+      setNickname(response.data.data.nickname);
+      setModifiedNickName(response.data.data.nickname);
+    });
 
-    fetchData();
-
-    // 데이터 가져오기 작업이 끝난 후 familyUpdated를 다시 false로 설정
     if (familyUpdated) {
       setFamilyUpdated(false);
     }
@@ -241,7 +247,23 @@ export default function MypageScreen({route}) {
     if (memberUpdated) {
       setMemberUpdated(false);
     }
-  }, [familyUpdated, memberUpdated]);
+  };
+
+  useEffect(() => {
+    console.log();
+    if (isModifyFamilyComplete) {
+      fetchData();
+      setIsModifyFamilyComplete(false);
+    }
+  }, [isModifyFamilyComplete]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <ImageBackground
@@ -253,16 +275,22 @@ export default function MypageScreen({route}) {
           <>
             <TouchableOpacity
               onPress={() => {
+                setIsEditMode(false);
+                // 다시 useEffect 호출해야됨
+                setIsModifyFamilyComplete(true);
+              }}>
+              <Text style={{color: 'white', fontSize: 20}}>취소</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
                 setBasicImg('Background');
                 showButtons();
               }}>
-              <Image source={require('../assets/camera.png')} style={{}} />
+              <Ionicons name="camera-outline" size={30} color="white" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 modifyFamily();
-                setIsEditMode(false);
-                setIsNickNameEditMode(false);
               }}>
               <Text style={{color: 'white', fontSize: 20}}>완료</Text>
             </TouchableOpacity>
@@ -292,7 +320,7 @@ export default function MypageScreen({route}) {
             style={familyStyles.familyName}
             defaultValue={nickname}
             editable={isNickNameEditMode} // 편집 모드가 활성화되면 편집 가능하게 설정
-            onChangeText={(text) => {
+            onChangeText={text => {
               setModifiedNickName(text);
             }}
             autoFocus={isNickNameEditMode} // 편집 모드가 활성화되면 자동으로 포커스를 설정하여 키보드를 나타나게 함
@@ -325,7 +353,7 @@ export default function MypageScreen({route}) {
               showButtons();
             }}
             style={memberStyles.button}>
-            <Image source={require('../assets/camera.png')} style={{}} />
+            <Ionicons name="camera-outline" size={25} color="white" />
           </TouchableOpacity>
         )}
       </View>

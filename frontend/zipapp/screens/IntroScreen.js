@@ -72,13 +72,13 @@ export default function IntroScreen({navigation}) {
         />
         <Text style={styles.outlinedButtonText}>카카오로 시작하기</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.outlinedButton}>
+      {/* <TouchableOpacity style={styles.outlinedButton}>
         <Image
           source={require('../assets/free-icon-naver-11423248.png')}
           style={styles.icon}
         />
         <Text style={styles.outlinedButtonText}>네이버로 시작하기</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }
