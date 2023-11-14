@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
 
   scheduleSubTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-SemiBold',
     padding: 5,
   },
 
@@ -287,10 +287,11 @@ const styles = StyleSheet.create({
   },
   dateFont: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Jost-Bold',
   },
   dateUnitFont: {
     fontSize: 10,
+    fontFamily: 'Pretendard-Medium',
     textAlignVertical: 'bottom',
   },
   subtitleFont: {

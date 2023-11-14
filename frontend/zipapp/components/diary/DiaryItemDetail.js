@@ -338,12 +338,12 @@ export default function DiaryItemDetail(props) {
                   <TouchableOpacity
                     style={styles.cancelButton}
                     onPress={toggleUpdateMode}>
-                    <Text>취소</Text>
+                    <Text style={styles.cancelFont}>취소</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.writeButton}
                     onPress={updateDiary}>
-                    <Text>완료</Text>
+                    <Text style={styles.writeFont}>완료</Text>
                   </TouchableOpacity>
                 </View>
                 {/* 날짜와 감정 */}
@@ -351,12 +351,12 @@ export default function DiaryItemDetail(props) {
                   {/* 날짜 */}
                   <View style={styles.dayContainerU}>
                     <View>
-                      <Text style={{fontSize: 40, fontWeight: 'bold'}}>
+                      <Text style={styles.dayFont}>
                         {new Date(diary.createdAt).getDate()}
                       </Text>
                     </View>
                     <View>
-                      <Text style={{fontSize: 15}}>일</Text>
+                      <Text style={styles.dayUnitFont}>일</Text>
                     </View>
                   </View>
                   {/* 감정 */}
@@ -475,7 +475,7 @@ export default function DiaryItemDetail(props) {
                   <TouchableOpacity
                     style={styles.writeButton}
                     onPress={toggleUpdateMode}>
-                    <Text>편집</Text>
+                    <Text style={styles.writeFont}>편집</Text>
                   </TouchableOpacity>
                 </View>
                 {/* 날짜와 작성자 감정상태 */}
@@ -483,18 +483,18 @@ export default function DiaryItemDetail(props) {
                   <View style={{flex: 1}}></View>
                   <View style={styles.dayContainer}>
                     <View>
-                      <Text style={{fontSize: 40, fontWeight: 'bold'}}>
+                      <Text style={styles.dayFont}>
                         {formatDiaryDay(diary.createdAt)}
                       </Text>
                     </View>
                     <View>
-                      <Text style={{fontSize: 15}}>일</Text>
+                      <Text style={styles.dayUnitFont}>일</Text>
                     </View>
                   </View>
                   <View style={styles.emotionContainer}>
                     {/* 닉네임 */}
                     <View>
-                      <Text>{diary.name}</Text>
+                      <Text style={styles.authorFont}>{diary.name}</Text>
                     </View>
                     {/* 감정 이모티콘 */}
                     <View>
@@ -509,12 +509,10 @@ export default function DiaryItemDetail(props) {
                   {/* 제목 및 내용 */}
                   <View style={styles.contentContainer}>
                     <View style={styles.diaryTitleContainer}>
-                      <Text style={{fontSize: 18, fontWeight: '700'}}>
-                        {diary.title}
-                      </Text>
+                      <Text style={styles.diaryTitleFont}>{diary.title}</Text>
                     </View>
                     <View style={{marginTop: 15}}>
-                      <Text style={{fontSize: 15, fontWeight: '300'}}>
+                      <Text style={styles.diaryContentFont}>
                         {diary.content}
                       </Text>
                     </View>
@@ -522,7 +520,8 @@ export default function DiaryItemDetail(props) {
                   {/* 댓글 */}
                   <View style={styles.commentContainer}>
                     <View style={styles.commentSubtitle}>
-                      <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+                      <Text
+                        style={{fontSize: 15, fontFamily: 'Pretendard-Black'}}>
                         댓글
                       </Text>
                     </View>
@@ -539,7 +538,7 @@ export default function DiaryItemDetail(props) {
                                 }}
                                 key={comment.commentId}>
                                 <View>
-                                  <Text>
+                                  <Text style={{fontSize: 10}}>
                                     {comment.name}: {comment.content}
                                   </Text>
                                 </View>
@@ -619,6 +618,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  cancelFont: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 15,
+    color: '#D93939',
+  },
+  writeFont: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 15,
+    color: '#727272',
+  },
   dayEmotionContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -637,10 +646,23 @@ const styles = StyleSheet.create({
 
     height: 60,
   },
+  dayFont: {
+    fontFamily: 'Jost-SemiBold',
+    fontSize: 40,
+  },
+  dayUnitFont: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 15,
+  },
   emotionContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'baseline',
+  },
+  authorFont: {
+    fontFamily: 'Pretendard-SemiBold',
+    fontSize: 15,
   },
   emotionIcon: {
     width: 28,
@@ -655,6 +677,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     borderColor: 'black',
+  },
+  diaryTitleFont: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 18,
+  },
+  diaryContentFont: {
+    fontSize: 15,
   },
   titleInput: {
     marginTop: 20,
@@ -698,7 +727,7 @@ const styles = StyleSheet.create({
   dayContainerU: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'baseline',
   },
   emotionContainerU: {
     flexDirection: 'row',

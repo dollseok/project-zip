@@ -108,14 +108,14 @@ export default function ScheduleScreen({route, navigation}) {
         {/* 선택된 날짜정보 */}
         <View style={styles.selectDate}>
           <View style={styles.selectYear}>
-            <Text style={{fontSize: 24}}>{selectedYear}</Text>
+            <Text style={styles.selectYearFont}>{selectedYear}</Text>
           </View>
           <View style={styles.selectMonth}>
-            <Text style={{fontSize: 40}}>{selectedMonth}</Text>
+            <Text style={styles.selectMonthFont}>{selectedMonth}</Text>
           </View>
         </View>
         <View style={{justifyContent: 'flex-end', paddingBottom: 10}}>
-          <Text style={{fontSize: 15}}>월</Text>
+          <Text style={styles.selectMonthUnitFont}>월</Text>
         </View>
         {/* 날짜 선택창 여는 버튼 */}
         <View style={styles.selectDateBtn}>
@@ -178,5 +178,17 @@ const styles = StyleSheet.create({
   addBtnContainer: {
     width: '80%',
     alignItems: 'flex-end',
+  },
+  selectYearFont: {
+    fontSize: 24,
+    fontFamily: 'Jost-Bold',
+  },
+  selectMonthFont: {
+    fontSize: 40,
+    fontFamily: 'Jost-SemiBold',
+  },
+  selectMonthUnitFont: {
+    fontSize: 15,
+    fontFamily: 'Pretendard-Medium',
   },
 });

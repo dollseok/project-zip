@@ -192,17 +192,18 @@ const styles = StyleSheet.create({
   },
   // 일정 날짜 텍스트
   previewDateFont: {
+    fontFamily: 'Jost-SemiBold',
     fontSize: 50,
-    fontWeight: 'bold',
     textAlignVertical: 'bottom',
   },
   // 날짜 단위 텍스트
   dateUnitFont: {
     fontSize: 30,
     fontWeight: 'bold',
-    textAlignVertical: 'bottom',
+    // textAlignVertical: 'bottom',
   },
   contentTitleFont: {
-    fontSize: 24,
+    fontWeight: 'bold',
+    fontSize: 25,
   },
 });

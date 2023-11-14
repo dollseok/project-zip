@@ -51,21 +51,27 @@ export default function HomeScreen() {
           bottom: 0,
           elevation: 0,
         },
-        tabBarActiveTintColor: 'black', // 탭 활성화 아이콘 색상
-        tabBarInactiveTintColor: 'rgba(0, 0, 0, 0.15)', // 탭 비활성화 아이콘 색상
+        tabBarActiveTintColor:
+          route.name === '메인' || route.name === '마이페이지'
+            ? 'white'
+            : 'black', // 탭 활성화 아이콘 색상
+        tabBarInactiveTintColor:
+          route.name === '메인' || route.name === '마이페이지'
+            ? 'rgba(255, 255, 255, 0.15)'
+            : 'rgba(0, 0, 0, 0.15)', // 탭 비활성화 아이콘 색상
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
 
           if (route.name === '일기') {
-            iconName = 'paper-plane';
+            iconName = 'paper-plane-sharp';
           } else if (route.name === '앨범') {
-            iconName = 'images';
+            iconName = 'images-outline';
           } else if (route.name === '캘린더') {
             iconName = 'calendar-outline';
           } else if (route.name === '마이페이지') {
             iconName = 'person-circle-outline';
           } else if (route.name === '메인') {
-            iconName = 'home';
+            iconName = 'home-outline';
           }
 
           return <Ionicons name={iconName} size={28} color={color} />;

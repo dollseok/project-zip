@@ -92,7 +92,7 @@ export default function DiaryItem(props) {
           </View>
           {/* 제목 */}
           <View style={styles.diaryTitle}>
-            <Text>{diary.title}</Text>
+            <Text style={styles.diaryTitleFont}>{diary.title}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -136,12 +136,13 @@ const styles = StyleSheet.create({
   },
   diaryDayFont: {
     fontSize: 30,
-    fontWeight: 'bold',
+    fontFamily: 'Jost-Bold',
   },
   diaryDayUnitFont: {
     fontSize: 15,
+    fontFamily: 'Pretendard-Medium',
     alignSelf: 'flex-end',
-    paddingBottom: 10,
+    paddingBottom: 5,
   },
   // 일기 요약 (작성자, 감정아이콘, 제목)
   diarySummary: {
@@ -153,6 +154,10 @@ const styles = StyleSheet.create({
   },
   diaryNicknameFont: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: 'Pretendard-SemiBold',
+  },
+  diaryTitleFont: {
+    fontSize: 12,
+    fontFamily: 'Pretendard-Medium',
   },
 });
