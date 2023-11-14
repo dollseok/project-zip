@@ -5,6 +5,9 @@ import com.lastdance.ziip.family.repository.FamilyRepository;
 import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.family.repository.entity.FamilyMember;
 import com.lastdance.ziip.global.awsS3.S3Uploader;
+import com.lastdance.ziip.member.dto.response.MemberInfoResponseDto;
+import com.lastdance.ziip.member.dto.response.MemberProfileImgUrlResponseDto;
+import com.lastdance.ziip.member.repository.MemberRepository;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.plan.repository.PlanRepository;
 import com.lastdance.ziip.plan.repository.entity.Plan;
@@ -45,6 +48,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final S3Uploader s3Uploader;
     private final ScheduleValidator scheduleValidator;
     private final FamilyMemberRepository familyMemberRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public ScheduleRegisterResponseDto registerSchedule(Member findMember,
@@ -75,9 +79,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         Optional<Family> family = familyRepository.findById(familyId);
 
         List<Schedule> schedules = scheduleRepository.findAllByFamily(
-                Optional.ofNullable(family.orElse(null))); // handle the Optional properly
+                Optional.ofNullable(family.orElse(null)));
 
         List<FamilyMember> familyMember = familyMemberRepository.findByFamily(family.get());
+
+        List<MemberProfileImgUrlResponseDto> memberList = memberRepository.findIdAndProfileImgUrlById(familyId);
 
         List<ScheduleListDetailResponseDto> scheduleListDetailResponseDtos = schedules.stream()
             .map(schedule -> {
@@ -87,6 +93,12 @@ public class ScheduleServiceImpl implements ScheduleService {
                     .map(FamilyMember::getNickname)
                     .findFirst()
                     .orElse("Unknown"); // 닉네임이 없으면 기본값 설정
+                
+                String profileImgUrl = memberList.stream()
+                    .filter(dto -> dto.getId().equals(schedule.getMember().getId()))
+                    .map(MemberProfileImgUrlResponseDto::getProfileImgUrl)
+                    .findFirst()
+                    .orElse(null); // 일치하는 프로필 이미지 URL이 없으면 null 설정
 
                 return ScheduleListDetailResponseDto.builder()
                     .scheduleId(schedule.getId())
@@ -95,6 +107,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                     .startDate(String.valueOf(schedule.getStartDate()))
                     .endDate(String.valueOf(schedule.getEndDate()))
                     .nickname(memberNickname) // 닉네임 설정
+                    .profileImgUrl(profileImgUrl)
                     .build();
             })
             .collect(Collectors.toList());

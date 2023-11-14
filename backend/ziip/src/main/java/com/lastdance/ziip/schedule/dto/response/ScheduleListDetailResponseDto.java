@@ -17,4 +17,5 @@ public class ScheduleListDetailResponseDto {
     private String startDate;
     private String endDate;
     private String nickname;
+    private String profileImgUrl;
 }
