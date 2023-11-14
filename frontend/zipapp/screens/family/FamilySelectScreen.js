@@ -206,7 +206,7 @@ const headerStyles = StyleSheet.create({
   logoutButton: {
     position: 'absolute',
     right: 0,
-    // marginTop: 70,
-    // marginRight: 10,
+    marginTop: 70,
+    marginRight: 10,
   },
 });

@@ -248,6 +248,9 @@ export default function FamilyInsertScreen({navigation}) {
 }
 const styles = StyleSheet.create({
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 668023b (feat: 텍스트 정합 검사 코드 추가)
   container: {
     justifyContent: 'center',
     backgroundColor: 'white',
@@ -299,6 +302,7 @@ const styles = StyleSheet.create({
   buttonEnabled: {
     backgroundColor: 'black',
   },
+<<<<<<< HEAD
 =======
 	container: {
 		justifyContent: 'center',
@@ -351,4 +355,6 @@ const styles = StyleSheet.create({
 		backgroundColor: 'black',
 	},
 >>>>>>> 494e7f8 (feat: 일정 리스트 유저 닉네임, 메인화면에서 가족 리스트로 이동하는 버튼 추가)
+=======
+>>>>>>> 668023b (feat: 텍스트 정합 검사 코드 추가)
 });
