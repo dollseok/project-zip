@@ -10,6 +10,17 @@ import StackNavigator from './screens/navigation/StackNavigator';
 // Recoil
 import {RecoilRoot} from 'recoil';
 
+// 기본 글꼴 설정
+import {setCustomText} from 'react-native-global-props';
+
+const customTextProps = {
+  style: {
+    fontFamily: 'Pretendard-Regular',
+  },
+};
+
+setCustomText(customTextProps);
+
 // 화면 배경색 변경
 const navTheme = {
   ...DefaultTheme,

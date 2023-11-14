@@ -20,7 +20,7 @@ export default function ScheduleScreen({route, navigation}) {
   const getScheduleList = async () => {
     const familyId = await AsyncStorage.getItem('familyId');
 
-    console.log('월별 일정 불러오기!');
+    // console.log('월별 일정 불러오기!');
     if (selectedYear && selectedMonth) {
       axiosInstance
         .get(`/calendar/month`, {
@@ -35,7 +35,7 @@ export default function ScheduleScreen({route, navigation}) {
           const scheduleArray =
             res.data.data.calendarMonthScheduleResponseDtoList;
           setSchedules(scheduleArray);
-          console.log('월별 일정 데이터: ', scheduleArray);
+          // console.log('월별 일정 데이터: ', scheduleArray);
         })
         .catch(err => {
           if (err.response) {
@@ -143,7 +143,11 @@ export default function ScheduleScreen({route, navigation}) {
         <Ionicons name="add-outline" size={24} color="black" />
       </TouchableOpacity>
       {/* 일정 리스트 */}
-      <ScheduleList schedules={schedules} key={schedules} />
+      <ScheduleList
+        schedules={schedules}
+        selectedYear={selectedYear}
+        selectedMonth={selectedMonth}
+      />
       <ScheduleCreate
         createModalVisible={createModalVisible}
         setCreateModalVisible={setCreateModalVisible}
