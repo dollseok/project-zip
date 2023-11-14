@@ -12,11 +12,13 @@ export default function DiaryList(props) {
       <ScrollView>
         {diarys.map(diary => {
           return (
-            <DiaryItem
-              diarySummary={diary}
-              key={diary.diaryId}
-              selectedYear={selectedYear}
-              selectedMonth={selectedMonth}></DiaryItem>
+            <View style={styles.diaryItem}>
+              <DiaryItem
+                diarySummary={diary}
+                key={diary.diaryId}
+                selectedYear={selectedYear}
+                selectedMonth={selectedMonth}></DiaryItem>
+            </View>
           );
         })}
       </ScrollView>
@@ -33,5 +35,8 @@ const styles = StyleSheet.create({
     width: '80%',
     height: '60%',
     gap: 10, // 일정별 간격
+  },
+  diaryItem:{
+    marginBottom : 20,
   },
 });
