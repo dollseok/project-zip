@@ -1,7 +1,9 @@
 package com.lastdance.ziip.schedule.service;
 
+import com.lastdance.ziip.family.repository.FamilyMemberRepository;
 import com.lastdance.ziip.family.repository.FamilyRepository;
 import com.lastdance.ziip.family.repository.entity.Family;
+import com.lastdance.ziip.family.repository.entity.FamilyMember;
 import com.lastdance.ziip.global.awsS3.S3Uploader;
 import com.lastdance.ziip.member.repository.entity.Member;
 import com.lastdance.ziip.plan.repository.PlanRepository;
@@ -42,6 +44,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final PlanRepository planRepository;
     private final S3Uploader s3Uploader;
     private final ScheduleValidator scheduleValidator;
+    private final FamilyMemberRepository familyMemberRepository;
 
     @Override
     public ScheduleRegisterResponseDto registerSchedule(Member findMember,
@@ -74,15 +77,27 @@ public class ScheduleServiceImpl implements ScheduleService {
         List<Schedule> schedules = scheduleRepository.findAllByFamily(
                 Optional.ofNullable(family.orElse(null))); // handle the Optional properly
 
+        List<FamilyMember> familyMember = familyMemberRepository.findByFamily(family.get());
+
         List<ScheduleListDetailResponseDto> scheduleListDetailResponseDtos = schedules.stream()
-                .map(schedule -> ScheduleListDetailResponseDto.builder()
-                        .scheduleId(schedule.getId())
-                        .memberId(findMember.getId())
-                        .name(schedule.getTitle())
-                        .startDate(String.valueOf(schedule.getStartDate()))
-                        .endDate(String.valueOf(schedule.getEndDate()))
-                        .build())
-                .collect(Collectors.toList());
+            .map(schedule -> {
+                // findMember의 ID와 일치하는 FamilyMember 찾기
+                String memberNickname = familyMember.stream()
+                    .filter(fm -> fm.getMember().getId().equals(findMember.getId()))
+                    .map(FamilyMember::getNickname)
+                    .findFirst()
+                    .orElse("Unknown"); // 닉네임이 없으면 기본값 설정
+
+                return ScheduleListDetailResponseDto.builder()
+                    .scheduleId(schedule.getId())
+                    .memberId(schedule.getMember().getId())
+                    .name(schedule.getTitle())
+                    .startDate(String.valueOf(schedule.getStartDate()))
+                    .endDate(String.valueOf(schedule.getEndDate()))
+                    .nickname(memberNickname) // 닉네임 설정
+                    .build();
+            })
+            .collect(Collectors.toList());
 
         return ScheduleListResponseDto.builder()
                 .scheduleListDetailResponseList(scheduleListDetailResponseDtos)

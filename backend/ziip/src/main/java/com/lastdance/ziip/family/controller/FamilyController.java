@@ -40,7 +40,7 @@ public class FamilyController {
     public ResponseEntity<ResponseTemplate<FamilyRegisterResponseDto>> registFamily(
             HttpServletRequest httpServletRequest,
             @RequestParam(name = "familyRegisterRequest") String jsonString,
-            @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         FamilyRegisterRequestDto familyRegisterRequest = mapper.readValue(jsonString, FamilyRegisterRequestDto.class);
 
