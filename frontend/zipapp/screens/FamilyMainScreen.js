@@ -17,7 +17,9 @@ import axiosInstance from '../util/Interceptor';
 import axiosFileInstance from '../util/FileInterceptor';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { validateText } from '../components/check/ValidateText';
+import {validateText} from '../components/check/ValidateText';
+import {lengthText} from '../components/check/LengthText';
+// import LogoutOrFamilySelectModal from '../components/modal/LogoutOrFamilySelectModal';
 
 export default function FamilyMainScreen({navigation}) {
   const [family, setFamily] = useState([]);
@@ -30,6 +32,7 @@ export default function FamilyMainScreen({navigation}) {
   const [backgroundImageUri, setBackgroundImageUri] = useState(null);
   const [modifiedFamilyName, setModifiedFamilyName] = useState([]);
   const [modifiedFamilyContent, setModifiedFamilyContent] = useState([]);
+  const [isModifyFamilyComplete, setIsModifyFamilyComplete] = useState(false);
 
   const outside = useRef();
 
@@ -42,7 +45,11 @@ export default function FamilyMainScreen({navigation}) {
   const [basicImg, setBasicImg] = useState();
 
   // 이미지 변경 모달창 관련 변수
-  const [modalVisible, setModalVisible] = useState(false);
+  const [imageModalVisible, setImageModalVisible] = useState(false);
+
+  // 로그아웃 or 가족 선택 창으로 이동 관련 변수
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+
   const translateY = useRef(new Animated.Value(300)).current;
 
   const selectImage = async BackgroudOrProfile => {
@@ -70,7 +77,7 @@ export default function FamilyMainScreen({navigation}) {
 
   // 모달창 출력 함수
   const showButtons = () => {
-    setModalVisible(true);
+    setImageModalVisible(true);
     Animated.timing(translateY, {
       toValue: 0,
       duration: 300,
@@ -85,7 +92,7 @@ export default function FamilyMainScreen({navigation}) {
       duration: 300,
       useNativeDriver: true,
     }).start(() => {
-      setModalVisible(false);
+      setImageModalVisible(false);
     });
   };
 
@@ -120,12 +127,19 @@ export default function FamilyMainScreen({navigation}) {
 
   const modifyFamily = async () => {
     // 변경하고자 하는 가족 이름과, 가족 메시지가 적합한 상태인지 체크
-    if (await validateText(modifiedFamilyName) == false || await validateText(modifiedFamilyContent) == false) {
-      console.log("적합하지 않음");
+    if (
+      (await validateText(modifiedFamilyName)) == false ||
+      (await validateText(modifiedFamilyContent)) == false
+    ) {
       return false;
     }
 
-    console.log("내려옴");
+    if (
+      (await lengthText(modifiedFamilyName, 'FamilyName')) == false ||
+      (await lengthText(modifiedFamilyContent, 'FamilyContent')) == false
+    ) {
+      return false;
+    }
 
     const formData = new FormData();
 
@@ -173,58 +187,56 @@ export default function FamilyMainScreen({navigation}) {
         console.error('회원 프로필 사진 수정 에러: ', error);
       });
 
-      setIsEditMode(false);
-      setIsFamilyNameEditMode(false);
-      setIsFamilyContentEditMode(false);
+    setIsEditMode(false);
+    setIsFamilyNameEditMode(false);
+    setIsFamilyContentEditMode(false);
+
+    // 다시 useEffect 호출해야됨
+    setIsModifyFamilyComplete(true);
   };
 
-  useEffect(() => {
-    // async function fetchData() {
-    const fetchData = navigation.addListener('focus', async () => {
-      const familyId = await AsyncStorage.getItem('familyId');
-      axiosInstance
-        .get(`/family/choice?familyId=${familyId}`)
-        .then(response => {
-          setFamily(response.data.data);
-          setModifiedFamilyName(response.data.data.familyName);
-          setModifiedFamilyContent(response.data.data.familyContent);
+  const fetchData = async () => {
+    const familyId = await AsyncStorage.getItem('familyId');
+    axiosInstance.get(`/family/choice?familyId=${familyId}`).then(response => {
+      setFamily(response.data.data);
+      setModifiedFamilyName(response.data.data.familyName);
+      setModifiedFamilyContent(response.data.data.familyContent);
 
-          if (response.data.data.memberProfileImgUrl == null) {
-            setMemberProfileImgUrl(
-              'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png',
-            );
-          } else {
-            setMemberProfileImgUrl(response.data.data.memberProfileImgUrl);
-          }
+      if (response.data.data.memberProfileImgUrl == null) {
+        setMemberProfileImgUrl(
+          'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png',
+        );
+      } else {
+        setMemberProfileImgUrl(response.data.data.memberProfileImgUrl);
+      }
 
-          if (response.data.data.familyProfileImgUrl == null) {
-            setBackgroundImageUri(
-              'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png',
-            );
-          } else {
-            setBackgroundImageUri(response.data.data.familyProfileImgUrl);
-          }
-        });
-
-      axiosInstance
-        .get(`/schedule/list?familyId=${familyId}`)
-        .then(response => {
-          setSchedules(response.data.data.scheduleListDetailResponseList);
-        })
-        .catch(error => {
-          console.error('There was an error!', error);
-        });
-
-      axiosInstance
-        .get(`/diary/list?familyId=${familyId}`)
-        .then(response => {
-          setDiaries(response.data.data.diaryListDetailResponseList);
-        })
-        .catch(error => {
-          console.error('There was an error!', error);
-        });
+      if (response.data.data.familyProfileImgUrl == null) {
+        setBackgroundImageUri(
+          'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png',
+        );
+      } else {
+        setBackgroundImageUri(response.data.data.familyProfileImgUrl);
+      }
     });
-    
+
+    axiosInstance
+      .get(`/schedule/list?familyId=${familyId}`)
+      .then(response => {
+        setSchedules(response.data.data.scheduleListDetailResponseList);
+      })
+      .catch(error => {
+        console.error('There was an error!', error);
+      });
+
+    axiosInstance
+      .get(`/diary/list?familyId=${familyId}`)
+      .then(response => {
+        setDiaries(response.data.data.diaryListDetailResponseList);
+      })
+      .catch(error => {
+        console.error('There was an error!', error);
+      });
+
     // 데이터 가져오기 작업이 끝난 후 familyUpdated를 다시 false로 설정
     if (familyUpdated) {
       setFamilyUpdated(false);
@@ -233,8 +245,23 @@ export default function FamilyMainScreen({navigation}) {
     if (memberUpdated) {
       setMemberUpdated(false);
     }
-    return fetchData;
-  }, [familyUpdated, memberUpdated, navigation]);
+  };
+
+  useEffect(() => {
+    console.log();
+    if (isModifyFamilyComplete) {
+      fetchData();
+      setIsModifyFamilyComplete(false);
+    }
+  }, [isModifyFamilyComplete]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <ImageBackground
@@ -415,7 +442,7 @@ export default function FamilyMainScreen({navigation}) {
       <Modal
         transparent={true}
         animationType="none"
-        visible={modalVisible}
+        visible={imageModalVisible}
         onRequestClose={hideButtons}>
         <TouchableWithoutFeedback onPress={hideButtons}>
           <View style={styles.modalOverlay}>
@@ -523,6 +550,7 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.5)',
+    // elevation: 15,
   },
   whiteText: {
     fontSize: 20,

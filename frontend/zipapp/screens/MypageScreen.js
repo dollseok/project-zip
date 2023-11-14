@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../util/Interceptor';
 import axiosFileInstance from '../util/FileInterceptor';
 import {launchImageLibrary} from 'react-native-image-picker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function MypageScreen({route}) {
   const [family, setFamily] = useState([]);
@@ -271,10 +272,7 @@ export default function MypageScreen({route}) {
             onPress={() => {
               setIsEditMode(true);
             }}>
-            <Image
-              source={require('../assets/geer.png')}
-              style={styles.editButton}
-            />
+            <Ionicons name="settings-outline" size={30} color="white" />
           </TouchableOpacity>
         )}
       </View>

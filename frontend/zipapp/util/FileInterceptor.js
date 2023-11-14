@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import StackNavigator from '../screens/navigation/StackNavigator';
+import { useNavigation } from '@react-navigation/native';
 
 const axiosFileInstance = Axios.create({
   // baseURL: 'http://localhost:9090/api',
@@ -48,9 +48,9 @@ axiosFileInstance.interceptors.response.use(
         return axios(originRequest);
       } catch {
         console.log('catch 에러');
-        // localStorage.removeItem('accessToken');
-        // localStorage.removeItem('refreshToken');
-        // window.location.href = ("/");
+        const navigation = useNavigation();
+        await AsyncStorage.clear();
+        navigation.navigate('진입화면');
       }
     }
     return Promise.reject(error);
