@@ -17,6 +17,7 @@ import axiosInstance from '../util/Interceptor';
 import axiosFileInstance from '../util/FileInterceptor';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { validateText } from '../components/check/ValidateText';
 
 export default function FamilyMainScreen({navigation}) {
   const [family, setFamily] = useState([]);
@@ -61,8 +62,6 @@ export default function FamilyMainScreen({navigation}) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
         const uri = response.assets[0].uri;
-
-        console.log(uri);
 
         return _uploadImage(uri, BackgroudOrProfile);
       }
@@ -120,6 +119,14 @@ export default function FamilyMainScreen({navigation}) {
   };
 
   const modifyFamily = async () => {
+    // 변경하고자 하는 가족 이름과, 가족 메시지가 적합한 상태인지 체크
+    if (await validateText(modifiedFamilyName) == false || await validateText(modifiedFamilyContent) == false) {
+      console.log("적합하지 않음");
+      return false;
+    }
+
+    console.log("내려옴");
+
     const formData = new FormData();
 
     const familyModifyRequest = {
@@ -165,12 +172,16 @@ export default function FamilyMainScreen({navigation}) {
       .catch(error => {
         console.error('회원 프로필 사진 수정 에러: ', error);
       });
+
+      setIsEditMode(false);
+      setIsFamilyNameEditMode(false);
+      setIsFamilyContentEditMode(false);
   };
 
   useEffect(() => {
-    async function fetchData() {
+    // async function fetchData() {
+    const fetchData = navigation.addListener('focus', async () => {
       const familyId = await AsyncStorage.getItem('familyId');
-
       axiosInstance
         .get(`/family/choice?familyId=${familyId}`)
         .then(response => {
@@ -212,10 +223,8 @@ export default function FamilyMainScreen({navigation}) {
         .catch(error => {
           console.error('There was an error!', error);
         });
-    }
-
-    fetchData();
-
+    });
+    
     // 데이터 가져오기 작업이 끝난 후 familyUpdated를 다시 false로 설정
     if (familyUpdated) {
       setFamilyUpdated(false);
@@ -224,7 +233,8 @@ export default function FamilyMainScreen({navigation}) {
     if (memberUpdated) {
       setMemberUpdated(false);
     }
-  }, [familyUpdated, memberUpdated]);
+    return fetchData;
+  }, [familyUpdated, memberUpdated, navigation]);
 
   return (
     <ImageBackground
@@ -244,9 +254,6 @@ export default function FamilyMainScreen({navigation}) {
             <TouchableOpacity
               onPress={() => {
                 modifyFamily();
-                setIsEditMode(false);
-                setIsFamilyNameEditMode(false);
-                setIsFamilyContentEditMode(false);
               }}>
               <Text style={{color: 'white', fontSize: 20}}>완료</Text>
             </TouchableOpacity>
@@ -368,7 +375,11 @@ export default function FamilyMainScreen({navigation}) {
         renderItem={({item}) => (
           <View style={styles.scheduleItem}>
             <Image
-              source={require('../assets/user.png')}
+              source={{
+                uri:
+                  item.profileImgUrl ||
+                  'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png',
+              }}
               style={styles.userImage}
             />
             <Text style={styles.whiteText}>{item.nickname}</Text>
@@ -384,7 +395,11 @@ export default function FamilyMainScreen({navigation}) {
         renderItem={({item}) => (
           <View style={styles.diaryItem}>
             <Image
-              source={require('../assets/user.png')}
+              source={{
+                uri:
+                  item.profileImgUrl ||
+                  'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png',
+              }}
               style={styles.userImage}
             />
             <Text style={styles.whiteText}>{item.nickname}</Text>
@@ -393,7 +408,10 @@ export default function FamilyMainScreen({navigation}) {
         )}
         keyExtractor={item => item.diaryId.toString()}
       />
-
+      {/* 공간 */}
+      <View>
+        <Text style={[{marginVertical: 30}]}></Text>
+      </View>
       <Modal
         transparent={true}
         animationType="none"
@@ -478,10 +496,10 @@ const styles = StyleSheet.create({
     height: 30,
   },
   memberImage: {
-    width: 80, // 원하는 이미지 크기로 조정
-    height: 80, // 원하는 이미지 크기로 조정
+    width: 80,
+    height: 80,
     marginTop: 20,
-    borderRadius: 25, // 원형 이미지를 위해
+    borderRadius: 25,
   },
   headingSchedule: {
     fontSize: 20,
@@ -501,21 +519,23 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 7,
     marginVertical: 5,
-    width: '100%',
+    width: 300,
+    height: 50,
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.5)',
   },
   whiteText: {
     fontSize: 20,
     color: 'white',
-    marginRight: 30, // 간격을 15로 조절했습니다.
+    marginRight: 30,
   },
   diaryItem: {
     flexDirection: 'row',
     borderRadius: 10,
     padding: 7,
     marginVertical: 5,
-    width: '100%',
+    width: 300,
+    height: 50,
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.5)',
   },
@@ -541,6 +561,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginRight: 30,
+    borderRadius: 10,
   },
 });
 
@@ -561,7 +582,7 @@ const familyStyles = StyleSheet.create({
   },
 
   familyContent: {
-    flex: 1, // flex를 사용하여 텍스트가 늘어나도 버튼이 끝에 고정되도록 합니다.
+    flex: 1,
     fontSize: 16,
     color: 'white',
     marginTop: 20,
@@ -572,8 +593,8 @@ const familyStyles = StyleSheet.create({
 const memberStyles = StyleSheet.create({
   memberContainer: {
     position: 'relative',
-    width: 100, // 원하는 이미지 크기로 조정하세요.
-    height: 100, // 원하는 이미지 크기로 조정하세요.
+    width: 100,
+    height: 100,
   },
   memberImage: {
     width: '100%',
