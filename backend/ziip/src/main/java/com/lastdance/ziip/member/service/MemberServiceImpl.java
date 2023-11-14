@@ -46,24 +46,13 @@ public class MemberServiceImpl implements MemberService {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-//    @Value("${file.member-server-domain}")
-//    private String serverDomain;
-//
-//    @Value("${file.member-url-path}")
-//    private String urlPath;
-
 
     private final KakaoOAuth2 kakaoOAuth2;
     private final NaverOAuth2 naverOAuth2;
     private final MemberRepository memberRepository;
-    //    private final ShowInfoRepository showInfoRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    //private final FileUploadUtil fileUploadUtil;
     private final RedisTemplate<String, String> redisTemplate;
     private final MemberValidator memberValidator;
-    //private final BbtiRepository bbtiRepository;
-    //private final RecordRepository recordRepository;
-    //private final DiaryRepository diaryRepository;
     private final S3Uploader s3Uploader;
     private final Messaging messaging;
 
@@ -89,20 +78,6 @@ public class MemberServiceImpl implements MemberService {
         }
         // 가입된 유저가 아니라면 회원가입 진행
         else {
-
-            // 성별 남성 : F, 여성 : M
-//            String kakaoGender = kakaoUserDto.getGender();
-//            System.out.println("kakaoGender = " + kakaoGender);
-//            Gender gender;
-//            if (kakaoGender.equals("male")) {
-//                gender = Gender.M;
-//            } else if (kakaoGender.equals("female")) {
-//                gender = Gender.F;
-//            } else {
-//                gender = null;
-//            }
-//            System.out.println(gender);
-
 
             Member member = Member.builder()
                     .email(email)
@@ -254,19 +229,6 @@ public class MemberServiceImpl implements MemberService {
         return memberAllInfoResponse;
     }
 
-    //    @Override
-//    public MyPageMemberInfoResponse getMyPageMemberInfo(int memberId) {
-//
-//        Optional<Member> member = memberRepository.findById(memberId);
-//        return member.map(value -> MyPageMemberInfoResponse.builder()
-//                .memberId(value.getId())
-//                .nickname(value.getNickname())
-//                .followerCnt(value.getFollowers().size())
-//                .followingCnt(value.getFollowings().size())
-//                .profileImgPath(value.getProfileImgPath())
-//                .build()).orElse(null);
-//    }
-
     @Transactional
     public BaseResponseDto updateMemberInfo(Long id, MemberInfoUpdateRequestDto mypageUpdateRequestDto, Member findMember, MultipartFile file) throws IOException {
 
@@ -277,9 +239,6 @@ public class MemberServiceImpl implements MemberService {
         if (mypageUpdateRequestDto == null) {
 
             if (file != null) {
-//                FileDto newfileDto = fileUploadUtil.uploadFile(file, findMember);
-//                findMember.updateMemberInfo(newfileDto);
-//                findMember.getProfileImgPath();
                 String fileUrl = s3Uploader.upload(file, "member");
                 String originalName = file.getOriginalFilename();
 
@@ -310,9 +269,6 @@ public class MemberServiceImpl implements MemberService {
             }
 
             if (mypageUpdateRequestDto.getFile() != null) {
-//                FileDto newfileDto = fileUploadUtil.uploadFile(mypageUpdateRequestDto.getFile(), findMember);
-//                findMember.updateMemberInfo(mypageUpdateRequestDto, newfileDto);
-//                findMember.getProfileImgPath();
 
                 String fileUrl = s3Uploader.upload(file, "member");
                 String originalName = file.getOriginalFilename();
@@ -439,36 +395,6 @@ public class MemberServiceImpl implements MemberService {
                         .build())
                 .build();
     }
-//
-//    @Override
-//    public BaseResponseDto deleteMember(Member findMember) {
-//        System.out.println("탈퇴 서비스 임플");
-//
-//        Role role = Role.DELETED;
-//        findMember.updateRole(role);
-//
-//
-//        return BaseResponseDto.builder()
-//                .success(true)
-//                .message("회원 탈퇴를 하셨습니다")
-//                .data(findMember.getId())
-//                .build();
-//
-//    }
-
-
-//    @Transactional
-//    public BaseResponseDto deleteMember(Member findMember) {
-//
-//        memberRepository.delete(findMember);
-//
-//        return BaseResponseDto.builder()
-//                .success(true)
-//                .message("회원 탈퇴를 하셨습니다")
-//                .data(findMember.getId())
-//                .build();
-//
-//    }
 
     @Transactional(readOnly = true)
     public MemberInfoResponseDto getDetailMemberInfo(Long id) {
