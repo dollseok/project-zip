@@ -20,17 +20,10 @@ export async function lengthText(text, purpose) {
   } else if (purpose == 'Nickname') {
     // 유저 닉네임
     if (text.length > 5) {
-<<<<<<< HEAD
       Alert.alert('경고!', '너무 긴 닉네임입니다!! (5자 이하)');
       return false;
     } else {
       return true;
-=======
-      return true;
-    } else {
-      Alert.alert('경고!', '너무 긴 닉네임입니다!! (5자 이하)');
-      return false;
->>>>>>> aa548f0 (feat: 로그아웃, 모달창 구현, CSS 수정)
     }
   }
 }
