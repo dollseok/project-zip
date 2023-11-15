@@ -240,6 +240,24 @@ export default function MypageScreen({navigation}) {
       setModifiedNickName(response.data.data.nickname);
     });
 
+    axiosInstance
+      .get(`/schedule/mylist?familyId=${familyId}`)
+      .then(response => {
+        setSchedules(response.data.data.scheduleListDetailResponseList);
+      })
+      .catch(error => {
+        console.error('There was an error!', error);
+      });
+
+    axiosInstance
+      .get(`/diary/mylist?familyId=${familyId}`)
+      .then(response => {
+        setDiaries(response.data.data.diaryListDetailResponseList);
+      })
+      .catch(error => {
+        console.error('There was an error!', error);
+      });
+
     if (familyUpdated) {
       setFamilyUpdated(false);
     }
@@ -296,12 +314,20 @@ export default function MypageScreen({navigation}) {
             </TouchableOpacity>
           </>
         ) : (
-          <TouchableOpacity
-            onPress={() => {
-              setIsEditMode(true);
-            }}>
-            <Ionicons name="settings-outline" size={30} color="white" />
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity
+              onPress={() => {
+                setIsEditMode(true);
+              }}>
+              <Ionicons name="settings-outline" size={30} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('초대할 가족 폰 번호 입력');
+              }}>
+              <Ionicons name="send-outline" size={30} color="white" />
+            </TouchableOpacity>
+          </>
         )}
       </View>
       <View
@@ -358,6 +384,52 @@ export default function MypageScreen({navigation}) {
         )}
       </View>
 
+      <Text style={styles.headingSchedule}>내 일정</Text>
+      <FlatList
+        data={schedules.slice(0, 2)}
+        renderItem={({item}) => (
+          <View style={styles.scheduleItem}>
+            <Image
+              source={{
+                uri:
+                  item.profileImgUrl == null
+                    ? 'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png'
+                    : item.profileImgUrl,
+              }}
+              style={styles.userImage}
+            />
+            <Text style={styles.whiteText}>{item.nickname}</Text>
+            <Text style={styles.whiteText}>{item.name}</Text>
+          </View>
+        )}
+        keyExtractor={item => item.scheduleId.toString()}
+      />
+      {/* 일기 리스트 출력 */}
+      <Text style={styles.headingDiary}>내 일기</Text>
+      <FlatList
+        data={diaries.slice(0, 2)}
+        renderItem={({item}) => (
+          <View style={styles.diaryItem}>
+            <Image
+              source={{
+                uri:
+                  item.profileImgUrl == null
+                    ? 'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png'
+                    : item.profileImgUrl,
+              }}
+              style={styles.userImage}
+            />
+            <Text style={styles.whiteText}>{item.nickname}</Text>
+            <Text style={styles.whiteText}>{item.title}</Text>
+          </View>
+        )}
+        keyExtractor={item => item.diaryId.toString()}
+      />
+      {/* 공간 */}
+      <View>
+        <Text style={[{marginVertical: 30}]}></Text>
+      </View>
+
       <Modal
         transparent={true}
         animationType="none"
@@ -368,52 +440,81 @@ export default function MypageScreen({navigation}) {
             <Animated.View
               style={[styles.modalContainer, {transform: [{translateY}]}]}>
               <View style={{flex: 1, flexDirection: 'column'}}>
+                <View
+                  style={{
+                    flex: 0.5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'white',
+                    marginHorizontal: 10,
+                    paddingHorizontal: 98,
+                    borderTopStartRadius: 20,
+                    borderTopEndRadius: 20,
+                    borderBottomColor: 'gray',
+                    borderBottomWidth: 0.5,
+                  }}>
+                  <Text style={{fontWeight: 'bold', color: 'gray'}}>
+                    {basicImg === 'Background'
+                      ? '배경 사진 변경하기'
+                      : '프로필 사진 변경하기'}
+                  </Text>
+                </View>
                 <TouchableOpacity
                   style={{
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
+                    backgroundColor: 'white',
+                    marginHorizontal: 10,
+                    paddingHorizontal: 98,
+                    // borderTopStartRadius: 20,
+                    // borderTopEndRadius: 20,
+                    borderBottomColor: 'gray',
+                    borderBottomWidth: 0.5,
                   }}
                   onPress={() =>
                     selectImage(
                       basicImg == 'Background' ? 'Background' : 'Profile',
                     )
                   }>
-                  <Text>앨범에서 사진 선택하기</Text>
+                  <Text style={{fontWeight: 'bold'}}>
+                    앨범에서 사진 선택하기
+                  </Text>
                 </TouchableOpacity>
-                <View
-                  style={{
-                    backgroundColor: 'gray',
-                    height: 1,
-                    paddingHorizontal: '100%',
-                  }}
-                />
+
                 <TouchableOpacity
                   style={{
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
+                    backgroundColor: 'white',
+                    marginHorizontal: 10,
+                    marginBottom: 10,
+                    paddingHorizontal: 98,
+                    borderBottomLeftRadius: 20,
+                    borderBottomRightRadius: 20,
                   }}
                   onPress={() => handleBasicImg()}>
-                  <Text>기본 이미지로 변경하기</Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    backgroundColor: 'gray',
-                    height: 1,
-                    paddingHorizontal: '100%',
-                  }}
-                />
-                <TouchableOpacity
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  onPress={hideButtons}>
-                  <Text>취소</Text>
+                  <Text style={{fontWeight: 'bold'}}>
+                    기본 이미지로 변경하기
+                  </Text>
                 </TouchableOpacity>
               </View>
+
+              <TouchableOpacity
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flex: 0.3,
+                  flexDirection: 'column',
+                  backgroundColor: 'white',
+                  margin: 10,
+                  paddingHorizontal: 150,
+                  borderRadius: 20,
+                }}
+                onPress={hideButtons}>
+                <Text style={{fontWeight: 'bold'}}>취소</Text>
+              </TouchableOpacity>
             </Animated.View>
           </View>
         </TouchableWithoutFeedback>
@@ -447,8 +548,8 @@ const styles = StyleSheet.create({
     borderRadius: 25, // 원형 이미지를 위해
   },
   userImage: {
-    width: 20,
-    height: 20,
+    width: 40,
+    height: 40,
     marginRight: 30, // 간격을 15로 조절했습니다.
     borderRadius: 30,
   },
@@ -463,7 +564,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 300,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     alignItems: 'center',
@@ -474,6 +575,43 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // 반투명 배경
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  headingSchedule: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+    marginTop: 30,
+    marginBottom: 10,
+  },
+  headingDiary: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 10,
+  },
+  scheduleItem: {
+    flexDirection: 'row',
+    borderRadius: 10,
+    padding: 7,
+    marginVertical: 5,
+    width: 300,
+    height: 50,
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    // borderWidth: 1,
+    // borderColor: 'white',
+  },
+  diaryItem: {
+    flexDirection: 'row',
+    borderRadius: 10,
+    padding: 7,
+    marginVertical: 5,
+    width: 300,
+    height: 50,
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    // borderWidth: 1,
+    // borderColor: 'white',
   },
 });
 
