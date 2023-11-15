@@ -12,6 +12,7 @@ import {
   Modal,
   TouchableWithoutFeedback,
   ScrollView,
+  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../util/Interceptor';
@@ -211,9 +212,10 @@ export default function FamilyMainScreen({navigation}) {
     // });
   };
 
-  const fetchData = async () => {
+  const fetchData = async() => {
     const familyId = await AsyncStorage.getItem('familyId');
-    axiosInstance.get(`/family/choice?familyId=${familyId}`).then(response => {
+    // const familyId = 139;
+    await axiosInstance.get(`/family/choice?familyId=${familyId}`).then(response => {
       setFamily(response.data.data);
       setModifiedFamilyName(response.data.data.familyName);
       setModifiedFamilyContent(response.data.data.familyContent);
@@ -236,7 +238,7 @@ export default function FamilyMainScreen({navigation}) {
       }
     });
 
-    axiosInstance
+    await axiosInstance
       .get(`/schedule/list?familyId=${familyId}`)
       .then(response => {
         setSchedules(response.data.data.scheduleListDetailResponseList);
@@ -245,7 +247,7 @@ export default function FamilyMainScreen({navigation}) {
         console.error('There was an error!', error);
       });
 
-    axiosInstance
+    await axiosInstance
       .get(`/diary/list?familyId=${familyId}`)
       .then(response => {
         setDiaries(response.data.data.diaryListDetailResponseList);
@@ -253,6 +255,8 @@ export default function FamilyMainScreen({navigation}) {
       .catch(error => {
         console.error('There was an error!', error);
       });
+
+    Alert.alert('유저의 프로필 이미지 URL : ', memberProfileImgUrl);
 
     // 데이터 가져오기 작업이 끝난 후 familyUpdated를 다시 false로 설정
     if (familyUpdated) {
@@ -265,11 +269,10 @@ export default function FamilyMainScreen({navigation}) {
   };
 
   useEffect(() => {
-    console.log();
-    if (isModifyFamilyComplete) {
+    // if (isModifyFamilyComplete) {
       fetchData();
       setIsModifyFamilyComplete(false);
-    }
+    // }
   }, [isModifyFamilyComplete]);
 
   useEffect(() => {
@@ -409,7 +412,7 @@ export default function FamilyMainScreen({navigation}) {
       </View>
 
       <View>
-        <Image source={{uri: memberProfileImgUrl}} style={styles.memberImage} />
+        <Image source={{uri: 'http://ziip.bucket.s3.ap-northeast-2.amazonaws.com/member/f52871c9-1639-40a7-a535-f1a1228969c0photo.jpeg'}} style={styles.memberImage} />
         {isEditMode && (
           <TouchableOpacity
             onPress={() => {
