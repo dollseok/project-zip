@@ -1,8 +1,8 @@
 import { Alert } from 'react-native';
 
 export async function validateText(text) {
-  // 한글과 공백만 허용하는 정규식
-  const regex = /^[가-힣\s]*$/;
+  // 한글, 공백, 영어 문자 허용하는 정규식
+  const regex = /^[가-힣\sA-Za-z]*$/;
 
   if (regex.test(text)) {
     return true;

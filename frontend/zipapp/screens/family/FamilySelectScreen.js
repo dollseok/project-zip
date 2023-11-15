@@ -109,16 +109,25 @@ export default function FamilySelectScreen({navigation}) {
           ]}>
           <TouchableOpacity
             style={[
-              {
-                backgroundColor: '#000', // 검은색 배경
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                borderRadius: 10,
-              },
+              familyList && familyList.length < 4
+                ? {
+                    backgroundColor: '#000', // 검은색 배경
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
+                    borderRadius: 10,
+                  }
+                : {
+                    backgroundColor: 'gray',
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
+                    borderRadius: 10,
+                  },
             ]}
             onPress={() => {
               navigation.navigate('가족코드 입력');
-            }}>
+            }}
+            disabled={familyList && familyList.length >= 4}
+            >
             <Text style={[{color: '#FFF'}]}>초대코드 입력</Text>
           </TouchableOpacity>
         </View>
