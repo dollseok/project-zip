@@ -6,7 +6,10 @@ const axiosInstance = Axios.create({
   // baseURL: 'http://10.0.2.2:9090/api',
   // baseURL: 'http://localhost:9090/api',
   baseURL: 'https://lastdance.kr/api',
+<<<<<<< HEAD
   // timeout: 5000,
+=======
+>>>>>>> 9d0c8825afcc487f38884c332c34c6cc20b762f1
 });
 
 axiosInstance.interceptors.request.use(
