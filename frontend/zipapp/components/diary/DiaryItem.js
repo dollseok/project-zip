@@ -110,6 +110,7 @@ export default function DiaryItem(props) {
 const styles = StyleSheet.create({
   eachDiary: {
     flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: 'white',
     borderRadius: 16,
     width: '100%',
@@ -146,11 +147,13 @@ const styles = StyleSheet.create({
   },
   // 일기 요약 (작성자, 감정아이콘, 제목)
   diarySummary: {
-    gap: 5,
+    marginLeft: 20,
   },
   // 일기 작성자
   diaryAuthor: {
     flexDirection: 'row',
+    alignItems: 'center',
+    padding: 5,
   },
   diaryNicknameFont: {
     fontSize: 18,
@@ -159,5 +162,8 @@ const styles = StyleSheet.create({
   diaryTitleFont: {
     fontSize: 12,
     fontFamily: 'Pretendard-Medium',
+  },
+  diaryTitle: {
+    paddingLeft: 5,
   },
 });

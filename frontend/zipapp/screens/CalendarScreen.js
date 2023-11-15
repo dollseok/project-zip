@@ -62,7 +62,7 @@ const customTheme = {
   'stylesheet.calendar.header': {
     // 일요일 색상 변경
     dayTextAtIndex0: {
-      color: 'tomato',
+      color: '#D93939',
     },
     // 월 ~ 토요일 검정색 변경
     dayTextAtIndex1: {
@@ -94,13 +94,21 @@ const customTheme = {
       fontWeight: 'bold',
     },
   },
+  'stylesheet.day.basic': {
+    base: {
+      width: 44,
+      height: 44,
+      alignItems: 'center',
+      marginTop: 10,
+    },
+  },
   selectedDayBackgroundColor: 'black', // 선택된 날짜 배경색
   arrowColor: 'black',
   todayTextColor: 'white',
-  todayBackgroundColor: 'tomato',
+  todayBackgroundColor: '#D93939',
   // 일자 폰트 (1, 2, ... , 31)
   textDayFontFamily: 'Jost-Medium',
-  textDayFontSize: 25,
+  textDayFontSize: 20,
   // 요일 폰트 (일, 월, ..., 토)
   textDayHeaderFontFamily: 'Pretendard-SemiBold',
   textDayHeaderFontSize: 18,
@@ -194,20 +202,22 @@ export default function CalendarScreen({navigation}) {
         <View style={{paddingLeft: 15, opacity: 0}}>
           <Ionicons name="calendar-outline" size={30} color="black" />
         </View>
-        <View style={{opacity: 0}}>
-          <Text>월</Text>
-        </View>
         {/* 선택된 날짜정보 */}
         <View style={styles.selectDate}>
           <View style={styles.selectYear}>
             <Text style={styles.selectYearFont}>{currentYear}</Text>
           </View>
           <View style={styles.selectMonth}>
-            <Text style={styles.selectMonthFont}>{currentMonth}</Text>
+            <View style={{opacity: 0}}>
+              <Text style={styles.selectMonthUnitFont}>월</Text>
+            </View>
+            <View>
+              <Text style={styles.selectMonthFont}>{currentMonth}</Text>
+            </View>
+            <View>
+              <Text style={styles.selectMonthUnitFont}>월</Text>
+            </View>
           </View>
-        </View>
-        <View style={{justifyContent: 'flex-end', paddingBottom: 10}}>
-          <Text style={styles.selectMonthUnitFont}>월</Text>
         </View>
         {/* 날짜 선택창 여는 버튼 */}
         <View style={styles.selectDateBtn}>
@@ -268,9 +278,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
   },
   dateContainer: {
+    marginTop: 40,
     flexDirection: 'row',
   },
   selectDate: {
@@ -285,8 +296,9 @@ const styles = StyleSheet.create({
   },
   calendarContainer: {
     marginTop: 20,
-    width: '100%',
-    height: '50%',
+    width: '87%',
+    height: '60%',
+    // borderWidth: 1,
   },
   calendar: {
     borderBottonWidth: 1,
@@ -306,5 +318,9 @@ const styles = StyleSheet.create({
   selectMonthUnitFont: {
     fontSize: 15,
     fontFamily: 'Pretendard-Medium',
+  },
+  selectMonth: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
   },
 });

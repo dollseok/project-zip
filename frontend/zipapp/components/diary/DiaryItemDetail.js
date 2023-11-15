@@ -456,7 +456,8 @@ export default function DiaryItemDetail(props) {
               </View>
             </ImageBackground>
           ) : (
-            // 상세 페이지일 때
+            // 상세 페이지인 경우 //
+
             <ImageBackground
               style={styles.bgImage}
               imageStyle={{opacity: 0.4}}
@@ -511,11 +512,11 @@ export default function DiaryItemDetail(props) {
                     <View style={styles.diaryTitleContainer}>
                       <Text style={styles.diaryTitleFont}>{diary.title}</Text>
                     </View>
-                    <View style={{marginTop: 15}}>
+                    <ScrollView style={{marginTop: 15}}>
                       <Text style={styles.diaryContentFont}>
                         {diary.content}
                       </Text>
-                    </View>
+                    </ScrollView>
                   </View>
                   {/* 댓글 */}
                   <View style={styles.commentContainer}>
@@ -633,8 +634,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
 
-    borderWidth: 1,
-    borderColor: 'black',
+    // borderWidth: 1,
+    // borderColor: 'black',
 
     marginTop: 10,
   },
@@ -674,10 +675,14 @@ const styles = StyleSheet.create({
   contentContainer: {
     height: 200,
     marginTop: 20,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: 'black',
+    padding: 20,
+    // borderWidth: 1,
+    // borderColor: 'black',
   },
+  diaryTitleContainer: {
+    marginBottom: 20,
+  },
+  diaryContentContainer: {},
   diaryTitleFont: {
     fontFamily: 'Pretendard-Bold',
     fontSize: 18,
@@ -713,14 +718,22 @@ const styles = StyleSheet.create({
   },
   commentContainer: {
     height: 130,
-    marginTop: 20,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: 'black',
+    marginTop: 10,
+    padding: 20,
+    // borderWidth: 1,
+    // borderColor: 'black',
   },
   commentList: {
     maxHeight: 50,
-    marginTop: 7,
+    marginTop: 8,
+  },
+  commentContent: {
+    flexDirection: 'row',
+  },
+  commentText: {
+    fontSize: 15,
+    height: 25,
+    marginRight: 10,
   },
   // 일기 수정 관련
   dayEmotionContainerU: {},
