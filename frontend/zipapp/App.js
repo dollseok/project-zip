@@ -2,6 +2,7 @@
 import 'react-native-gesture-handler';
 import React, {useEffect} from 'react';
 import messaging from '@react-native-firebase/messaging';
+import PushNotification from 'react-native-push-notification';
 
 // 화면이동
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
@@ -34,6 +35,12 @@ export default function App() {
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log(remoteMessage);
+
+      // 알림을 표시
+      PushNotification.localNotification({
+        title: remoteMessage.notification.title,
+        message: remoteMessage.notification.body,
+      });
     });
 
     return unsubscribe;

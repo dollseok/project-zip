@@ -97,6 +97,13 @@ export default function FamilySelectScreen({navigation}) {
         style={{...styles.logo, transform: [{rotate: rotateAnimation}]}}>
         zip
       </Animated.Text>
+      <TouchableOpacity
+          style={headerStyles.logoutButton}
+          onPress={() => {
+            logout();
+          }}>
+          <Ionicons name="log-out-outline" size={30} color="black" />
+        </TouchableOpacity>
       <View style={styles.conditionalContent}>
         <View
           style={[
@@ -199,7 +206,7 @@ const headerStyles = StyleSheet.create({
   logoutButton: {
     position: 'absolute',
     right: 0,
-    marginTop: 70,
-    marginRight: 10,
+    // marginTop: 70,
+    // marginRight: 10,
   },
 });
