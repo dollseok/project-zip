@@ -9,6 +9,7 @@ import {useRecoilState} from 'recoil';
 
 export default function PlanItem(props) {
   const plan = props.plan;
+  console.log('할일 정보: ', plan);
   const [manager, setManager] = useState('');
 
   const [refresh, setRefresh] = useRecoilState(refreshState);
@@ -37,6 +38,30 @@ export default function PlanItem(props) {
       });
   };
 
+  // 계획 상태변경 (완료여부)
+  const changeStatus = () => {
+    let code = 0;
+    if (plan.statusCode === 0) {
+      code = 2;
+    }
+
+    axiosInstance
+      .put(`/plan/status/modify`, {
+        planId: plan.planId,
+        code: code,
+      })
+      .then(res => {
+        console.log(res);
+        if (res.data.msg === '계획 상태코드 수정 성공') {
+          setRefresh(refresh => refresh * -1);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  // 계획 삭제
   const onDelete = planId => {
     axiosInstance
       .delete(`/plan/delete`, {
@@ -82,15 +107,17 @@ export default function PlanItem(props) {
 
   return (
     <View style={styles.eachPlan}>
-      <TouchableOpacity style={styles.planCheckbox}>
+      <TouchableOpacity style={styles.planCheckbox} onPress={changeStatus}>
         <Ionicons
           name="checkbox-outline"
           size={24}
-          color={plan.statusCode === 0 ? 'grey' : 'black'}
+          color={plan.statusCode === 2 ? 'grey' : 'black'}
         />
       </TouchableOpacity>
       <View style={styles.planTitle}>
-        <Text>{plan.title}</Text>
+        <Text style={plan.statusCode === 2 ? styles.isReady : null}>
+          {plan.title}
+        </Text>
       </View>
       <View style={styles.planManager}>
         <Text>{manager}</Text>
@@ -105,7 +132,7 @@ export default function PlanItem(props) {
 const styles = StyleSheet.create({
   eachPlan: {
     flexDirection: 'row',
-    alignItems : 'center',
+    alignItems: 'center',
     gap: 5,
     padding: 3,
   },
@@ -117,5 +144,8 @@ const styles = StyleSheet.create({
   },
   planManager: {
     width: '20%',
+  },
+  isReady: {
+    textDecorationLine: 'line-through',
   },
 });

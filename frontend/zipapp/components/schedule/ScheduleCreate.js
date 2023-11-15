@@ -265,12 +265,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   selectDateInputText: {
-    fontSize: 23,
+    fontSize: 20,
     color: 'black',
-    fontWeight: 'bold',
+    fontFamily: 'Jost-Medium',
   },
   selectDateLabel: {
-    fontSize: 23,
+    fontSize: 18,
   },
 
   // 버튼

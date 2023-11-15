@@ -98,14 +98,14 @@ export default function AlbumScreen() {
         {/* 선택된 날짜정보 */}
         <View style={styles.selectDate}>
           <View style={styles.selectYear}>
-            <Text style={{fontSize: 24}}>{selectedYear}</Text>
+            <Text style={styles.selectYearFont}>{selectedYear}</Text>
           </View>
           <View style={styles.selectMonth}>
-            <Text style={{fontSize: 40}}>{selectedMonth}</Text>
+            <Text style={styles.selectMonthFont}>{selectedMonth}</Text>
           </View>
         </View>
         <View style={{justifyContent: 'flex-end', paddingBottom: 10}}>
-          <Text style={{fontSize: 15}}>월</Text>
+          <Text style={styles.selectMonthUnitFont}>월</Text>
         </View>
         {/* 날짜 선택창 여는 버튼 */}
         <View style={styles.selectDateBtn}>
@@ -141,10 +141,16 @@ export default function AlbumScreen() {
               imageStyle={styles.eachPhoto}>
               <View style={styles.photoDetail}>
                 <View style={styles.photoDate}>
-                  <Text style={{fontSize: 40, fontWeight: 'bold'}}>
+                  <Text style={{fontSize: 26, fontFamily: 'Jost-Bold'}}>
                     {item.startDate.split('-')[2]}
                   </Text>
-                  <Text style={{fontSize: 20, fontWeight: '600'}}>일</Text>
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontFamily: 'Pretendard-Bold',
+                    }}>
+                    일
+                  </Text>
                 </View>
                 {/* <View style={styles.photoSource}>
                   <Text>{item.detail}</Text>
@@ -186,7 +192,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   albumContainer: {
-    maxHeight: 400,
+    maxHeight: '80%',
   },
   eachPhotoContainer: {
     width: '47%',
@@ -203,15 +209,30 @@ const styles = StyleSheet.create({
     height: '100%',
     padding: 10,
     flexDirection: 'row',
+    alignItems: 'flex-end',
   },
   photoDate: {
     flex: 1,
     flexDirection: 'row',
 
     justifyContent: 'flex-end',
-    alignItems: 'flex-end',
+    alignItems: 'baseline',
+
+    // borderWidth: 1,
   },
   photoSource: {
     flex: 2,
+  },
+  selectYearFont: {
+    fontSize: 24,
+    fontFamily: 'Jost-Bold',
+  },
+  selectMonthFont: {
+    fontSize: 40,
+    fontFamily: 'Jost-SemiBold',
+  },
+  selectMonthUnitFont: {
+    fontSize: 15,
+    fontFamily: 'Pretendard-Medium',
   },
 });

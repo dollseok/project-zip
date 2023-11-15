@@ -5,7 +5,7 @@ import {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ScheduleList(props) {
-  const {schedules} = props;
+  const {schedules, selectedYear, selectedMonth} = props;
   // console.log('일정화면에서 받아온 일정 리스트: ', schedules);
 
   return (
@@ -14,11 +14,13 @@ export default function ScheduleList(props) {
       <ScrollView style={{width: '100%'}}>
         {schedules.map(schedule => {
           return (
-            <View style={styles.scheduleItem}>
+            <View style={styles.scheduleItem} key={schedule.scheduleId}>
               <ScheduleItem
                 startDate={schedule.startDate}
                 scheduleId={schedule.scheduleId}
-                key={schedule.scheduleId}></ScheduleItem>
+                selectedYear={selectedYear}
+                selectedMonth={selectedMonth}
+              />
             </View>
           );
         })}

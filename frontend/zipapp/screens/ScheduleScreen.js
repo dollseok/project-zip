@@ -20,7 +20,7 @@ export default function ScheduleScreen({route, navigation}) {
   const getScheduleList = async () => {
     const familyId = await AsyncStorage.getItem('familyId');
 
-    console.log('월별 일정 불러오기!');
+    // console.log('월별 일정 불러오기!');
     if (selectedYear && selectedMonth) {
       axiosInstance
         .get(`/calendar/month`, {
@@ -35,7 +35,7 @@ export default function ScheduleScreen({route, navigation}) {
           const scheduleArray =
             res.data.data.calendarMonthScheduleResponseDtoList;
           setSchedules(scheduleArray);
-          console.log('월별 일정 데이터: ', scheduleArray);
+          // console.log('월별 일정 데이터: ', scheduleArray);
         })
         .catch(err => {
           if (err.response) {
@@ -108,14 +108,14 @@ export default function ScheduleScreen({route, navigation}) {
         {/* 선택된 날짜정보 */}
         <View style={styles.selectDate}>
           <View style={styles.selectYear}>
-            <Text style={{fontSize: 24}}>{selectedYear}</Text>
+            <Text style={styles.selectYearFont}>{selectedYear}</Text>
           </View>
           <View style={styles.selectMonth}>
-            <Text style={{fontSize: 40}}>{selectedMonth}</Text>
+            <Text style={styles.selectMonthFont}>{selectedMonth}</Text>
           </View>
         </View>
         <View style={{justifyContent: 'flex-end', paddingBottom: 10}}>
-          <Text style={{fontSize: 15}}>월</Text>
+          <Text style={styles.selectMonthUnitFont}>월</Text>
         </View>
         {/* 날짜 선택창 여는 버튼 */}
         <View style={styles.selectDateBtn}>
@@ -143,7 +143,11 @@ export default function ScheduleScreen({route, navigation}) {
         <Ionicons name="add-outline" size={24} color="black" />
       </TouchableOpacity>
       {/* 일정 리스트 */}
-      <ScheduleList schedules={schedules} key={schedules} />
+      <ScheduleList
+        schedules={schedules}
+        selectedYear={selectedYear}
+        selectedMonth={selectedMonth}
+      />
       <ScheduleCreate
         createModalVisible={createModalVisible}
         setCreateModalVisible={setCreateModalVisible}
@@ -174,5 +178,17 @@ const styles = StyleSheet.create({
   addBtnContainer: {
     width: '80%',
     alignItems: 'flex-end',
+  },
+  selectYearFont: {
+    fontSize: 24,
+    fontFamily: 'Jost-Bold',
+  },
+  selectMonthFont: {
+    fontSize: 40,
+    fontFamily: 'Jost-SemiBold',
+  },
+  selectMonthUnitFont: {
+    fontSize: 15,
+    fontFamily: 'Pretendard-Medium',
   },
 });

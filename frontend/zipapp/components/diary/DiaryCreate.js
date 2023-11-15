@@ -222,25 +222,23 @@ export default function DiaryCreate(props) {
                 <TouchableOpacity
                   style={styles.cancelButton}
                   onPress={closeModal}>
-                  <Text>취소</Text>
+                  <Text style={styles.cancelFont}>취소</Text>
                 </TouchableOpacity>
                 {/* 등록 버튼 */}
                 <TouchableOpacity
                   style={styles.writeButton}
                   onPress={writeDiary}>
-                  <Text>완료</Text>
+                  <Text style={styles.writeFont}>완료</Text>
                 </TouchableOpacity>
               </View>
               {/* 감정 선택 */}
               <View style={styles.dayEmotionContainer}>
                 <View style={styles.dayContainer}>
                   <View>
-                    <Text style={{fontSize: 40, fontWeight: 'bold'}}>
-                      {new Date().getDate()}
-                    </Text>
+                    <Text style={styles.dayFont}>{new Date().getDate()}</Text>
                   </View>
                   <View>
-                    <Text style={{fontSize: 15}}>일</Text>
+                    <Text style={styles.dayUnitFont}>일</Text>
                   </View>
                 </View>
                 <View style={styles.emotionContainer}>
@@ -368,6 +366,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  cancelFont: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 15,
+    color: '#D93939',
+  },
+  writeFont: {
+    fontFamily: 'Pretendard-Bold',
+    fontSize: 15,
+    color: '#727272',
+  },
   dayEmotionContainer: {
     gap: 20,
   },
@@ -375,6 +383,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  dayFont: {
+    fontFamily: 'Jost-SemiBold',
+    fontSize: 40,
+  },
+  dayUnitFont: {
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 15,
   },
   emotionContainer: {
     flexDirection: 'row',
@@ -398,12 +414,18 @@ const styles = StyleSheet.create({
 
     borderBottomWidth: 1,
     borderColor: 'gray',
+
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 15,
   },
   contentInput: {
     paddingHorizontal: 10,
     textAlignVertical: 'top',
     borderBottomWidth: 1,
     borderBottomColor: 'gray',
+
+    fontFamily: 'Pretendard-Medium',
+    fontSize: 15,
   },
   photoUpload: {
     alignItems: 'center',

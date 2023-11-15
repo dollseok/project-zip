@@ -24,7 +24,11 @@ import {useRecoilState} from 'recoil';
 //   UIManager.setLayoutAnimationEnabledExperimental(true);
 // }
 
-export default function ScheduleItem({startDate, scheduleId}) {
+export default function ScheduleItem({
+  selectedYear,
+  selectedMonth,
+  scheduleId,
+}) {
   const [schedule, setSchedule] = useState([]);
   const [plans, setPlans] = useState([]);
   const [photos, setPhotos] = useState([]);
@@ -37,28 +41,50 @@ export default function ScheduleItem({startDate, scheduleId}) {
 
   // 일정 날짜 컴포넌트
   const ScheduleDate = ({startDate, endDate}) => {
+    const startYear = new Date(startDate).getFullYear();
     const startMonth = new Date(startDate).getMonth() + 1;
     const startDay = new Date(startDate).getDate();
-    // console.log('시작월:', startMonth);
-    // console.log('시작일:', startDay);
+
+    const endYear = new Date(endDate).getFullYear();
     const endMonth = new Date(endDate).getMonth() + 1;
     const endDay = new Date(endDate).getDate();
 
     return (
       <View style={styles.scheduleDate}>
+        {Number(startYear) !== Number(selectedYear) ? (
+          <View>
+            <Text>{startYear}</Text>
+          </View>
+        ) : (
+          <></>
+        )}
         <View style={styles.scheduleStartDate}>
           <Text style={styles.dateFont}>{startMonth}</Text>
           <Text style={styles.dateUnitFont}>월</Text>
           <Text style={styles.dateFont}>{startDay}</Text>
           <Text style={styles.dateUnitFont}>일</Text>
         </View>
-        <View style={styles.scheduleEndDate}>
-          <Text style={styles.dateFont}>-</Text>
-          <Text style={styles.dateFont}>{endMonth}</Text>
-          <Text style={styles.dateUnitFont}>월</Text>
-          <Text style={styles.dateFont}>{endDay}</Text>
-          <Text style={styles.dateUnitFont}>일</Text>
-        </View>
+        {`${startYear}-${startMonth}-${startDay}` ===
+        `${endYear}-${endMonth}-${endDay}` ? (
+          <></>
+        ) : (
+          <View>
+            <View style={styles.scheduleEndDate}>
+              <Text style={styles.dateFont}>-</Text>
+              <Text style={styles.dateFont}>{endMonth}</Text>
+              <Text style={styles.dateUnitFont}>월</Text>
+              <Text style={styles.dateFont}>{endDay}</Text>
+              <Text style={styles.dateUnitFont}>일</Text>
+            </View>
+            {Number(endYear) !== Number(selectedYear) ? (
+              <View>
+                <Text>{endYear}</Text>
+              </View>
+            ) : (
+              <></>
+            )}
+          </View>
+        )}
       </View>
     );
   };
@@ -177,7 +203,7 @@ const styles = StyleSheet.create({
 
   scheduleSubTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Pretendard-SemiBold',
     padding: 5,
   },
 
@@ -261,10 +287,11 @@ const styles = StyleSheet.create({
   },
   dateFont: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Jost-Bold',
   },
   dateUnitFont: {
     fontSize: 10,
+    fontFamily: 'Pretendard-Medium',
     textAlignVertical: 'bottom',
   },
   subtitleFont: {

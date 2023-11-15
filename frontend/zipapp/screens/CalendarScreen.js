@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View, Modal, TouchableOpacity} from 'react-native';
 // import { Picker } from '@react-native-community/picker';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
-import {format} from 'date-fns';
+import {format, addDays} from 'date-fns';
 import {useEffect, useState, useCallback} from 'react';
 import DatePicker from 'react-native-modern-datepicker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -10,6 +10,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 import ScheduleScreen from './ScheduleScreen';
 import SchedulePreview from '../components/schedule/SchedulePreview';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axiosInstance from '../util/Interceptor';
 
 // 달력 현지화
 LocaleConfig.locales['fr'] = {
@@ -60,7 +62,7 @@ const customTheme = {
   'stylesheet.calendar.header': {
     // 일요일 색상 변경
     dayTextAtIndex0: {
-      color: 'tomato',
+      color: '#D93939',
     },
     // 월 ~ 토요일 검정색 변경
     dayTextAtIndex1: {
@@ -92,16 +94,24 @@ const customTheme = {
       fontWeight: 'bold',
     },
   },
+  'stylesheet.day.basic': {
+    base: {
+      width: 44,
+      height: 44,
+      alignItems: 'center',
+      marginTop: 10,
+    },
+  },
   selectedDayBackgroundColor: 'black', // 선택된 날짜 배경색
   arrowColor: 'black',
   todayTextColor: 'white',
-  todayBackgroundColor: 'tomato',
+  todayBackgroundColor: '#D93939',
   // 일자 폰트 (1, 2, ... , 31)
-  textDayFontWeight: '800',
-  textDayFontSize: 24,
+  textDayFontFamily: 'Jost-Medium',
+  textDayFontSize: 20,
   // 요일 폰트 (일, 월, ..., 토)
-  textDayHeaderFontWeight: '800',
-  textDayHeaderFontSize: 24,
+  textDayHeaderFontFamily: 'Pretendard-SemiBold',
+  textDayHeaderFontSize: 18,
 };
 
 export default function CalendarScreen({navigation}) {
@@ -127,42 +137,43 @@ export default function CalendarScreen({navigation}) {
     hidePickerModal();
   };
 
-  // 일정 리스트 예시 데이터
-  const posts = [
-    {
-      scheduleId: 1,
-      title: '가족여행',
-      startDate: '2023-10-25',
-      endDate: '2023-10-26',
-      plan: [
-        {
-          planId: 1,
-          memberId: 1,
-          status_code: 0,
-          title: '제주도 비행기 표 예매',
-          content: '25일 점심먹고 출발 ~~ 어쩌구 ~~',
+  const [schedules, setSchedules] = useState([]);
+
+  const getMonthlySchedule = async () => {
+    const familyId = await AsyncStorage.getItem('familyId');
+
+    console.log('캘린더 화면 월별 일정 불러오기');
+    axiosInstance
+      .get(`/calendar/month`, {
+        params: {
+          year: currentYear,
+          month: currentMonth,
+          familyId: familyId,
         },
-        {
-          planId: 2,
-          memberId: 1,
-          status_code: 0,
-          title: '연돈 예약하기',
-          content: '25일 저녁!!',
-        },
-      ],
-    },
-    {
-      scheduleId: 2,
-      title: '어머니 생신',
-      startDate: '2023-10-28',
-      endDate: '2023-10-28',
-    },
-  ];
+      })
+      .then(res => {
+        console.log(res.data.data.calendarMonthScheduleResponseDtoList);
+        setSchedules(res.data.data.calendarMonthScheduleResponseDtoList);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getMonthlySchedule();
+  }, [currentYear, currentMonth]);
 
   // 일정이 있는 경우 달력에 dot 표시
-  const markedDates = posts.reduce((acc, current) => {
-    const formattedDate = format(new Date(current.startDate), 'yyyy-MM-dd');
-    acc[formattedDate] = {marked: true};
+  const markedDates = schedules.reduce((acc, current) => {
+    const start = new Date(current.startDate);
+    const end = new Date(current.endDate);
+
+    for (let date = start; date <= end; date = addDays(date, 1)) {
+      const formattedDate = format(date, 'yyyy-MM-dd');
+      acc[formattedDate] = {marked: true, dotColor: 'grey'};
+    }
+
     return acc;
   }, {});
 
@@ -191,20 +202,22 @@ export default function CalendarScreen({navigation}) {
         <View style={{paddingLeft: 15, opacity: 0}}>
           <Ionicons name="calendar-outline" size={30} color="black" />
         </View>
-        <View style={{opacity: 0}}>
-          <Text>월</Text>
-        </View>
         {/* 선택된 날짜정보 */}
         <View style={styles.selectDate}>
           <View style={styles.selectYear}>
-            <Text style={{fontSize: 24}}>{currentYear}</Text>
+            <Text style={styles.selectYearFont}>{currentYear}</Text>
           </View>
           <View style={styles.selectMonth}>
-            <Text style={{fontSize: 40}}>{currentMonth}</Text>
+            <View style={{opacity: 0}}>
+              <Text style={styles.selectMonthUnitFont}>월</Text>
+            </View>
+            <View>
+              <Text style={styles.selectMonthFont}>{currentMonth}</Text>
+            </View>
+            <View>
+              <Text style={styles.selectMonthUnitFont}>월</Text>
+            </View>
           </View>
-        </View>
-        <View style={{justifyContent: 'flex-end', paddingBottom: 10}}>
-          <Text style={{fontSize: 15}}>월</Text>
         </View>
         {/* 날짜 선택창 여는 버튼 */}
         <View style={styles.selectDateBtn}>
@@ -265,9 +278,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
   },
   dateContainer: {
+    marginTop: 40,
     flexDirection: 'row',
   },
   selectDate: {
@@ -282,8 +296,9 @@ const styles = StyleSheet.create({
   },
   calendarContainer: {
     marginTop: 20,
-    width: '100%',
-    height: '50%',
+    width: '87%',
+    height: '60%',
+    // borderWidth: 1,
   },
   calendar: {
     borderBottonWidth: 1,
@@ -292,4 +307,20 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   pickerContainer: {},
+  selectYearFont: {
+    fontSize: 24,
+    fontFamily: 'Jost-Bold',
+  },
+  selectMonthFont: {
+    fontSize: 40,
+    fontFamily: 'Jost-SemiBold',
+  },
+  selectMonthUnitFont: {
+    fontSize: 15,
+    fontFamily: 'Pretendard-Medium',
+  },
+  selectMonth: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
 });
