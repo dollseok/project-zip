@@ -6,7 +6,7 @@ const axiosInstance = Axios.create({
   // baseURL: 'http://10.0.2.2:9090/api',
   // baseURL: 'http://localhost:9090/api',
   baseURL: 'https://lastdance.kr/api',
-  // timeout: 5000,
+  // timeout: 5000,feat: 기본 배경사진 변경, 초대 코드 입력 비활성화 기능 추가)
 });
 
 axiosInstance.interceptors.request.use(
