@@ -84,13 +84,17 @@ public class AlbumServiceImpl implements AlbumService{
         LocalDateTime startOfMonth = LocalDateTime.of(year,month,1,0,0,0);
         LocalDateTime endOfMonth = startOfMonth.plusMonths(1).minusSeconds(1);
 
+        LocalDate startOfMonthDate = LocalDate.of(year,month,1);
+        LocalDate endOfMonthDate = startOfMonthDate.plusMonths(1).minusDays(1);
+
         // 해당 월의 일기, 스케줄 사진 조회
         QSchedulePhoto qSchedulePhoto = QSchedulePhoto.schedulePhoto;
 
         List<SchedulePhoto> schedulePhotos = jpaQueryFactory
                 .selectFrom(qSchedulePhoto)
                 .where(qSchedulePhoto.schedule.family.id.eq(familyId))
-                .where(qSchedulePhoto.createdAt.between(startOfMonth,endOfMonth))
+                .where(qSchedulePhoto.schedule.startDate.between(startOfMonthDate,endOfMonthDate))
+                .where(qSchedulePhoto.schedule.endDate.between(startOfMonthDate,endOfMonthDate))
                 .fetch();
 
 
