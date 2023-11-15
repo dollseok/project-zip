@@ -260,6 +260,7 @@ export default function FamilyMainScreen({navigation}) {
     return unsubscribe;
   }, [navigation]);
 
+
   return (
     <ImageBackground
       source={{uri: backgroundImageUri}}
