@@ -260,6 +260,7 @@ export default function FamilyMainScreen({navigation}) {
     return unsubscribe;
   }, [navigation]);
 
+
   return (
     <ImageBackground
       source={{uri: backgroundImageUri}}
@@ -273,8 +274,6 @@ export default function FamilyMainScreen({navigation}) {
                 setIsEditMode(false);
                 setIsFamilyNameEditMode(false);
                 setIsFamilyContentEditMode(false);
-
-                // 다시 useEffect 호출해야됨
                 setIsModifyFamilyComplete(true);
               }}>
               <Text style={{color: 'white', fontSize: 20}}>취소</Text>
@@ -412,8 +411,9 @@ export default function FamilyMainScreen({navigation}) {
             <Image
               source={{
                 uri:
-                  item.profileImgUrl ||
-                  'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png',
+                  item.profileImgUrl == null
+                    ? 'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png'
+                    : item.profileImgUrl,
               }}
               style={styles.userImage}
             />
@@ -432,8 +432,9 @@ export default function FamilyMainScreen({navigation}) {
             <Image
               source={{
                 uri:
-                  item.profileImgUrl ||
-                  'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png',
+                  item.profileImgUrl == null
+                    ? 'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png'
+                    : item.profileImgUrl,
               }}
               style={styles.userImage}
             />
@@ -557,10 +558,9 @@ const styles = StyleSheet.create({
     width: 300,
     height: 50,
     alignItems: 'center',
-    // backgroundColor: 'rgba(255,255,255,0.5)',
-    borderWidth: 1,
-    borderColor: 'white',
-    // elevation: 15,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    // borderWidth: 1,
+    // borderColor: 'white',
   },
   whiteText: {
     fontSize: 20,
@@ -575,9 +575,9 @@ const styles = StyleSheet.create({
     width: 300,
     height: 50,
     alignItems: 'center',
-    // backgroundColor: 'rgba(255,255,255,0.5)',
-    borderWidth: 1,
-    borderColor: 'white',
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    // borderWidth: 1,
+    // borderColor: 'white',
   },
   modalContainer: {
     position: 'absolute',
