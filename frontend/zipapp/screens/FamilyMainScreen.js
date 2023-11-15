@@ -215,7 +215,7 @@ export default function FamilyMainScreen({navigation}) {
   const fetchData = async() => {
     const familyId = await AsyncStorage.getItem('familyId');
     // const familyId = 139;
-    await axiosInstance.get(`/family/choice?familyId=${familyId}`).then(response => {
+    axiosInstance.get(`/family/choice?familyId=${familyId}`).then(response => {
       setFamily(response.data.data);
       setModifiedFamilyName(response.data.data.familyName);
       setModifiedFamilyContent(response.data.data.familyContent);
@@ -238,7 +238,7 @@ export default function FamilyMainScreen({navigation}) {
       }
     });
 
-    await axiosInstance
+    axiosInstance
       .get(`/schedule/list?familyId=${familyId}`)
       .then(response => {
         setSchedules(response.data.data.scheduleListDetailResponseList);
@@ -247,7 +247,7 @@ export default function FamilyMainScreen({navigation}) {
         console.error('There was an error!', error);
       });
 
-    await axiosInstance
+    axiosInstance
       .get(`/diary/list?familyId=${familyId}`)
       .then(response => {
         setDiaries(response.data.data.diaryListDetailResponseList);
