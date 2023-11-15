@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class FamilyMemberDetailResponseDto {
     Long memberId;
     String nickname;
+    String profileImgUrl;
 }

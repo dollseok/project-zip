@@ -16,6 +16,8 @@ public interface ScheduleService {
 
     ScheduleListResponseDto listSchedule(Member findMember, long familyId);
 
+    ScheduleListResponseDto listMySchedule(Member findMember, long familyId);
+
     ScheduleDetailResponseDto detailSchedule(Member findMember, long scheduleId);
 
     ScheduleModifyResponseDto modifySchedule(Member findMember, ScheduleModifyRequestDto scheduleModifyRequestDto);

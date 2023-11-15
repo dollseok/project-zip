@@ -275,4 +275,30 @@ public class DiaryServiceImpl implements DiaryService {
 
 		return diaryModifyResponseDto;
 	}
+
+	@Override
+	public DiaryListResponseDto listMyDiary(Member findMember, long familyId) {
+		Optional<Family> family = familyRepository.findById(familyId);
+
+		List<Diary> diaries = diaryRepository.findAllByFamilyId(familyId);
+
+		FamilyMember familyMember = familyMemberRepository.findByMemberAndFamily(findMember, family.get());
+
+		List<DiaryListDetailResponseDto> diaryListDetailResponseDtos = diaries.stream()
+			.map(d -> {
+				return DiaryListDetailResponseDto.builder()
+					.diaryId(d.getId())
+					.nickname(familyMember.getNickname())
+					.title(d.getTitle())
+					.createdAt(d.getCreatedAt())
+					.emotionId(d.getEmotion().getId())
+					.profileImgUrl(findMember.getProfileImgUrl())
+					.build();
+			})
+			.collect(Collectors.toList());
+
+		return DiaryListResponseDto.builder()
+			.diaryListDetailResponseList(diaryListDetailResponseDtos)
+			.build();
+	}
 }

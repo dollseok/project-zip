@@ -178,4 +178,33 @@ public class DiaryController {
                         .build(), HttpStatus.OK);
     }
 
+    /**
+     * 일기 리스트 조회
+     * @param httpServletRequest 로그인한 유저의 Id
+     * @param familyId
+     */
+    @Operation(summary = "내 일기 리스트 조회", description = "내 일기 리스트 조회 API")
+    @GetMapping("/mylist")
+    public ResponseEntity<ResponseTemplate<DiaryListResponseDto>> myDiaryList(
+        HttpServletRequest httpServletRequest,
+        @RequestParam(name = "familyId") Long familyId){
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) {
+            return null;
+        }
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        DiaryListResponseDto diaryListResponseDto = diaryService.listMyDiary(findMember, familyId);
+
+        return new ResponseEntity<>(
+            ResponseTemplate.<DiaryListResponseDto>builder()
+                .msg(DiaryResponseMessage.DIARY_LIST_SUCCESS.getMessage())
+                .data(diaryListResponseDto)
+                .result(true)
+                .build(), HttpStatus.OK
+        );
+    }
+
 }

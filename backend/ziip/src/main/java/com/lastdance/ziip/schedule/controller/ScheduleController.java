@@ -193,4 +193,27 @@ public class ScheduleController {
                 .data(schedulePhotoDeleteResponseDto)
                 .build(),HttpStatus.OK);
     }
+
+    @Operation(summary = "내 일정 리스트 조회", description = "내 일정 리스트 조회 API")
+    @GetMapping("/mylist")
+    public ResponseEntity<ResponseTemplate<ScheduleListResponseDto>> listMySchedule(
+        HttpServletRequest httpServletRequest, @RequestParam(name = "familyId") long familyId) {
+
+        String token = httpServletRequest.getHeader("Authorization");
+        if (token == null) {
+            return null;
+        }
+
+        Member findMember = memberService.findMemberByJwtToken(token);
+
+        ScheduleListResponseDto scheduleListResponse = scheduleService.listMySchedule(findMember, familyId);
+
+        return new ResponseEntity<>(
+            ResponseTemplate.<ScheduleListResponseDto>builder()
+                .msg(ScheduleResponseMessage.SCHEDULE_LIST_SUCCESS.getMessage())
+                .data(scheduleListResponse)
+                .result(true)
+                .build(),
+            HttpStatus.OK);
+    }
 }

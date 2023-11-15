@@ -118,6 +118,34 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public ScheduleListResponseDto listMySchedule(Member findMember, long familyId) {
+        Optional<Family> family = familyRepository.findById(familyId);
+
+        List<Schedule> schedules = scheduleRepository.findByFamilyAndMember(
+            Optional.ofNullable(family.orElse(null)), findMember);
+
+        FamilyMember familyMember = familyMemberRepository.findByMemberAndFamily(findMember, family.get());
+
+        List<ScheduleListDetailResponseDto> scheduleListDetailResponseDtos = schedules.stream()
+            .map(schedule -> {
+                return ScheduleListDetailResponseDto.builder()
+                    .scheduleId(schedule.getId())
+                    .memberId(schedule.getMember().getId())
+                    .name(schedule.getTitle())
+                    .startDate(String.valueOf(schedule.getStartDate()))
+                    .endDate(String.valueOf(schedule.getEndDate()))
+                    .nickname(familyMember.getNickname()) // 닉네임 설정
+                    .profileImgUrl(familyMember.getMember().getProfileImgUrl())
+                    .build();
+            })
+            .collect(Collectors.toList());
+
+        return ScheduleListResponseDto.builder()
+            .scheduleListDetailResponseList(scheduleListDetailResponseDtos)
+            .build();
+    }
+
+    @Override
     public ScheduleDetailResponseDto detailSchedule(Member findMember, long scheduleId) {
 
         Schedule schedule = scheduleRepository.findById(scheduleId)

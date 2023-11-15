@@ -22,4 +22,5 @@ public interface DiaryService {
     DiaryDeleteResponseDto deleteDiary(Member findMember, Long diaryId);
 
     DiaryModifyResponseDto modifyDiary(Member findMember, DiaryModifyRequestDto diaryModifyRequestDto, MultipartFile file);
+    DiaryListResponseDto listMyDiary(Member findMember, long familyId);
 }

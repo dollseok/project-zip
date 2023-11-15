@@ -9,6 +9,8 @@ import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.family.repository.entity.FamilyMember;
 import com.lastdance.ziip.global.awsS3.S3Uploader;
 import com.lastdance.ziip.member.dto.FileDto;
+import com.lastdance.ziip.member.dto.response.MemberProfileImgUrlResponseDto;
+import com.lastdance.ziip.member.repository.MemberRepository;
 import com.lastdance.ziip.member.repository.entity.Member;
 
 import java.util.*;
@@ -46,6 +48,7 @@ public class FamilyServiceImpl implements FamilyService {
     private final FamilyRepository familyRepository;
     private final FamilyMemberRepository familyMemberRepository;
     private final S3Uploader s3Uploader;
+    private final MemberRepository memberRepository;
 
 
     @Override
@@ -229,6 +232,7 @@ public class FamilyServiceImpl implements FamilyService {
                 .map(familyMember -> FamilyMemberDetailResponseDto.builder()
                         .memberId(familyMember.getMember().getId())
                         .nickname(familyMember.getNickname())
+                        .profileImgUrl(familyMember.getMember().getProfileImgUrl())
                         .build())
                 .collect(Collectors.toList());
 
