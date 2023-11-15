@@ -111,7 +111,7 @@ export default function DiaryItemDetail(props) {
       content: diaryComment,
     };
 
-    console.log('댓글 작성 dto: ', diaryCommentWriteRequestDto);
+    // console.log('댓글 작성 dto: ', diaryCommentWriteRequestDto);
 
     axiosInstance
       .post(`/diary/comment/write`, JSON.stringify(diaryCommentWriteRequestDto))
@@ -219,7 +219,7 @@ export default function DiaryItemDetail(props) {
       return require('../../assets/background.jpg');
     }
   };
-  console.log(imgOnModify(diary));
+  // console.log(imgOnModify(diary));
 
   const [refresh, setRefresh] = useRecoilState(refreshState);
 

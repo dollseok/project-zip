@@ -51,7 +51,7 @@ export default function DiaryScreen() {
         },
       })
       .then(res => {
-        console.log(res);
+        // console.log(res);
         const diaryArray = res.data.data.calendarMonthDiaryResponseDtos;
         setDiarys(diaryArray);
       })
@@ -114,6 +114,7 @@ export default function DiaryScreen() {
       {/* 일기 리스트 */}
       <DiaryList
         diarys={diarys}
+        key={diarys}
         selectedYear={selectedYear}
         selectedMonth={selectedMonth}
       />

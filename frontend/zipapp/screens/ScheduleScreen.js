@@ -57,17 +57,19 @@ export default function ScheduleScreen({route, navigation}) {
 
   // 캘린더에서 받아온 현재 날짜정보
   // 예시) '2023-10-25'
-  const {dateInfo} = route.params;
+  if (route.params) {
+    const {dateInfo} = route.params;
+    console.log(dateInfo);
+    useEffect(() => {
+      if (dateInfo) {
+        setSelectedYear(dateInfo.split('-')[0]);
+        setSelectedMonth(dateInfo.split('-')[1]);
+      }
+    }, [dateInfo]);
+  }
   // console.log('일정 미리보기에서 넘어올 때 받아온 날짜정보: ', route.params);
-  const [selectedYear, setSelectedYear] = useState();
-  const [selectedMonth, setSelectedMonth] = useState();
-
-  useEffect(() => {
-    if (dateInfo) {
-      setSelectedYear(dateInfo.split('-')[0]);
-      setSelectedMonth(dateInfo.split('-')[1]);
-    }
-  }, []);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
 
   useEffect(() => {
     getScheduleList();
@@ -147,6 +149,7 @@ export default function ScheduleScreen({route, navigation}) {
         schedules={schedules}
         selectedYear={selectedYear}
         selectedMonth={selectedMonth}
+        navigation={navigation}
       />
       <ScheduleCreate
         createModalVisible={createModalVisible}

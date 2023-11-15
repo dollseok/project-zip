@@ -13,11 +13,26 @@ import ScheduleScreen from './ScheduleScreen';
 import DiaryScreen from './diary/DiaryScreen';
 import AlbumScreen from './album/AlbumScreen';
 import FamilyMainScreen from './FamilyMainScreen';
+import {useEffect} from 'react';
 
 const Tab = createBottomTabNavigator();
 
-function CalendarStack() {
+function CalendarStack({route, navigation}) {
   const Stack = createStackNavigator();
+
+  let dateInfo = '';
+  if (route.params) {
+    dateInfo = route.params.dateInfo;
+  }
+  console.log('앨범에서 선택한 사진의 날짜 정보: ', dateInfo);
+
+  useEffect(() => {
+    if (dateInfo) {
+      navigation.navigate('일정', {
+        dateInfo: dateInfo,
+      });
+    }
+  }, [dateInfo, navigation]);
 
   return (
     <Stack.Navigator>
