@@ -17,14 +17,14 @@ import Entypo from 'react-native-vector-icons/Entypo';
 
 export default function SchedulePreview(props) {
   const {modalVisible, setModalVisible, selectedDate, navigation} = props;
-  console.log('캘린더에서 선택한 날짜: ', selectedDate);
+  // console.log('캘린더에서 선택한 날짜: ', selectedDate);
   // 선택한 날의 일정 정보
   const [todaySchedule, setTodaySchedule] = useState([]);
 
   const getTodaySchedule = async today => {
     const familyId = await AsyncStorage.getItem('familyId');
-    console.log('조회할 날짜: ', selectedDate);
-    console.log('가족 id: ', familyId);
+    // console.log('조회할 날짜: ', selectedDate);
+    // console.log('가족 id: ', familyId);
     axiosInstance
       .get(`/calendar/day`, {
         params: {
@@ -33,10 +33,10 @@ export default function SchedulePreview(props) {
         },
       })
       .then(res => {
-        console.log(
-          '선택한 날의 일정 정보',
-          res.data.data.calendarDayScheduleResponseDtoList,
-        );
+        // console.log(
+        //   '선택한 날의 일정 정보',
+        //   res.data.data.calendarDayScheduleResponseDtoList,
+        // );
         // console.log('선택한 날의 일정 및 일기 정보', res.data.data);
         const todayScheduleInfo =
           res.data.data.calendarDayScheduleResponseDtoList;

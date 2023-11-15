@@ -28,6 +28,7 @@ export default function ScheduleItem({
   selectedYear,
   selectedMonth,
   scheduleId,
+  navigation,
 }) {
   const [schedule, setSchedule] = useState([]);
   const [plans, setPlans] = useState([]);
@@ -179,7 +180,11 @@ export default function ScheduleItem({
         {expanded ? (
           <View>
             <PlanList scheduleId={scheduleId} plans={plans} />
-            <PhotoList scheduleId={scheduleId} photos={photos} />
+            <PhotoList
+              scheduleId={scheduleId}
+              photos={photos}
+              navigation={navigation}
+            />
           </View>
         ) : null}
       </View>

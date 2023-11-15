@@ -24,7 +24,7 @@ export default function DiaryItem(props) {
         },
       })
       .then(res => {
-        console.log('일기 상세 데이터: ', res.data.data);
+        // console.log('일기 상세 데이터: ', res.data.data);
         setDiary(res.data.data);
       })
       .catch(err => {
