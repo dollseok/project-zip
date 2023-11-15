@@ -3,9 +3,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
 const axiosInstance = Axios.create({
-  baseURL: 'http://10.0.2.2:9090/api',
+  // baseURL: 'http://10.0.2.2:9090/api',
   // baseURL: 'http://localhost:9090/api',
-  // baseURL: 'https://lastdance.kr/api',
+  baseURL: 'https://lastdance.kr/api',
 });
 
 axiosInstance.interceptors.request.use(
