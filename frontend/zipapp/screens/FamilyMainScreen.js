@@ -11,6 +11,7 @@ import {
   Animated,
   Modal,
   TouchableWithoutFeedback,
+  ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../util/Interceptor';
@@ -19,6 +20,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {validateText} from '../components/check/ValidateText';
 import {lengthText} from '../components/check/LengthText';
+import DiaryItem from '../components/diary/DiaryItem';
 
 export default function FamilyMainScreen({navigation}) {
   const [family, setFamily] = useState([]);
@@ -191,6 +193,24 @@ export default function FamilyMainScreen({navigation}) {
     setIsModifyFamilyComplete(true);
   };
 
+  // 클릭된 일기 상세 정보 표시 및 네비게이션 설정
+  const handleDiaryClick = diary => {
+    // DiaryItem.js로 넘어가기
+    console.log('선택한 일기 : ', diary);
+    // createdAt 값을 Date 객체로 변환
+    const createdAtDate = new Date(diary.createdAt);
+
+    // 년도와 월 추출
+    const selectedYear = createdAtDate.getFullYear();
+    const selectedMonth = createdAtDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더합니다.
+
+    // navigation.navigate('DiaryItem', {
+    //   diarySummary: diary,
+    //   selectedYear: selectedYear,
+    //   selectedMonth: selectedMonth,
+    // });
+  };
+
   const fetchData = async () => {
     const familyId = await AsyncStorage.getItem('familyId');
     axiosInstance.get(`/family/choice?familyId=${familyId}`).then(response => {
@@ -259,7 +279,6 @@ export default function FamilyMainScreen({navigation}) {
 
     return unsubscribe;
   }, [navigation]);
-
 
   return (
     <ImageBackground
@@ -428,22 +447,37 @@ export default function FamilyMainScreen({navigation}) {
       <FlatList
         data={diaries.slice(0, 2)}
         renderItem={({item}) => (
-          <View style={styles.diaryItem}>
-            <Image
-              source={{
-                uri:
-                  item.profileImgUrl == null
-                    ? 'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png'
-                    : item.profileImgUrl,
-              }}
-              style={styles.userImage}
-            />
-            <Text style={styles.whiteText}>{item.nickname}</Text>
-            <Text style={styles.whiteText}>{item.title}</Text>
-          </View>
+          <TouchableOpacity onPress={() => handleDiaryClick(item)}>
+            <View style={styles.diaryItem}>
+              <Image
+                source={{
+                  uri:
+                    item.profileImgUrl == null
+                      ? 'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png'
+                      : item.profileImgUrl,
+                }}
+                style={styles.userImage}
+              />
+              <Text style={styles.whiteText}>{item.nickname}</Text>
+              <Text style={styles.whiteText}>{item.title}</Text>
+            </View>
+          </TouchableOpacity>
         )}
         keyExtractor={item => item.diaryId.toString()}
       />
+      {/* <ScrollView>
+        {diaries.map(diary => {
+          return (
+            <View style={styles.diaryItem}>
+              <DiaryItem
+                diarySummary={diary}
+                key={diary.diaryId}
+                selectedYear={selectedYear}
+                selectedMonth={selectedMonth}></DiaryItem>
+            </View>
+          );
+        })}
+      </ScrollView> */}
       {/* 공간 */}
       <View>
         <Text style={[{marginVertical: 30}]}></Text>
@@ -458,52 +492,73 @@ export default function FamilyMainScreen({navigation}) {
             <Animated.View
               style={[styles.modalContainer, {transform: [{translateY}]}]}>
               <View style={{flex: 1, flexDirection: 'column'}}>
+              <View
+                  style={{
+                    flex: 0.5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'white',
+                    marginHorizontal: 10,
+                    paddingHorizontal: 98,
+                    borderTopStartRadius: 20,
+                    borderTopEndRadius: 20,
+                    borderBottomColor: 'gray',
+                    borderBottomWidth: 0.5,
+                  }}>
+                  <Text style={{fontWeight: 'bold', color: 'gray'}}>
+                    {basicImg === 'Background'
+                      ? '배경 사진 변경하기'
+                      : '프로필 사진 변경하기'}
+                  </Text>
+                </View>
                 <TouchableOpacity
                   style={{
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
+                    backgroundColor: 'white',
+                    marginHorizontal: 10,
+                    paddingHorizontal: 98,
+                    borderBottomColor: 'gray',
+                    borderBottomWidth: 0.5
                   }}
                   onPress={() =>
                     selectImage(
                       basicImg == 'Background' ? 'Background' : 'Profile',
                     )
                   }>
-                  <Text>앨범에서 사진 선택하기</Text>
+                  <Text style={{fontWeight: 'bold'}}>앨범에서 사진 선택하기</Text>
                 </TouchableOpacity>
-                <View
-                  style={{
-                    backgroundColor: 'gray',
-                    height: 1,
-                    paddingHorizontal: '100%',
-                  }}
-                />
                 <TouchableOpacity
                   style={{
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
+                    backgroundColor: 'white',
+                    marginHorizontal: 10,
+                    marginBottom: 10,
+                    paddingHorizontal: 98,
+                    borderBottomLeftRadius: 20,
+                    borderBottomRightRadius: 20,
                   }}
                   onPress={() => handleBasicImg()}>
-                  <Text>기본 이미지로 변경하기</Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    backgroundColor: 'gray',
-                    height: 1,
-                    paddingHorizontal: '100%',
-                  }}
-                />
-                <TouchableOpacity
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  onPress={hideButtons}>
-                  <Text>취소</Text>
+                  <Text style={{fontWeight: 'bold'}}>기본 이미지로 변경하기</Text>
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flex: 0.3,
+                  flexDirection: 'column',
+                  backgroundColor: 'white',
+                  margin: 10,
+                  paddingHorizontal: 150,
+                  borderRadius: 20,
+                }}
+                onPress={hideButtons}>
+                <Text style={{fontWeight: 'bold'}}>취소</Text>
+              </TouchableOpacity>
             </Animated.View>
           </View>
         </TouchableWithoutFeedback>
@@ -585,7 +640,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 300,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     alignItems: 'center',

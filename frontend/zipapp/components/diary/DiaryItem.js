@@ -17,6 +17,7 @@ export default function DiaryItem(props) {
 
   // 일기 상세 데이터 가져오기
   const getDiaryDetail = () => {
+    console.log('가져온 일기 데이터 : ', diarySummary, selectedMonth, selectedMonth);
     axiosInstance
       .get(`/diary/detail`, {
         params: {
