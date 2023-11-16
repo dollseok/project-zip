@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'webfont';
+  src: url(${process.env.PUBLIC_URL}/font/Pretendard-ExtraBold.otf) format('truetype');
+}
+
+@font-face {
+  font-family: 'webfontBlack';
+  src: url(${process.env.PUBLIC_URL}/font/Pretendard-Black.otf) format('truetype');
+}
