@@ -64,6 +64,8 @@ export default function DiaryScreen() {
     getDiaryData();
   }, [selectedYear, selectedMonth, refresh]);
 
+  console.log('일기 리스트: ', diarys);
+
   return (
     <View style={styles.container}>
       {/* 연월 선택 */}
@@ -114,7 +116,6 @@ export default function DiaryScreen() {
       {/* 일기 리스트 */}
       <DiaryList
         diarys={diarys}
-        key={diarys}
         selectedYear={selectedYear}
         selectedMonth={selectedMonth}
       />
