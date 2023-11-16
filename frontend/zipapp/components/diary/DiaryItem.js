@@ -17,7 +17,12 @@ export default function DiaryItem(props) {
 
   // 일기 상세 데이터 가져오기
   const getDiaryDetail = () => {
-    console.log('가져온 일기 데이터 : ', diarySummary, selectedMonth, selectedMonth);
+    console.log(
+      '가져온 일기 데이터 : ',
+      diarySummary,
+      selectedMonth,
+      selectedMonth,
+    );
     axiosInstance
       .get(`/diary/detail`, {
         params: {
@@ -85,6 +90,30 @@ export default function DiaryItem(props) {
                 <Image
                   style={{width: 24, height: 24}}
                   source={require('../../assets/emotion/smile.png')}
+                />
+              ) : (
+                <></>
+              )}
+              {diary.emotionId === 2 ? (
+                <Image
+                  style={{width: 24, height: 24}}
+                  source={require('../../assets/emotion/wow.png')}
+                />
+              ) : (
+                <></>
+              )}
+              {diary.emotionId === 3 ? (
+                <Image
+                  style={{width: 24, height: 24}}
+                  source={require('../../assets/emotion/sad.png')}
+                />
+              ) : (
+                <></>
+              )}
+              {diary.emotionId === 4 ? (
+                <Image
+                  style={{width: 24, height: 24}}
+                  source={require('../../assets/emotion/angry.png')}
                 />
               ) : (
                 <></>

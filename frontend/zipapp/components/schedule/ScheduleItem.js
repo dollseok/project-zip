@@ -37,7 +37,7 @@ export default function ScheduleItem({
 
   const [refresh, setRefresh] = useRecoilState(refreshState);
 
-  // console.log('ScheduleItem - 일정 정보: ', schedule);
+  console.log('ScheduleItem - 일정 정보: ', schedule);
   // console.log('ScheduleItem - 할일 정보: ', plans);
   // console.log('ScheduleItem - 사진 정보: ', photos);
 
