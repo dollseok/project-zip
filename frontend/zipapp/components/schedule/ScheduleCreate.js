@@ -104,6 +104,10 @@ export default function ScheduleCreate(props) {
   useEffect(() => {
     if (props.createModalVisible) {
       resetScheduleCreate.start();
+      // 생성 창 띄울때마다 내용 초기화
+      setScheduleTitle('');
+      setStartDate(new Date());
+      setEndDate(new Date());
     } else {
       closeScheduleCreate.start();
     }

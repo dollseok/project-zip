@@ -35,7 +35,9 @@ export default function PlanList(props) {
 
 const styles = StyleSheet.create({
   // 계획 전체
-  planContainer: {},
+  planContainer: {
+    marginVertical: 10,
+  },
   // 소제목과 등록 버튼
   planHeader: {
     flexDirection: 'row',

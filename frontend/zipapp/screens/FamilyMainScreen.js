@@ -194,34 +194,47 @@ export default function FamilyMainScreen({navigation}) {
     setIsModifyFamilyComplete(true);
   };
 
-  const fetchData = async() => {
+  // 클릭된 일기 상세 정보 표시 및 네비게이션 설정
+  const handleDiaryClick = diary => {
+    // DiaryItem.js로 넘어가기
+    console.log('선택한 일기 : ', diary);
+
+    navigation.navigate('일기', {
+      dateInfo: diary.createdAt,
+    });
+  };
+
+  const fetchData = async () => {
     const familyId = await AsyncStorage.getItem('familyId');
     // const familyId = 139;
-    await axiosInstance.get(`/family/choice?familyId=${familyId}`).then(response => {
-      setFamily(response.data.data);
-      setModifiedFamilyName(response.data.data.familyName);
-      setModifiedFamilyContent(response.data.data.familyContent);
+    await axiosInstance
+      .get(`/family/choice?familyId=${familyId}`)
+      .then(response => {
+        setFamily(response.data.data);
+        setModifiedFamilyName(response.data.data.familyName);
+        setModifiedFamilyContent(response.data.data.familyContent);
 
-      if (response.data.data.memberProfileImgUrl == null) {
-        setMemberProfileImgUrl(
-          'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png',
-        );
-      } else {
-        setMemberProfileImgUrl(response.data.data.memberProfileImgUrl);
-      }
+        if (response.data.data.memberProfileImgUrl == null) {
+          setMemberProfileImgUrl(
+            'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png',
+          );
+        } else {
+          setMemberProfileImgUrl(response.data.data.memberProfileImgUrl);
+        }
 
-      if (response.data.data.familyProfileImgUrl == null) {
-        setBackgroundImageUri(
-          'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png',
-        );
-      } else {
-        setBackgroundImageUri(response.data.data.familyProfileImgUrl);
-      }
-    });
+        if (response.data.data.familyProfileImgUrl == null) {
+          setBackgroundImageUri(
+            'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png',
+          );
+        } else {
+          setBackgroundImageUri(response.data.data.familyProfileImgUrl);
+        }
+      });
 
     await axiosInstance
       .get(`/schedule/list?familyId=${familyId}`)
       .then(response => {
+        // console.log(response);
         setSchedules(response.data.data.scheduleListDetailResponseList);
       })
       .catch(error => {
@@ -231,6 +244,7 @@ export default function FamilyMainScreen({navigation}) {
     await axiosInstance
       .get(`/diary/list?familyId=${familyId}`)
       .then(response => {
+        // console.log(response);
         setDiaries(response.data.data.diaryListDetailResponseList);
       })
       .catch(error => {
@@ -267,7 +281,7 @@ export default function FamilyMainScreen({navigation}) {
       source={{uri: backgroundImageUri}}
       style={styles.container}
       // resizeMode="cover"
-      >
+    >
       <View style={styles.overlay} />
       <View style={styles.header}>
         {isEditMode ? (
@@ -431,19 +445,19 @@ export default function FamilyMainScreen({navigation}) {
       <FlatList
         data={diaries.slice(0, 2)}
         renderItem={({item}) => (
-            <View style={styles.diaryItem}>
-              <Image
-                source={{
-                  uri:
-                    item.profileImgUrl == null
-                      ? 'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png'
-                      : item.profileImgUrl,
-                }}
-                style={styles.userImage}
-              />
-              <Text style={styles.whiteText}>{item.nickname}</Text>
-              <Text style={styles.whiteText}>{item.title}</Text>
-            </View>
+          <TouchableOpacity style={styles.diaryItem} onPress={handleDiaryClick}>
+            <Image
+              source={{
+                uri:
+                  item.profileImgUrl == null
+                    ? 'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/member/user.png'
+                    : item.profileImgUrl,
+              }}
+              style={styles.userImage}
+            />
+            <Text style={styles.whiteText}>{item.nickname}</Text>
+            <Text style={styles.whiteText}>{item.title}</Text>
+          </TouchableOpacity>
         )}
         keyExtractor={item => item.diaryId.toString()}
       />
@@ -474,7 +488,7 @@ export default function FamilyMainScreen({navigation}) {
             <Animated.View
               style={[styles.modalContainer, {transform: [{translateY}]}]}>
               <View style={{flex: 1, flexDirection: 'column'}}>
-              <View
+                <View
                   style={{
                     flex: 0.5,
                     justifyContent: 'center',
@@ -502,14 +516,16 @@ export default function FamilyMainScreen({navigation}) {
                     marginHorizontal: 10,
                     paddingHorizontal: 98,
                     borderBottomColor: 'gray',
-                    borderBottomWidth: 0.5
+                    borderBottomWidth: 0.5,
                   }}
                   onPress={() =>
                     selectImage(
                       basicImg == 'Background' ? 'Background' : 'Profile',
                     )
                   }>
-                  <Text style={{fontWeight: 'bold'}}>앨범에서 사진 선택하기</Text>
+                  <Text style={{fontWeight: 'bold'}}>
+                    앨범에서 사진 선택하기
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
@@ -524,7 +540,9 @@ export default function FamilyMainScreen({navigation}) {
                     borderBottomRightRadius: 20,
                   }}
                   onPress={() => handleBasicImg()}>
-                  <Text style={{fontWeight: 'bold'}}>기본 이미지로 변경하기</Text>
+                  <Text style={{fontWeight: 'bold'}}>
+                    기본 이미지로 변경하기
+                  </Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity

@@ -95,8 +95,14 @@ export default function DiaryItemDetail(props) {
   // 수정 <-> 상세 조회
   const [isUpdateMode, setIsUpdateMode] = useState(false);
 
-  const toggleUpdateMode = () => {
-    setIsUpdateMode(!isUpdateMode);
+  const toggleUpdateMode = async () => {
+    await getMemberId();
+    console.log('본인의 memberId: ', myId);
+    if (myId === diary.memberId) {
+      setIsUpdateMode(!isUpdateMode);
+    } else {
+      Alert.alert('', '본인이 작성한 일기가 아닙니다.');
+    }
   };
 
   // // 상세 조회 시 // //
@@ -222,6 +228,27 @@ export default function DiaryItemDetail(props) {
   // console.log(imgOnModify(diary));
 
   const [refresh, setRefresh] = useRecoilState(refreshState);
+
+  const [myId, setMyId] = useState('');
+
+  // 접속한 유저의 멤버 id 가져오기
+  const getMemberId = async () => {
+    const familyId = await AsyncStorage.getItem('familyId');
+
+    axiosInstance
+      .get(`/family/mypage`, {
+        params: {
+          familyId: familyId,
+        },
+      })
+      .then(res => {
+        console.log('접속한 유저의 MemberId: ', res.data.data.memberId);
+        setMyId(res.data.data.memberId);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   // 일기 수정 요청
   const updateDiary = async () => {

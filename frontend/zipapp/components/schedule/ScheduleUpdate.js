@@ -21,6 +21,8 @@ import {useRecoilState} from 'recoil';
 
 export default function ScheduleUpdate(props) {
   const {schedule, scheduleId} = props;
+  console.log('일정 데이터: ', schedule);
+  console.log('일정 시작일: ', new Date(schedule.startDate));
   // 일정 수정에 필요한 데이터
   const [scheduleTitle, setScheduleTitle] = useState(''); // 제목
   const [startDate, setStartDate] = useState(new Date()); // 시작일
@@ -31,6 +33,12 @@ export default function ScheduleUpdate(props) {
   useEffect(() => {
     if (schedule) {
       setScheduleTitle(schedule.title);
+      if (schedule.startDate) {
+        setStartDate(new Date(schedule.startDate));
+      }
+      if (schedule.endDate) {
+        setEndDate(new Date(schedule.endDate));
+      }
     }
   }, [schedule]);
 

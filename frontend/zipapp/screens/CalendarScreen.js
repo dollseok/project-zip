@@ -12,6 +12,8 @@ import ScheduleScreen from './ScheduleScreen';
 import SchedulePreview from '../components/schedule/SchedulePreview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../util/Interceptor';
+import refreshState from '../../atoms/refreshState';
+import {useRecoilState} from 'recoil';
 
 // 달력 현지화
 LocaleConfig.locales['fr'] = {
@@ -138,6 +140,7 @@ export default function CalendarScreen({route, navigation}) {
   };
 
   const [schedules, setSchedules] = useState([]);
+  const [refresh, setRefresh] = useRecoilState(refreshState);
 
   const getMonthlySchedule = async () => {
     const familyId = await AsyncStorage.getItem('familyId');
@@ -162,7 +165,7 @@ export default function CalendarScreen({route, navigation}) {
 
   useEffect(() => {
     getMonthlySchedule();
-  }, [currentYear, currentMonth]);
+  }, [currentYear, currentMonth, refresh]);
 
   // 일정이 있는 경우 달력에 dot 표시
   const markedDates = schedules.reduce((acc, current) => {
