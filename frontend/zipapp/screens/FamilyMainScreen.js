@@ -210,6 +210,8 @@ export default function FamilyMainScreen({navigation}) {
     //   selectedYear: selectedYear,
     //   selectedMonth: selectedMonth,
     // });
+
+    navigation.navigate('일기');
   };
 
   const fetchData = async () => {

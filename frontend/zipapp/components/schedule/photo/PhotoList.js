@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
   albumHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   albumContent: {
     flexDirection: 'row',
