@@ -280,7 +280,7 @@ public class DiaryServiceImpl implements DiaryService {
 	public DiaryListResponseDto listMyDiary(Member findMember, long familyId) {
 		Optional<Family> family = familyRepository.findById(familyId);
 
-		List<Diary> diaries = diaryRepository.findAllByFamilyId(familyId);
+		List<Diary> diaries = diaryRepository.findByFamilyAndMember(family.get(), findMember);
 
 		FamilyMember familyMember = familyMemberRepository.findByMemberAndFamily(findMember, family.get());
 
