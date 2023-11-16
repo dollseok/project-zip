@@ -310,6 +310,7 @@ public class MemberServiceImpl implements MemberService {
                 .socialId(findMember.getSocialId())
                 .socialType(SocialType.KAKAO)
                 .role(Role.USER)
+                .fcmToken(findMember.getFcmToken())
                 .build();
 
             Member saveMember = memberRepository.save(modifyMember);
@@ -327,6 +328,7 @@ public class MemberServiceImpl implements MemberService {
                 .socialId(findMember.getSocialId())
                 .socialType(SocialType.KAKAO)
                 .role(Role.USER)
+                .fcmToken(findMember.getFcmToken())
                 .build();
 
             Member saveMember = memberRepository.save(modifyMember);
