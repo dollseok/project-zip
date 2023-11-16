@@ -74,20 +74,22 @@ export default function DiaryScreen() {
         <View style={{paddingLeft: 15, opacity: 0}}>
           <Ionicons name="calendar-outline" size={30} color="black" />
         </View>
-        <View style={{opacity: 0}}>
-          <Text>월</Text>
-        </View>
         {/* 선택된 날짜정보 */}
         <View style={styles.selectDate}>
           <View style={styles.selectYear}>
             <Text style={styles.selectYearFont}>{selectedYear}</Text>
           </View>
           <View style={styles.selectMonth}>
-            <Text style={styles.selectMonthFont}>{selectedMonth}</Text>
+            <View style={{opacity: 0}}>
+              <Text style={styles.selectMonthUnitFont}>월</Text>
+            </View>
+            <View>
+              <Text style={styles.selectMonthFont}>{selectedMonth}</Text>
+            </View>
+            <View>
+              <Text style={styles.selectMonthUnitFont}>월</Text>
+            </View>
           </View>
-        </View>
-        <View style={{justifyContent: 'flex-end', paddingBottom: 10}}>
-          <Text style={styles.selectMonthUnitFont}>월</Text>
         </View>
         {/* 날짜 선택창 여는 버튼 */}
         <View style={styles.selectDateBtn}>
@@ -133,7 +135,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 50,
   },
   diaryList: {
     borderWidth: 1,
@@ -145,6 +146,7 @@ const styles = StyleSheet.create({
   },
   dateContainer: {
     flexDirection: 'row',
+    marginTop: 40,
   },
   selectDate: {
     alignItems: 'center',
@@ -171,5 +173,9 @@ const styles = StyleSheet.create({
   selectMonthUnitFont: {
     fontSize: 15,
     fontFamily: 'Pretendard-Medium',
+  },
+  selectMonth: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
   },
 });

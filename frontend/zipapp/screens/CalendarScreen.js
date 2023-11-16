@@ -287,7 +287,6 @@ const styles = StyleSheet.create({
   selectDate: {
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 11,
   },
   selectDateBtn: {
     paddingLeft: 15,
@@ -298,7 +297,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: '87%',
     height: '60%',
-    // borderWidth: 1,
   },
   calendar: {
     borderBottonWidth: 1,
