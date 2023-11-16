@@ -241,10 +241,15 @@ public class DiaryServiceImpl implements DiaryService {
 		// 일기 내용 저장
 		diary.updateDiary(diaryModifyRequestDto, emotion);
 
-		Optional<DiaryPhoto> tmpDiaryPhoto = diaryPhotoRepository.findById(diary.getDiaryPhotos().get(0).getId());
+		List<DiaryPhoto> diaryPhotos = diaryPhotoRepository.findAllByDiary(diary);
+
+		if (!diaryPhotos.isEmpty()){
+			diaryPhotoRepository.delete(diary.getDiaryPhotos().get(0));
+		}
+
 
 		// 이미지 새로 들어왓는지 확인 + 기존 일기 사진 존재하는지 확인 + 사진 저장
-		if (file != null) {
+		if (file.isEmpty()) {
 
 			String fileUrl = null;
 			try {
@@ -260,13 +265,7 @@ public class DiaryServiceImpl implements DiaryService {
 				.imgUrl(fileUrl)
 				.build();
 
-			if (!tmpDiaryPhoto.isPresent()) {
-				diaryPhotoRepository.save(newDiaryPhoto);
-			} else {
-				DiaryPhoto diaryPhoto = tmpDiaryPhoto.get();
-				diaryPhoto.updateDiaryPhoto(newDiaryPhoto);
-			}
-
+			diaryPhotoRepository.save(newDiaryPhoto);
 		}
 
 		DiaryModifyResponseDto diaryModifyResponseDto = DiaryModifyResponseDto.builder()
