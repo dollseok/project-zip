@@ -249,7 +249,7 @@ public class DiaryServiceImpl implements DiaryService {
 
 
 		// 이미지 새로 들어왓는지 확인 + 기존 일기 사진 존재하는지 확인 + 사진 저장
-		if (file.isEmpty()) {
+		if (file != null) {
 
 			String fileUrl = null;
 			try {
