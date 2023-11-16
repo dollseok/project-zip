@@ -10,11 +10,15 @@ interface ButtonProps {
 }
 
 const StyledButton = styled.a<ButtonProps>`
-  z-index: 10;
+
 
   ${(props) => 
     props.$responsiveButton &&
     css`
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background-color: black;
       color: white;
       width: 140px;

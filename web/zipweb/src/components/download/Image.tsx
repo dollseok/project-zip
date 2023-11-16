@@ -5,9 +5,15 @@ interface ImageProps {
   $backgroundImage? :boolean
   $logoImage? : boolean
   $wordImage? : boolean
+  $blackDownloadIcon? : boolean
+  $whiteDownloadIcon? : boolean
+  src? : string
 }
 
 const StyledImage = styled.div<ImageProps>`
+background-size: cover;
+background-repeat: no-repeat;
+background-position: center center;
 
 ${(props) => 
   props.$logoImage &&
@@ -16,9 +22,6 @@ ${(props) =>
     width: 70px;
     height: 60px;
     background-image: url(${process.env.PUBLIC_URL}/image/logo.png);
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
     margin-bottom: 5rem;
   `
 }
@@ -29,9 +32,6 @@ ${(props) =>
     width: 70px;
     height: 60px;
     background-image: url(${process.env.PUBLIC_URL}/image/logo.png);
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
     margin-bottom: 6rem;
   `
 }
@@ -42,9 +42,6 @@ ${(props) =>
     width: 200px;
     height: 160px;
     background-image: url(${process.env.PUBLIC_URL}/image/word.png);
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
     margin-bottom: 6rem;
   `
 }
@@ -63,11 +60,28 @@ ${(props) =>
 
       @media only screen and (min-width: 1025px) {
         background-image: url(${process.env.PUBLIC_URL}/image/background.png);
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center center;
       }
-      
+    `
+  }
+
+  ${(props) => 
+    props.$blackDownloadIcon && 
+    css`
+      z-index: 20;
+      background-image: url(${process.env.PUBLIC_URL}/image/blackDownloadIcon.png);
+      width: 20px;
+      height: 20px;
+      margin-right: 6px;
+    `
+  }
+  ${(props) => 
+    props.$whiteDownloadIcon && 
+    css`
+      z-index: 20;
+      background-image: url(${process.env.PUBLIC_URL}/image/whiteDownloadIcon.png);
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
     `
   }
 `

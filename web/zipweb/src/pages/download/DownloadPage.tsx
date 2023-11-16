@@ -21,6 +21,7 @@ const DownloadPage = () => {
   return(
     <>
       <Image $backgroundImage></Image>
+
       {(window.innerWidth >= 1025)
         ? null : <Image $logoImage></Image>
       }
@@ -28,17 +29,16 @@ const DownloadPage = () => {
         ? <Text>집에 오신 걸 환영합니다.</Text> 
         : 
           <Image $wordImage></Image>
-          // <Box>
-            
-          //   {/* <Text>집에</Text> 
-          //   <Text>오신 걸</Text> 
-          //   <Text>환영합니다</Text> */}
-          // </Box> 
       }  
+
       <Button 
         $responsiveButton 
         href="https://lastdance.kr/apk/app-release.apk" 
-        download>다운로드</Button>
+        download>
+          {window.innerWidth >= 1025 ? <Image $blackDownloadIcon></Image> : <Image $whiteDownloadIcon></Image>}
+          
+          <div>다운로드</div>
+      </Button>
     
     </>
   )
