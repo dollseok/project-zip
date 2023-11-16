@@ -1,0 +1,88 @@
+server:
+  port: 9090
+  tomcat:
+    max-http-form-post-size: 200MB
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+
+spring:
+  application:
+    name: ziip
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${MARIA_URL}
+    username: ${MARIA_USER}
+    password: ${MARIA_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: false
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+  jackson:
+    time-zone: Asia/Seoul
+
+# S3
+cloud:
+  aws:
+    s3:
+      url: ${S3_URL}
+      bucket: ${S3_BUCKET}
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
+    region:
+      static: ${S3_REGION}
+      auto: false
+    stack:
+      auto: false
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: ERROR
+
+coolsms:
+  api:
+    key: ${COOLSMS_API_KEY}
+    secret: ${COOLSMS_API_SECRET_KEY}
+    phone: ${COOLSMS_SEND_PHONE_NUMBER}
+
+jwt:
+  secretKey: ${JWT_SECRET_KEY}
+  access:
+    expiration: ${JWT_ACCESS_EXPIRATION}
+    header: Authorization
+  refresh:
+    expiration: ${JWT_REFRESH_EXPIRATION}
+    header: Authorization-refresh
+
+oauth2:
+  naver:
+    client-id: ${NAVER_CLIENT_ID}
+    client-secret: ${NAVER_CLIENT_SECRET}
+    state: test
+  kakao:
+    client-id: ${KAKAO_CLIENT_ID}
+    redirect-uri: https://auth.expo.io/@hyeongseoklee/zip-app/auth/kakao/callback
+  google:
+    scopes: ${SCOPES}
+    service-key: ${GOOGLE_SERVICE_KEY}
+    target-directory: ${GOOGLE_SERVICE_KEY_DIRECTORY}
