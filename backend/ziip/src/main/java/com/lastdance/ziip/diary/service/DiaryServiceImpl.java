@@ -121,16 +121,16 @@ public class DiaryServiceImpl implements DiaryService {
 		List<DiaryListDetailResponseDto> diaryListDetailResponseDtos = diaries.stream()
 			.map(d -> {
 				String memberNickname = familyMember.stream()
-					.filter(fm -> fm.getMember().getId().equals(findMember.getId()))
+					.filter(fm -> fm.getMember().getId().equals(d.getMember().getId()))
 					.map(FamilyMember::getNickname)
 					.findFirst()
-					.orElse("Unknown"); // 닉네임이 없으면 기본값 설정
+					.orElse("Unknown");
 
 				String profileImgUrl = memberList.stream()
 					.filter(dto -> dto.getId().equals(d.getMember().getId()))
 					.map(MemberProfileImgUrlResponseDto::getProfileImgUrl)
 					.findFirst()
-					.orElse(null); // 일치하는 프로필 이미지 URL이 없으면 null 설정
+					.orElse(null);
 
 				return DiaryListDetailResponseDto.builder()
 					.diaryId(d.getId())

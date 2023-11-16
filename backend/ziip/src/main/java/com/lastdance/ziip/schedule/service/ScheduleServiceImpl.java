@@ -89,10 +89,10 @@ public class ScheduleServiceImpl implements ScheduleService {
             .map(schedule -> {
                 // findMember의 ID와 일치하는 FamilyMember 찾기
                 String memberNickname = familyMember.stream()
-                    .filter(fm -> fm.getMember().getId().equals(findMember.getId()))
+                    .filter(fm -> fm.getMember().getId().equals(schedule.getMember().getId()))
                     .map(FamilyMember::getNickname)
                     .findFirst()
-                    .orElse("Unknown"); // 닉네임이 없으면 기본값 설정
+                    .orElse("Unknown");
                 
                 String profileImgUrl = memberList.stream()
                     .filter(dto -> dto.getId().equals(schedule.getMember().getId()))
