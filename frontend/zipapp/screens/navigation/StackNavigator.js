@@ -8,7 +8,6 @@ import KakaoLoginScreen from '../auth/KakaoLoginScreen';
 import KakaoLoginCallBack from '../auth/KakaoLoginCallBack';
 import FamilyInvitedScreen from '../family/FamilyInvitedScreen';
 import InputPhoneNumberScreen from '../family/InputPhoneNumberScreen';
-import DiaryItem from '../../components/diary/DiaryItem';
 
 const Stack = createStackNavigator();
 
@@ -58,11 +57,6 @@ export default function StackNavigator() {
       <Stack.Screen
         name="초대할 가족 폰 번호 입력"
         component={InputPhoneNumberScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="DiaryItem"
-        component={DiaryItem}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
