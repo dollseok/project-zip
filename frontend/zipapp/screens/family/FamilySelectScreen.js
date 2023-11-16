@@ -207,6 +207,7 @@ const headerStyles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     marginTop: 70,
-    marginRight: 10,
+    marginRight: 20,
+    bottom: 200
   },
 });

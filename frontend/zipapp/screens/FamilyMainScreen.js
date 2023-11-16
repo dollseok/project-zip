@@ -156,7 +156,7 @@ export default function FamilyMainScreen({navigation}) {
       type: `image/jpeg`,
     });
 
-    await axiosFileInstance
+    axiosFileInstance
       .post('/family/modify', formData)
       .then(response => {
         AsyncStorage.setItem(
@@ -177,7 +177,7 @@ export default function FamilyMainScreen({navigation}) {
       type: `image/jpeg`,
     });
 
-    await axiosFileInstance
+    axiosFileInstance
       .put(`/members/profile`, formData2)
       .then(response => {
         setMemberUpdated(true); // 성공적으로 가족 정보가 수정되었다는 표시
@@ -215,7 +215,7 @@ export default function FamilyMainScreen({navigation}) {
   const fetchData = async() => {
     const familyId = await AsyncStorage.getItem('familyId');
     // const familyId = 139;
-    axiosInstance.get(`/family/choice?familyId=${familyId}`).then(response => {
+    await axiosInstance.get(`/family/choice?familyId=${familyId}`).then(response => {
       setFamily(response.data.data);
       setModifiedFamilyName(response.data.data.familyName);
       setModifiedFamilyContent(response.data.data.familyContent);
@@ -231,14 +231,13 @@ export default function FamilyMainScreen({navigation}) {
       if (response.data.data.familyProfileImgUrl == null) {
         setBackgroundImageUri(
           'https://s3.ap-northeast-2.amazonaws.com/ziip.bucket/diary/gray.png',
-          // 'https://blog.kakaocdn.net/dn/cckdnY/btqDogEdAS4/7kJZCk4ZhTYhNQMl6RkIU1/img.png',
         );
       } else {
         setBackgroundImageUri(response.data.data.familyProfileImgUrl);
       }
     });
 
-    axiosInstance
+    await axiosInstance
       .get(`/schedule/list?familyId=${familyId}`)
       .then(response => {
         setSchedules(response.data.data.scheduleListDetailResponseList);
@@ -247,7 +246,7 @@ export default function FamilyMainScreen({navigation}) {
         console.error('There was an error!', error);
       });
 
-    axiosInstance
+    await axiosInstance
       .get(`/diary/list?familyId=${familyId}`)
       .then(response => {
         setDiaries(response.data.data.diaryListDetailResponseList);
@@ -255,8 +254,6 @@ export default function FamilyMainScreen({navigation}) {
       .catch(error => {
         console.error('There was an error!', error);
       });
-
-    Alert.alert('유저의 프로필 이미지 URL : ', memberProfileImgUrl);
 
     // 데이터 가져오기 작업이 끝난 후 familyUpdated를 다시 false로 설정
     if (familyUpdated) {
@@ -269,10 +266,10 @@ export default function FamilyMainScreen({navigation}) {
   };
 
   useEffect(() => {
-    // if (isModifyFamilyComplete) {
+    if (isModifyFamilyComplete) {
       fetchData();
       setIsModifyFamilyComplete(false);
-    // }
+    }
   }, [isModifyFamilyComplete]);
 
   useEffect(() => {
@@ -412,7 +409,7 @@ export default function FamilyMainScreen({navigation}) {
       </View>
 
       <View>
-        <Image source={{uri: 'http://ziip.bucket.s3.ap-northeast-2.amazonaws.com/member/f52871c9-1639-40a7-a535-f1a1228969c0photo.jpeg'}} style={styles.memberImage} />
+        <Image source={{uri: memberProfileImgUrl}} style={styles.memberImage} />
         {isEditMode && (
           <TouchableOpacity
             onPress={() => {
