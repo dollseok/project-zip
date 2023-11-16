@@ -173,6 +173,8 @@ public class FamilyController {
             return null;
         }
 
+        System.out.println("컨트롤러 진입");
+
         Member findMember = memberService.findMemberByJwtToken(token);
 
         FamilyModifyResponseDto familyModifyResponse = familyService.modifyFamily(findMember, familyRegisterRequest, file);

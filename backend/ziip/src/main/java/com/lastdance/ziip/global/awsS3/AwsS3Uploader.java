@@ -27,6 +27,9 @@ public class AwsS3Uploader {
     @Value("${S3_BUCKET}")
     public String bucket;
 
+    @Value("${S3_URL}")
+    public String s3Url;
+
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         // 파일 생성
         File uploadFile = convert(multipartFile)
@@ -38,6 +41,7 @@ public class AwsS3Uploader {
     private String upload(File uploadFile, String dirName) {
         String fileName = dirName + "/" + UUID.randomUUID() + uploadFile.getName();
         String uploadImageUrl = putS3(uploadFile, fileName);    // s3로 업로드
+        System.out.println("업로드한 이미지 URL : " + uploadImageUrl);
         removeNewFile(uploadFile);
         return uploadImageUrl;
     }
@@ -60,7 +64,7 @@ public class AwsS3Uploader {
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(
                 CannedAccessControlList.PublicRead));
         log.info("File Upload : " + fileName);
-        return amazonS3Client.getUrl(bucket, fileName).toString();
+        return s3Url + "/" + fileName;
     }
 
     // 3. 로컬에 생성된 파일삭제

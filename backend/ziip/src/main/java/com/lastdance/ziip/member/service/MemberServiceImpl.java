@@ -9,7 +9,7 @@ import com.lastdance.ziip.global.auth.oauth2.kakao.KakaoOAuth2;
 import com.lastdance.ziip.global.auth.oauth2.naver.NaverMemberDto;
 import com.lastdance.ziip.global.auth.oauth2.naver.NaverOAuth2;
 import com.lastdance.ziip.global.awsS3.AwsS3Uploader;
-import com.lastdance.ziip.global.awsS3.S3Uploader;
+// import com.lastdance.ziip.global.awsS3.S3Uploader;
 import com.lastdance.ziip.global.exception.CustomException;
 import com.lastdance.ziip.global.exception.validator.MemberValidator;
 import com.lastdance.ziip.member.dto.FileDto;
@@ -53,7 +53,7 @@ public class MemberServiceImpl implements MemberService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
     private final MemberValidator memberValidator;
-    private final S3Uploader s3Uploader;
+    private final AwsS3Uploader s3Uploader;
     private final Messaging messaging;
 
     // authorizedCode로 가입된 사용자 조회

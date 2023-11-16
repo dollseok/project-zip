@@ -4,7 +4,7 @@ import com.lastdance.ziip.family.repository.FamilyMemberRepository;
 import com.lastdance.ziip.family.repository.FamilyRepository;
 import com.lastdance.ziip.family.repository.entity.Family;
 import com.lastdance.ziip.family.repository.entity.FamilyMember;
-import com.lastdance.ziip.global.awsS3.S3Uploader;
+import com.lastdance.ziip.global.awsS3.AwsS3Uploader;
 import com.lastdance.ziip.member.dto.response.MemberInfoResponseDto;
 import com.lastdance.ziip.member.dto.response.MemberProfileImgUrlResponseDto;
 import com.lastdance.ziip.member.repository.MemberRepository;
@@ -45,7 +45,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final SchedulePhotoRepository schedulePhotoRepository;
     private final PlanRepository planRepository;
-    private final S3Uploader s3Uploader;
+    private final AwsS3Uploader s3Uploader;
     private final ScheduleValidator scheduleValidator;
     private final FamilyMemberRepository familyMemberRepository;
     private final MemberRepository memberRepository;

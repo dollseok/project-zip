@@ -32,9 +32,10 @@ public class S3Uploader {
 
     private String upload(File uploadFile, String dirName) {
         String fileName = dirName + "/" + UUID.randomUUID() + uploadFile.getName();
+        // http://ziip.bucket.s3.ap-northeast-2.amazonaws.com/member/c4bfb66d-2d27-4dd8-8224-a333494be04aphoto.jpeg
         String uploadImageUrl = putS3(uploadFile, fileName);
         removeNewFile(uploadFile);
-        return uploadImageUrl.replaceAll("https", "http");
+        return uploadImageUrl.replaceAll("http", "https");
     }
 
     private Optional<File> convert(MultipartFile file) throws IOException {
