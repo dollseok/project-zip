@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useState, useEffect} from 'react';
@@ -200,7 +201,6 @@ const styles = StyleSheet.create({
     gap: 5,
     opacity: 0.5,
     padding: 3,
-  
   },
   planCheckbox: {
     width: '10%',
@@ -208,9 +208,7 @@ const styles = StyleSheet.create({
   planTitle: {
     width: '40%',
   },
-  planTitleInput: {
-    
-  },
+  planTitleInput: {},
   planManager: {
     width: '20%',
   },
@@ -222,12 +220,12 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    marginLeft:15,
+    marginLeft: 15,
     gap: 10,
     width: '15%',
   },
-  planAddCancelButton:{
+  planAddCancelButton: {
     padding: 2,
     margin: 3,
-  }
+  },
 });

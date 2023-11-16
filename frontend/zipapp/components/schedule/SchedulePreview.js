@@ -14,6 +14,7 @@ import {
 import axiosInstance from '../../util/Interceptor';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function SchedulePreview(props) {
   const {modalVisible, setModalVisible, selectedDate, navigation} = props;
@@ -53,7 +54,7 @@ export default function SchedulePreview(props) {
     }
   }, [modalVisible]);
 
-  // 모달 관련 설정
+  // 모달 관련 설정 //
   const screenHeight = Dimensions.get('screen').height;
   const panY = useRef(new Animated.Value(screenHeight)).current;
   const translateY = panY.interpolate({
@@ -104,6 +105,8 @@ export default function SchedulePreview(props) {
     });
   };
 
+  ////
+
   return (
     <Modal
       visible={modalVisible}
@@ -120,32 +123,43 @@ export default function SchedulePreview(props) {
             transform: [{translateY: translateY}],
           }}
           {...panResponders.panHandlers}>
-          {/* 일정 미리보기  */}
-          <View style={styles.previewHeader}>
-            <Text style={styles.previewDateFont}>
-              {selectedDate.split('-')[2]}
-            </Text>
-            <Text style={styles.dateUnitFont}>일</Text>
+          {/* 일정 화면으로 이동할 버튼 */}
+          <View style={{alignItems: 'flex-end'}}>
             <TouchableOpacity
+              style={{flexDirection: 'row', alignItems: 'center'}}
               onPress={() => {
                 navigation.navigate('일정', {
                   dateInfo: selectedDate,
                 });
               }}>
-              <Text>자세히 보기</Text>
+              <Text style={{color: '#727272'}}>자세히 보기 </Text>
+              <Ionicons name="arrow-forward" size={18} color="#727272" />
             </TouchableOpacity>
+          </View>
+          {/* 일정 미리보기  */}
+          <View style={styles.previewHeader}>
+            <View>
+              <Text style={styles.previewDateFont}>
+                {selectedDate.split('-')[2]}
+              </Text>
+            </View>
+            <View>
+              <Text style={styles.dateUnitFont}>일</Text>
+            </View>
           </View>
           <View style={styles.previewContent}>
             <View>
               {todaySchedule.length > 0 ? (
                 <View>
-                  <Text style={styles.contentTitleFont}>일정 </Text>
+                  <View style={{marginBottom: 5}}>
+                    <Text style={styles.contentTitleFont}>일정 </Text>
+                  </View>
                   <FlatList
                     style={{maxHeight: 50}}
                     data={todaySchedule}
                     renderItem={({item}) => (
                       <View
-                        style={{flexDirection: 'row'}}
+                        style={{flexDirection: 'row', marginVertical: 1}}
                         key={item.scheduleId}>
                         <Entypo name="dot-single" size={24} color="black" />
                         <Text>{item.title}</Text>
@@ -175,7 +189,7 @@ const styles = StyleSheet.create({
   },
   bottomSheetContainer: {
     height: 300,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     // alignItems: 'center',
     backgroundColor: 'white',
     borderRadius: 15,
@@ -185,25 +199,24 @@ const styles = StyleSheet.create({
   },
   previewHeader: {
     flexDirection: 'row',
-    width: '100%',
-    height: 60,
-    borderColor: 'black',
-    borderWidth: 1,
+    // alignItems: 'baseline',
   },
   // 일정 날짜 텍스트
   previewDateFont: {
     fontFamily: 'Jost-SemiBold',
     fontSize: 50,
-    textAlignVertical: 'bottom',
   },
   // 날짜 단위 텍스트
   dateUnitFont: {
+    paddingTop: 18,
     fontSize: 30,
     fontWeight: 'bold',
-    // textAlignVertical: 'bottom',
   },
   contentTitleFont: {
     fontWeight: 'bold',
     fontSize: 25,
+  },
+  previewContent: {
+    marginTop: 11,
   },
 });

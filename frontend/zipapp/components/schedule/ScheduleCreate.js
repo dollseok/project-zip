@@ -241,7 +241,6 @@ const styles = StyleSheet.create({
   },
   createFormContainer: {
     padding: 30,
-    gap: 10,
   },
   buttonContainer: {
     flexDirection: 'row',

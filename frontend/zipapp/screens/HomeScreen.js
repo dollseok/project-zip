@@ -1,5 +1,4 @@
-import {StyleSheet, Text, View, Button} from 'react-native';
-
+import {StyleSheet, Text, View, Button, Dimensions} from 'react-native';
 // 아이콘
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -16,6 +15,8 @@ import FamilyMainScreen from './FamilyMainScreen';
 import {useEffect} from 'react';
 
 const Tab = createBottomTabNavigator();
+
+// const {width, height} = Dimensions.get('window');
 
 function CalendarStack({route, navigation}) {
   const Stack = createStackNavigator();
@@ -52,13 +53,14 @@ function CalendarStack({route, navigation}) {
 
 export default function HomeScreen() {
   return (
+    // <View style={{width, height}}>
     <Tab.Navigator
       initialRouteName="메인"
       screenOptions={({route}) => ({
         tabBarShowLabel: false, // 아이콘 별 이름 안보이게
         tabBarStyle: {
           backgroundColor: 'transparent', // 하단 탭 배경색상
-          height: 100, // 하단 탭 높이
+          height: 90, // 하단 탭 높이
           borderTopWidth: 0,
           position: 'absolute',
           left: 0,
@@ -129,6 +131,7 @@ export default function HomeScreen() {
         }}
       />
     </Tab.Navigator>
+    // </View>
   );
 }
 

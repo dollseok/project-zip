@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {useEffect, useState} from 'react';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DatePicker from 'react-native-modern-datepicker';
@@ -100,20 +101,22 @@ export default function AlbumScreen({navigation}) {
         <View style={{paddingLeft: 15, opacity: 0}}>
           <Ionicons name="calendar-outline" size={30} color="black" />
         </View>
-        <View style={{opacity: 0}}>
-          <Text>월</Text>
-        </View>
         {/* 선택된 날짜정보 */}
         <View style={styles.selectDate}>
           <View style={styles.selectYear}>
             <Text style={styles.selectYearFont}>{selectedYear}</Text>
           </View>
           <View style={styles.selectMonth}>
-            <Text style={styles.selectMonthFont}>{selectedMonth}</Text>
+            <View style={{opacity: 0}}>
+              <Text style={styles.selectMonthUnitFont}>월</Text>
+            </View>
+            <View>
+              <Text style={styles.selectMonthFont}>{selectedMonth}</Text>
+            </View>
+            <View>
+              <Text style={styles.selectMonthUnitFont}>월</Text>
+            </View>
           </View>
-        </View>
-        <View style={{justifyContent: 'flex-end', paddingBottom: 10}}>
-          <Text style={styles.selectMonthUnitFont}>월</Text>
         </View>
         {/* 날짜 선택창 여는 버튼 */}
         <View style={styles.selectDateBtn}>
@@ -135,23 +138,54 @@ export default function AlbumScreen({navigation}) {
           />
         </View>
       </Modal>
+      {/* 확대 토글 */}
+      <View
+        style={{
+          flexDirection: 'row',
+          width: 120,
+          height: 44,
+          paddingVertical: 5,
+        }}>
+        <TouchableOpacity
+          style={{
+            width: '50%',
+            // borderWidth: 1,
+            borderRightWidth: 0,
+            borderTopLeftRadius: 12,
+            borderBottomLeftRadius: 12,
+            alignItems: 'center',
+            justifyContent: 'center',
+            elevation: 1,
+          }}
+          onPress={showExpanded}>
+          <MaterialIcons
+            name="zoom-in"
+            size={28}
+            color={isExpanded ? '#d9d9d9' : '#727272'}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            width: '50%',
+            // borderWidth: 1,
+            borderBottomRightRadius: 12,
+            borderTopRightRadius: 12,
+            alignItems: 'center',
+            justifyContent: 'center',
+            elevation: 1,
+          }}
+          Q
+          onPress={hideExpanded}>
+          <MaterialIcons
+            name="zoom-out"
+            size={28}
+            color={isExpanded ? '#727272' : '#d9d9d9'}
+          />
+        </TouchableOpacity>
+      </View>
       {/* 사진 리스트 */}
       <View style={styles.albumContainer}>
         {photos.length === 0 ? <Text>등록된 사진이 없습니다.</Text> : <></>}
-        {/* 확대 토글 */}
-        <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity
-            style={{width: 40, borderWidth: 1, alignItems: 'center'}}
-            onPress={showExpanded}>
-            <Text style={{fontSize: 20}}>+</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{width: 40, borderWidth: 1, alignItems: 'center'}}
-            onPress={hideExpanded}>
-            <Text style={{fontSize: 20}}>-</Text>
-          </TouchableOpacity>
-        </View>
-
         {isExpanded ? (
           // 확대 모드
           <FlatList
@@ -236,10 +270,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 50,
     paddingHorizontal: 20,
   },
   dateContainer: {
+    marginTop: 40,
     flexDirection: 'row',
   },
   selectDate: {
@@ -327,5 +361,9 @@ const styles = StyleSheet.create({
   selectMonthUnitFont: {
     fontSize: 15,
     fontFamily: 'Pretendard-Medium',
+  },
+  selectMonth: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
   },
 });

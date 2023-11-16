@@ -1,4 +1,10 @@
-import {StyleSheet, View, Text, ScrollView} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  KeyboardAvoidingView,
+} from 'react-native';
 import ScheduleItem from './ScheduleItem';
 import axiosInstance from '../../util/Interceptor';
 import {useState, useEffect} from 'react';
