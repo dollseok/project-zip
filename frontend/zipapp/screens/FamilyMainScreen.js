@@ -199,19 +199,15 @@ export default function FamilyMainScreen({navigation}) {
     // DiaryItem.js로 넘어가기
     console.log('선택한 일기 : ', diary);
     // createdAt 값을 Date 객체로 변환
-    const createdAtDate = new Date(diary.createdAt);
+    // const createdAtDate = new Date(diary.createdAt);
 
     // 년도와 월 추출
-    const selectedYear = createdAtDate.getFullYear();
-    const selectedMonth = createdAtDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더합니다.
+    // const selectedYear = createdAtDate.getFullYear();
+    // const selectedMonth = createdAtDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더합니다.
 
-    // navigation.navigate('DiaryItem', {
-    //   diarySummary: diary,
-    //   selectedYear: selectedYear,
-    //   selectedMonth: selectedMonth,
-    // });
-
-    navigation.navigate('일기');
+    navigation.navigate('일기', {
+      dateInfo: diary.createdAt,
+    });
   };
 
   const fetchData = async () => {

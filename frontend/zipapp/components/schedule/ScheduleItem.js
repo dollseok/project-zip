@@ -37,7 +37,26 @@ export default function ScheduleItem({
 
   const [refresh, setRefresh] = useRecoilState(refreshState);
 
-  console.log('ScheduleItem - 일정 정보: ', schedule);
+  // 준비 여부
+  const [getReady, setGetReady] = useState(0);
+
+  const getReadyStatus = plans => {
+    console.log('할일 리스트:', plans);
+
+    plans.map(plan => {
+      if (plan.statusCode === 0) {
+        console.log(plan.statusCode);
+        setGetReady(false);
+      }
+    });
+
+    setGetReady(true);
+  };
+
+  useEffect(() => {
+    getReadyStatus(plans);
+  }, [plans]);
+  // console.log('ScheduleItem - 일정 정보: ', schedule);
   // console.log('ScheduleItem - 할일 정보: ', plans);
   // console.log('ScheduleItem - 사진 정보: ', photos);
 
@@ -117,6 +136,7 @@ export default function ScheduleItem({
 
   useEffect(() => {
     getScheduleDetail(scheduleId);
+    getReadyStatus(plans);
   }, [refresh]);
 
   // 일정 수정 모달 설정
@@ -170,13 +190,24 @@ export default function ScheduleItem({
           </View>
           {/* 준비 상태 */}
           <View style={styles.ready}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                opacity: getReady ? 0.2 : 1,
+              }}>
               <Ionicons name="checkbox-outline" size={14} color="black" />
-              <Text style={{fontSize: 14}}>준비중</Text>
+              <Text style={{fontSize: 11, left: 4}}>준비중</Text>
             </View>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                top: 3,
+                opacity: getReady ? 1 : 0.2,
+              }}>
               <Ionicons name="checkbox-outline" size={14} color="black" />
-              <Text style={{fontSize: 14}}>준비완료</Text>
+              <Text style={{fontSize: 11, left: 4}}>준비완료</Text>
             </View>
           </View>
         </TouchableOpacity>

@@ -55,7 +55,7 @@ export default function ScheduleScreen({route, navigation}) {
     }
   };
 
-  // 캘린더에서 받아온 현재 날짜정보
+  // 캘린더 또는 일기 사진, 일정 사진에서 받아온 날짜정보
   // 예시) '2023-10-25'
   if (route.params) {
     const {dateInfo} = route.params;
