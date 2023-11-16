@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   PanResponder,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -199,7 +200,9 @@ export default function DiaryCreate(props) {
       animationType={'fade'}
       transparent
       statusBarTranslucent>
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView
+        style={styles.overlay}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback>
           <View style={styles.background} />
         </TouchableWithoutFeedback>
@@ -337,7 +340,7 @@ export default function DiaryCreate(props) {
         <TouchableWithoutFeedback>
           <View style={styles.background} />
         </TouchableWithoutFeedback>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

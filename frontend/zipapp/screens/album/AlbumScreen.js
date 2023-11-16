@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {useEffect, useState} from 'react';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DatePicker from 'react-native-modern-datepicker';
@@ -135,23 +136,54 @@ export default function AlbumScreen({navigation}) {
           />
         </View>
       </Modal>
+      {/* 확대 토글 */}
+      <View
+        style={{
+          flexDirection: 'row',
+          width: 120,
+          height: 44,
+          paddingVertical: 5,
+        }}>
+        <TouchableOpacity
+          style={{
+            width: '50%',
+            // borderWidth: 1,
+            borderRightWidth: 0,
+            borderTopLeftRadius: 12,
+            borderBottomLeftRadius: 12,
+            alignItems: 'center',
+            justifyContent: 'center',
+            elevation: 1,
+          }}
+          onPress={showExpanded}>
+          <MaterialIcons
+            name="zoom-in"
+            size={28}
+            color={isExpanded ? '#d9d9d9' : '#727272'}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            width: '50%',
+            // borderWidth: 1,
+            borderBottomRightRadius: 12,
+            borderTopRightRadius: 12,
+            alignItems: 'center',
+            justifyContent: 'center',
+            elevation: 1,
+          }}
+          Q
+          onPress={hideExpanded}>
+          <MaterialIcons
+            name="zoom-out"
+            size={28}
+            color={isExpanded ? '#727272' : '#d9d9d9'}
+          />
+        </TouchableOpacity>
+      </View>
       {/* 사진 리스트 */}
       <View style={styles.albumContainer}>
         {photos.length === 0 ? <Text>등록된 사진이 없습니다.</Text> : <></>}
-        {/* 확대 토글 */}
-        <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity
-            style={{width: 40, borderWidth: 1, alignItems: 'center'}}
-            onPress={showExpanded}>
-            <Text style={{fontSize: 20}}>+</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{width: 40, borderWidth: 1, alignItems: 'center'}}
-            onPress={hideExpanded}>
-            <Text style={{fontSize: 20}}>-</Text>
-          </TouchableOpacity>
-        </View>
-
         {isExpanded ? (
           // 확대 모드
           <FlatList

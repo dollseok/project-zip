@@ -522,7 +522,7 @@ export default function DiaryItemDetail(props) {
                   <View style={styles.commentContainer}>
                     <View style={styles.commentSubtitle}>
                       <Text
-                        style={{fontSize: 15, fontFamily: 'Pretendard-Black'}}>
+                        style={{fontSize: 20, fontFamily: 'Pretendard-Black'}}>
                         댓글
                       </Text>
                     </View>
@@ -539,7 +539,7 @@ export default function DiaryItemDetail(props) {
                                 }}
                                 key={comment.commentId}>
                                 <View>
-                                  <Text style={{fontSize: 10}}>
+                                  <Text style={{fontSize: 13}}>
                                     {comment.name}: {comment.content}
                                   </Text>
                                 </View>
@@ -689,6 +689,7 @@ const styles = StyleSheet.create({
   },
   diaryContentFont: {
     fontSize: 15,
+    lineHeight: 23,
   },
   titleInput: {
     marginTop: 20,

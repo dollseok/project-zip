@@ -7,6 +7,7 @@ import {
   FlatList,
   Text,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {useState, useEffect} from 'react';
 import ScheduleUpdate from './ScheduleUpdate';
@@ -54,7 +55,7 @@ export default function ScheduleItem({
       <View style={styles.scheduleDate}>
         {Number(startYear) !== Number(selectedYear) ? (
           <View>
-            <Text>{startYear}</Text>
+            <Text style={styles.dateFont}>{startYear}</Text>
           </View>
         ) : (
           <></>
@@ -79,7 +80,7 @@ export default function ScheduleItem({
             </View>
             {Number(endYear) !== Number(selectedYear) ? (
               <View>
-                <Text>{endYear}</Text>
+                <Text style={styles.dateFont}>{endYear}</Text>
               </View>
             ) : (
               <></>
@@ -133,12 +134,15 @@ export default function ScheduleItem({
   };
 
   return (
-    <View style={[styles.eachItem, expanded ? styles.expandedItem : null]}>
+    <KeyboardAvoidingView
+      style={[styles.eachItem, expanded ? styles.expandedItem : null]}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View
         style={[
           styles.eachSchedule,
           styles.shadowProps,
           expanded ? styles.expandedItem : null,
+          expanded ? null : {justifyContent: 'center'},
         ]}>
         {/* 일정 정보 */}
         {/* 일정 소제목과 수정 버튼 */}
@@ -167,12 +171,12 @@ export default function ScheduleItem({
           {/* 준비 상태 */}
           <View style={styles.ready}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Ionicons name="checkbox-outline" size={10} color="black" />
-              <Text style={{fontSize: 10}}>준비중</Text>
+              <Ionicons name="checkbox-outline" size={14} color="black" />
+              <Text style={{fontSize: 14}}>준비중</Text>
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Ionicons name="checkbox-outline" size={10} color="black" />
-              <Text style={{fontSize: 10}}>준비완료</Text>
+              <Ionicons name="checkbox-outline" size={14} color="black" />
+              <Text style={{fontSize: 14}}>준비완료</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -194,7 +198,7 @@ export default function ScheduleItem({
         updateModalVisible={updateModalVisible}
         setUpdateModalVisible={setUpdateModalVisible}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -218,7 +222,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 16,
     width: '100%',
-    height: 71,
+    height: 90,
     padding: 10,
 
     borderWidth: 1,
@@ -272,7 +276,7 @@ const styles = StyleSheet.create({
     flex: 3,
   },
   ready: {
-    marginLeft: 10,
+    marginHorizontal: 10,
     flex: 1,
   },
   scheduleInfo: {
@@ -295,12 +299,18 @@ const styles = StyleSheet.create({
     fontFamily: 'Jost-Bold',
   },
   dateUnitFont: {
-    fontSize: 10,
+    fontSize: 14,
     fontFamily: 'Pretendard-Medium',
     textAlignVertical: 'bottom',
   },
   subtitleFont: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  scheduleDate: {
+    paddingHorizontal: 5,
+    width: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
