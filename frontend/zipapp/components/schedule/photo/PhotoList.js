@@ -125,13 +125,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   eachPhotoContainer: {
-    // width: 80,
-    // height: 80,
-    borderColor: 'black',
-    borderWidth: 1,
     borderRadius: 12,
   },
   eachPhoto: {
+    marginHorizontal: 6,
     width: 80,
     height: 80,
     borderRadius: 12,

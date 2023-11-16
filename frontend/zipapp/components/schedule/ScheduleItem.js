@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 90,
 
-    marginVertical: 10,
+    // marginVertical: ,
   },
 
   scheduleSubTitle: {
@@ -256,12 +256,12 @@ const styles = StyleSheet.create({
     height: 90,
     padding: 10,
 
-    borderWidth: 1,
-    borderColor: 'black',
+    // borderWidth: 1,
+    // borderColor: 'black',
   },
   // 확장 되었을 때 스타일
   expandedItem: {
-    height: 400,
+    height: 460,
   },
   shadowProps: {
     // ios

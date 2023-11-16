@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
   },
   albumContainer: {
     width: '100%',
-    maxHeight: '70%',
+    maxHeight: '65%',
   },
   eachPhotoContainer: {
     width: '47%',

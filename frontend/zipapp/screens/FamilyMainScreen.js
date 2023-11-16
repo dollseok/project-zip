@@ -198,12 +198,6 @@ export default function FamilyMainScreen({navigation}) {
   const handleDiaryClick = diary => {
     // DiaryItem.js로 넘어가기
     console.log('선택한 일기 : ', diary);
-    // createdAt 값을 Date 객체로 변환
-    // const createdAtDate = new Date(diary.createdAt);
-
-    // 년도와 월 추출
-    // const selectedYear = createdAtDate.getFullYear();
-    // const selectedMonth = createdAtDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더합니다.
 
     navigation.navigate('일기', {
       dateInfo: diary.createdAt,
@@ -451,7 +445,7 @@ export default function FamilyMainScreen({navigation}) {
       <FlatList
         data={diaries.slice(0, 2)}
         renderItem={({item}) => (
-          <View style={styles.diaryItem}>
+          <TouchableOpacity style={styles.diaryItem} onPress={handleDiaryClick}>
             <Image
               source={{
                 uri:
@@ -463,7 +457,7 @@ export default function FamilyMainScreen({navigation}) {
             />
             <Text style={styles.whiteText}>{item.nickname}</Text>
             <Text style={styles.whiteText}>{item.title}</Text>
-          </View>
+          </TouchableOpacity>
         )}
         keyExtractor={item => item.diaryId.toString()}
       />
