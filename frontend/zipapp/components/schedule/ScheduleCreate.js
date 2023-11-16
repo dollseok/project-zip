@@ -16,7 +16,7 @@ import DatePicker from 'react-native-date-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../../util/Interceptor';
 import {response} from 'express';
-// import * as Notification from '../notification/Notification';
+import * as Notification from '../notification/Notification';
 import refreshState from '../../atoms/refreshState';
 import {useRecoilState} from 'recoil';
 
@@ -56,7 +56,7 @@ export default function ScheduleCreate(props) {
         console.log(err);
       });
 
-    // Notification.sendNotification('새로운 일정이 등록되었습니다.');
+    Notification.sendNotification('새로운 일정이 등록되었습니다.');
   };
 
   // 시작일 종료일 모달 오픈 여부

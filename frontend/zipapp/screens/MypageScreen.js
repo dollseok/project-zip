@@ -288,6 +288,7 @@ export default function MypageScreen({navigation}) {
       source={{uri: backgroundImageUri}}
       style={styles.container}
       resizeMode="cover">
+      <View style={styles.overlay} />
       <View style={styles.header}>
         {isEditMode ? (
           <>
@@ -528,6 +529,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'gray',
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject, // 컴포넌트를 부모의 전체 영역에 맞춤
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // 검은색 배경에 반투명도 50%
   },
   header: {
     width: '100%',

@@ -266,7 +266,9 @@ export default function FamilyMainScreen({navigation}) {
     <ImageBackground
       source={{uri: backgroundImageUri}}
       style={styles.container}
-      resizeMode="cover">
+      // resizeMode="cover"
+      >
+      <View style={styles.overlay} />
       <View style={styles.header}>
         {isEditMode ? (
           <>
@@ -429,7 +431,6 @@ export default function FamilyMainScreen({navigation}) {
       <FlatList
         data={diaries.slice(0, 2)}
         renderItem={({item}) => (
-          <TouchableOpacity onPress={() => handleDiaryClick(item)}>
             <View style={styles.diaryItem}>
               <Image
                 source={{
@@ -443,7 +444,6 @@ export default function FamilyMainScreen({navigation}) {
               <Text style={styles.whiteText}>{item.nickname}</Text>
               <Text style={styles.whiteText}>{item.title}</Text>
             </View>
-          </TouchableOpacity>
         )}
         keyExtractor={item => item.diaryId.toString()}
       />
@@ -554,7 +554,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'gray',
+    // opacity: 0.6,
+    // backgroundColor: 'gray',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // 반투명 배경
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject, // 컴포넌트를 부모의 전체 영역에 맞춤
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // 검은색 배경에 반투명도 50%
   },
   header: {
     width: '100%',

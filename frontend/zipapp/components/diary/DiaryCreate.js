@@ -24,7 +24,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosFileInstance from '../../util/FileInterceptor';
 import refreshState from '../../atoms/refreshState';
 import {useRecoilState} from 'recoil';
-// import * as Notification from '../notification/Notification';
+import * as Notification from '../notification/Notification';
 
 export default function DiaryCreate(props) {
   const {
@@ -191,7 +191,7 @@ export default function DiaryCreate(props) {
         console.log(err);
       });
 
-    // Notification.sendNotification('새로운 일기가 작성되었습니다.');
+    Notification.sendNotification('새로운 일기가 작성되었습니다.');
   };
 
   return (
