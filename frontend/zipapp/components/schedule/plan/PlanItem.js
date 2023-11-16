@@ -111,7 +111,7 @@ export default function PlanItem(props) {
         <Ionicons
           name="checkbox-outline"
           size={24}
-          color={plan.statusCode === 2 ? 'grey' : 'black'}
+          color={plan.statusCode === 2 ? 'black' : '#4F4F4F'}
         />
       </TouchableOpacity>
       <View style={styles.planTitle}>

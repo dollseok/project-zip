@@ -7,7 +7,7 @@ import DatePicker from 'react-native-modern-datepicker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useFocusEffect} from '@react-navigation/native';
 import ScheduleScreen from './ScheduleScreen';
 import SchedulePreview from '../components/schedule/SchedulePreview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -114,7 +114,7 @@ const customTheme = {
   textDayHeaderFontSize: 18,
 };
 
-export default function CalendarScreen({navigation}) {
+export default function CalendarScreen({route, navigation}) {
   // 보여줄 달력의 연월 정보
   const [calendarDate, setCalendarDate] = useState(
     format(new Date(), 'yyyy-MM-dd'),
@@ -287,7 +287,6 @@ const styles = StyleSheet.create({
   selectDate: {
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 11,
   },
   selectDateBtn: {
     paddingLeft: 15,
@@ -298,7 +297,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: '87%',
     height: '60%',
-    // borderWidth: 1,
   },
   calendar: {
     borderBottonWidth: 1,

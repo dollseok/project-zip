@@ -57,17 +57,19 @@ export default function ScheduleScreen({route, navigation}) {
 
   // 캘린더에서 받아온 현재 날짜정보
   // 예시) '2023-10-25'
-  const {dateInfo} = route.params;
+  if (route.params) {
+    const {dateInfo} = route.params;
+    console.log(dateInfo);
+    useEffect(() => {
+      if (dateInfo) {
+        setSelectedYear(dateInfo.split('-')[0]);
+        setSelectedMonth(dateInfo.split('-')[1]);
+      }
+    }, [dateInfo]);
+  }
   // console.log('일정 미리보기에서 넘어올 때 받아온 날짜정보: ', route.params);
-  const [selectedYear, setSelectedYear] = useState();
-  const [selectedMonth, setSelectedMonth] = useState();
-
-  useEffect(() => {
-    if (dateInfo) {
-      setSelectedYear(dateInfo.split('-')[0]);
-      setSelectedMonth(dateInfo.split('-')[1]);
-    }
-  }, []);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
 
   useEffect(() => {
     getScheduleList();
@@ -102,21 +104,24 @@ export default function ScheduleScreen({route, navigation}) {
         <View style={{paddingLeft: 15, opacity: 0}}>
           <Ionicons name="calendar-outline" size={30} color="black" />
         </View>
-        <View style={{opacity: 0}}>
-          <Text>월</Text>
-        </View>
         {/* 선택된 날짜정보 */}
         <View style={styles.selectDate}>
           <View style={styles.selectYear}>
             <Text style={styles.selectYearFont}>{selectedYear}</Text>
           </View>
           <View style={styles.selectMonth}>
-            <Text style={styles.selectMonthFont}>{selectedMonth}</Text>
+            <View style={{opacity: 0}}>
+              <Text style={styles.selectMonthUnitFont}>월</Text>
+            </View>
+            <View>
+              <Text style={styles.selectMonthFont}>{selectedMonth}</Text>
+            </View>
+            <View>
+              <Text style={styles.selectMonthUnitFont}>월</Text>
+            </View>
           </View>
         </View>
-        <View style={{justifyContent: 'flex-end', paddingBottom: 10}}>
-          <Text style={styles.selectMonthUnitFont}>월</Text>
-        </View>
+
         {/* 날짜 선택창 여는 버튼 */}
         <View style={styles.selectDateBtn}>
           <TouchableOpacity onPress={showPickerModal}>
@@ -147,6 +152,7 @@ export default function ScheduleScreen({route, navigation}) {
         schedules={schedules}
         selectedYear={selectedYear}
         selectedMonth={selectedMonth}
+        navigation={navigation}
       />
       <ScheduleCreate
         createModalVisible={createModalVisible}
@@ -160,9 +166,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
   },
   dateContainer: {
+    marginTop: 40,
     flexDirection: 'row',
   },
   selectDate: {
@@ -190,5 +197,9 @@ const styles = StyleSheet.create({
   selectMonthUnitFont: {
     fontSize: 15,
     fontFamily: 'Pretendard-Medium',
+  },
+  selectMonth: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
   },
 });

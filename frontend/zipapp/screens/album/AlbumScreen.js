@@ -9,15 +9,30 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {useEffect, useState} from 'react';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DatePicker from 'react-native-modern-datepicker';
 import axiosInstance from '../../util/Interceptor';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import refreshState from '../../atoms/refreshState';
+import {useRecoilState} from 'recoil';
 
-export default function AlbumScreen() {
+export default function AlbumScreen({navigation}) {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // 초기 년도 설정
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // 초기 월 설정 (0은 1월을 의미)
+
+  const [refresh, setRefresh] = useRecoilState(refreshState);
+
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const showExpanded = () => {
+    setIsExpanded(true);
+  };
+
+  const hideExpanded = () => {
+    setIsExpanded(false);
+  };
 
   // 연월 선택창 모달 설정
   const [isModalVisible, setisModalVisible] = useState(false);
@@ -36,27 +51,21 @@ export default function AlbumScreen() {
 
   const [photos, setPhotos] = useState([]);
 
-  // const photoList = () => {
-  //   return (
-  //     {photos.map((item, idx) => {
-  //       return (
-  //         <ImageBackground
-  //           key={idx}
-  //           style={styles.eachPhotoContainer}
-  //           source={{uri: item.imgUrl}}>
-  //           {/* 일정 혹은 일기 정보 */}
-  //           <View style={styles.photoDetail}>
-  //             <Text>{item.detail}</Text>
-  //           </View>
-  //           {/* 날짜 */}
-  //           <View style={styles.photoDate}>
-  //             <Text>{item.createdAt.split('-')[2]}일</Text>
-  //           </View>
-  //         </ImageBackground>
-  //       );
-  //     })}
-  //   )
-  // }
+  // 사진 클릭 시 일기, 일정 화면으로 이동
+  const onNavigate = item => {
+    console.log(item);
+    const itemCategory = item.category;
+
+    if (itemCategory === 'DIARY') {
+      navigation.navigate('일기', {
+        dateInfo: item.startDate,
+      });
+    } else {
+      navigation.navigate('캘린더', {
+        dateInfo: item.startDate,
+      });
+    }
+  };
 
   // 월별 사진 조회
   const getMonthlyAlbumData = async (year, month) => {
@@ -82,7 +91,7 @@ export default function AlbumScreen() {
 
   useEffect(() => {
     getMonthlyAlbumData(selectedYear, selectedMonth);
-  }, [selectedYear, selectedMonth]);
+  }, [selectedYear, selectedMonth, refresh]);
 
   return (
     <View style={styles.container}>
@@ -92,20 +101,22 @@ export default function AlbumScreen() {
         <View style={{paddingLeft: 15, opacity: 0}}>
           <Ionicons name="calendar-outline" size={30} color="black" />
         </View>
-        <View style={{opacity: 0}}>
-          <Text>월</Text>
-        </View>
         {/* 선택된 날짜정보 */}
         <View style={styles.selectDate}>
           <View style={styles.selectYear}>
             <Text style={styles.selectYearFont}>{selectedYear}</Text>
           </View>
           <View style={styles.selectMonth}>
-            <Text style={styles.selectMonthFont}>{selectedMonth}</Text>
+            <View style={{opacity: 0}}>
+              <Text style={styles.selectMonthUnitFont}>월</Text>
+            </View>
+            <View>
+              <Text style={styles.selectMonthFont}>{selectedMonth}</Text>
+            </View>
+            <View>
+              <Text style={styles.selectMonthUnitFont}>월</Text>
+            </View>
           </View>
-        </View>
-        <View style={{justifyContent: 'flex-end', paddingBottom: 10}}>
-          <Text style={styles.selectMonthUnitFont}>월</Text>
         </View>
         {/* 날짜 선택창 여는 버튼 */}
         <View style={styles.selectDateBtn}>
@@ -127,41 +138,129 @@ export default function AlbumScreen() {
           />
         </View>
       </Modal>
+      {/* 확대 토글 */}
+      <View
+        style={{
+          flexDirection: 'row',
+          width: 120,
+          height: 44,
+          paddingVertical: 5,
+        }}>
+        <TouchableOpacity
+          style={{
+            width: '50%',
+            // borderWidth: 1,
+            borderRightWidth: 0,
+            borderTopLeftRadius: 12,
+            borderBottomLeftRadius: 12,
+            alignItems: 'center',
+            justifyContent: 'center',
+            elevation: 1,
+          }}
+          onPress={showExpanded}>
+          <MaterialIcons
+            name="zoom-in"
+            size={28}
+            color={isExpanded ? '#d9d9d9' : '#727272'}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            width: '50%',
+            // borderWidth: 1,
+            borderBottomRightRadius: 12,
+            borderTopRightRadius: 12,
+            alignItems: 'center',
+            justifyContent: 'center',
+            elevation: 1,
+          }}
+          Q
+          onPress={hideExpanded}>
+          <MaterialIcons
+            name="zoom-out"
+            size={28}
+            color={isExpanded ? '#727272' : '#d9d9d9'}
+          />
+        </TouchableOpacity>
+      </View>
       {/* 사진 리스트 */}
       <View style={styles.albumContainer}>
         {photos.length === 0 ? <Text>등록된 사진이 없습니다.</Text> : <></>}
-
-        <FlatList
-          columnWrapperStyle={{justifyContent: 'space-between'}}
-          data={photos}
-          renderItem={({item}) => (
-            <ImageBackground
-              source={{uri: item.imgUrl}}
-              style={styles.eachPhotoContainer}
-              imageStyle={styles.eachPhoto}>
-              <View style={styles.photoDetail}>
-                <View style={styles.photoDate}>
-                  <Text style={{fontSize: 26, fontFamily: 'Jost-Bold'}}>
-                    {item.startDate.split('-')[2]}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 13,
-                      fontFamily: 'Pretendard-Bold',
-                    }}>
-                    일
-                  </Text>
+        {isExpanded ? (
+          // 확대 모드
+          <FlatList
+            key="expandedList"
+            data={photos}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                  onNavigate(item);
+                }}>
+                <ImageBackground
+                  source={{uri: item.imgUrl}}
+                  style={styles.eachPhotoContainerExpanded}
+                  imageStyle={styles.eachPhoto}>
+                  <View style={styles.photoDetailExpanded}>
+                    <View style={styles.photoDateExpanded}>
+                      <Text style={{fontSize: 30, fontFamily: 'Jost-Bold'}}>
+                        {item.startDate.split('-')[2]}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontFamily: 'Pretendard-Bold',
+                        }}>
+                        일
+                      </Text>
+                    </View>
+                    <View style={styles.photoSource}>
+                      <Text
+                        style={{
+                          fontFamily: 'Pretendard-SemiBold',
+                          fontSize: 26,
+                        }}>
+                        {item.detail}
+                      </Text>
+                    </View>
+                  </View>
+                </ImageBackground>
+              </TouchableOpacity>
+            )}
+            ItemSeparatorComponent={() => <View style={{height: 10}} />}
+            contentContainerStyle={{padding: 20}}
+          />
+        ) : (
+          <FlatList
+            key="collapsedList"
+            columnWrapperStyle={{justifyContent: 'space-between'}}
+            data={photos}
+            renderItem={({item}) => (
+              <ImageBackground
+                source={{uri: item.imgUrl}}
+                style={styles.eachPhotoContainer}
+                imageStyle={styles.eachPhoto}>
+                <View style={styles.photoDetail}>
+                  <View style={styles.photoDate}>
+                    <Text style={{fontSize: 26, fontFamily: 'Jost-Bold'}}>
+                      {item.startDate.split('-')[2]}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        fontFamily: 'Pretendard-Bold',
+                      }}>
+                      일
+                    </Text>
+                  </View>
                 </View>
-                {/* <View style={styles.photoSource}>
-                  <Text>{item.detail}</Text>
-                </View> */}
-              </View>
-            </ImageBackground>
-          )}
-          ItemSeparatorComponent={() => <View style={{height: 10}} />}
-          numColumns={2}
-          contentContainerStyle={{padding: 20}}
-        />
+              </ImageBackground>
+            )}
+            ItemSeparatorComponent={() => <View style={{height: 10}} />}
+            numColumns={2}
+            contentContainerStyle={{padding: 20}}
+          />
+        )}
       </View>
     </View>
   );
@@ -171,10 +270,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 50,
     paddingHorizontal: 20,
   },
   dateContainer: {
+    marginTop: 40,
     flexDirection: 'row',
   },
   selectDate: {
@@ -192,11 +291,18 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   albumContainer: {
-    maxHeight: '80%',
+    width: '100%',
+    maxHeight: '70%',
   },
   eachPhotoContainer: {
     width: '47%',
     height: 200,
+    borderRadius: 16,
+    elevation: 5,
+  },
+  eachPhotoContainerExpanded: {
+    width: '100%',
+    height: 400,
     borderRadius: 16,
     elevation: 5,
   },
@@ -211,17 +317,38 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
   },
+  photoDetailExpanded: {
+    width: '100%',
+    height: '20%',
+    padding: 10,
+
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   photoDate: {
     flex: 1,
     flexDirection: 'row',
 
     justifyContent: 'flex-end',
     alignItems: 'baseline',
+  },
+  photoDateExpanded: {
+    flex: 1,
+    flexDirection: 'row',
 
+    justifyContent: 'center',
+    alignItems: 'baseline',
+
+    width: '100%',
+    height: '100%',
     // borderWidth: 1,
   },
   photoSource: {
     flex: 2,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'flex-start',
+    // borderWidth: 1,
   },
   selectYearFont: {
     fontSize: 24,
@@ -234,5 +361,9 @@ const styles = StyleSheet.create({
   selectMonthUnitFont: {
     fontSize: 15,
     fontFamily: 'Pretendard-Medium',
+  },
+  selectMonth: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
   },
 });

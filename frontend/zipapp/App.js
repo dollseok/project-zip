@@ -17,6 +17,7 @@ import {setCustomText} from 'react-native-global-props';
 const customTextProps = {
   style: {
     fontFamily: 'Pretendard-Regular',
+    letterSpacing: -0.4,
   },
 };
 

@@ -1,11 +1,17 @@
-import {StyleSheet, View, Text, ScrollView} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  KeyboardAvoidingView,
+} from 'react-native';
 import ScheduleItem from './ScheduleItem';
 import axiosInstance from '../../util/Interceptor';
 import {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ScheduleList(props) {
-  const {schedules, selectedYear, selectedMonth} = props;
+  const {schedules, selectedYear, selectedMonth, navigation} = props;
   // console.log('일정화면에서 받아온 일정 리스트: ', schedules);
 
   return (
@@ -20,6 +26,7 @@ export default function ScheduleList(props) {
                 scheduleId={schedule.scheduleId}
                 selectedYear={selectedYear}
                 selectedMonth={selectedMonth}
+                navigation={navigation}
               />
             </View>
           );

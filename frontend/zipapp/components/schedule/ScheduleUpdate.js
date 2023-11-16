@@ -106,6 +106,7 @@ export default function ScheduleUpdate(props) {
           text: '삭제',
           onPress: () => {
             onDelete();
+            Alert.alert('', '일정이 삭제되었습니다.');
           },
           style: 'destructive',
         },
@@ -193,16 +194,12 @@ export default function ScheduleUpdate(props) {
             {/* 취소 & 등록 버튼 */}
             <View style={styles.buttonContainer}>
               {/* 취소 버튼 */}
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={closeModal}>
-                <Text>취소</Text>
+              <TouchableOpacity onPress={closeModal}>
+                <Text style={styles.cancelButton}>취소</Text>
               </TouchableOpacity>
               {/* 등록 버튼 */}
-              <TouchableOpacity
-                style={styles.writeButton}
-                onPress={updateSchedule}>
-                <Text>완료</Text>
+              <TouchableOpacity onPress={updateSchedule}>
+                <Text style={styles.writeButton}>완료</Text>
               </TouchableOpacity>
             </View>
             {/* 일정 이름 입력 */}
@@ -222,7 +219,9 @@ export default function ScheduleUpdate(props) {
                 <TouchableOpacity
                   style={styles.selectDateInput}
                   onPress={() => setOpenPickStart(true)}>
-                  <Text>{format(new Date(startDate), 'yyyy.M.d')}</Text>
+                  <Text style={styles.selectDateInputText}>
+                    {format(new Date(startDate), 'yyyy.M.d')}
+                  </Text>
                 </TouchableOpacity>
                 <DatePicker
                   modal
@@ -248,7 +247,9 @@ export default function ScheduleUpdate(props) {
                 <TouchableOpacity
                   style={styles.selectDateInput}
                   onPress={() => setOpenPickEnd(true)}>
-                  <Text>{format(new Date(endDate), 'yyyy.M.d')}</Text>
+                  <Text style={styles.selectDateInputText}>
+                    {format(new Date(endDate), 'yyyy.M.d')}
+                  </Text>
                 </TouchableOpacity>
                 <DatePicker
                   modal
@@ -270,9 +271,13 @@ export default function ScheduleUpdate(props) {
                 />
               </View>
             </View>
-            <TouchableOpacity onPress={deleteSchedule}>
-              <Text>삭제</Text>
-            </TouchableOpacity>
+            <View style={{alignItems: 'center'}}>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={deleteSchedule}>
+                <Text style={{color: 'white', fontSize: 15}}>삭제</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </Animated.View>
         <TouchableWithoutFeedback onPress={closeModal}>
@@ -300,19 +305,19 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   createFormContainer: {
-    padding: 20,
-    gap: 10,
+    padding: 30,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 30,
   },
   titleInput: {
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: 30,
+    marginBottom: 70,
     paddingHorizontal: 10,
-    height: 40,
-
+    height: 50,
+    fontSize: 20,
     borderBottomWidth: 1,
     borderColor: 'gray',
   },
@@ -321,7 +326,33 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   selectDateInput: {
-    borderWidth: 1,
-    borderColor: 'black',
+    marginBottom: 20,
+  },
+  selectDateInputText: {
+    fontSize: 20,
+    color: 'black',
+    fontFamily: 'Jost-Medium',
+  },
+  selectDateLabel: {
+    fontSize: 18,
+  },
+
+  // 버튼
+  cancelButton: {
+    fontSize: 20,
+  },
+  writeButton: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: 'black',
+  },
+  deleteButton: {
+    backgroundColor: '#D93939',
+    borderRadius: 12,
+
+    width: 100,
+    height: 33,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

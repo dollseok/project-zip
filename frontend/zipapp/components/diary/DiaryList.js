@@ -12,10 +12,10 @@ export default function DiaryList(props) {
       <ScrollView>
         {diarys.map(diary => {
           return (
-            <View style={styles.diaryItem}>
+            <View style={styles.diaryItem} key={diary.diaryId}>
               <DiaryItem
                 diarySummary={diary}
-                key={diary.diaryId}
+                // key={diary.diaryId}
                 selectedYear={selectedYear}
                 selectedMonth={selectedMonth}></DiaryItem>
             </View>
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     height: '60%',
     gap: 10, // 일정별 간격
   },
-  diaryItem:{
-    marginBottom : 20,
+  diaryItem: {
+    marginBottom: 20,
   },
 });

@@ -8,17 +8,24 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 import axiosFileInstance from '../../../util/FileInterceptor';
 import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import refreshState from '../../atoms/refreshState';
 import {useRecoilState} from 'recoil';
 
 export default function PhotoList(props) {
-  const {scheduleId, photos} = props;
+  const {scheduleId, photos, navigation} = props;
 
   const [images, setImages] = useState([]); // 업로드할 이미지들
   // console.log('등록된 이미지: ', photos);
   const [refresh, setRefresh] = useRecoilState(refreshState);
+
+  const onNavigate = item => {
+    // console.log(item);
+    navigation.navigate('앨범');
+  };
 
   // 이미지 가져오기
   const onSelectImage = async () => {
@@ -87,15 +94,19 @@ export default function PhotoList(props) {
       <View style={styles.albumHeader}>
         <Text style={styles.scheduleSubTitle}>사진첩</Text>
         <TouchableOpacity onPress={onSelectImage}>
-          <Text>추가</Text>
+          <Ionicons name="add-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
       <ScrollView style={styles.albumContent} horizontal={true}>
         {photos.map(item => {
           return (
-            <View style={styles.eachPhotoContainer} key={item.imgUrl}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.eachPhotoContainer}
+              key={item.imgUrl}
+              onPress={() => onNavigate(item)}>
               <Image style={styles.eachPhoto} source={{uri: item.imgUrl}} />
-            </View>
+            </TouchableOpacity>
           );
         })}
       </ScrollView>
