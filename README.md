@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="etc/zipLogo.png" width="60%"/>
+  <img src="etc/zipLogo.png" width="30%"/>
 </div>
 
 <div align="center">
