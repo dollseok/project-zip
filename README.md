@@ -1199,8 +1199,15 @@
 
 <br/>
 
-## ERD
+## [ERD](https://www.erdcloud.com/d/T8eyDz3tiGfu37WFY) 
 
+<div align="center">
+  <br />
+  
+  <img src="./etc/zipErd.png" width="80%"/>
+  <a href></a>
+  <br />
+</div>
 
 
 <br/>
@@ -1213,15 +1220,95 @@
 
 # 📚 프로젝트 기능
 
-### 1. 블라블라 
+### 1. 가족 생성 
 
-* 카카오 소셜 로그인으로 회원가입을 진행합니다.
-* 최초 로그인 시 기본정보를 입력받습니다.
+* 가족을 생성해서 사람들을 초대할 수 있습니다.
+* 연락처를 입력하여 초대 코드를 문자로 전달하고 전달된 코드를 통해 한 가족이 될 수 있습니다.
+* 가족 프로필 홈에서 가족의 일정과 그날 쓰여진 일기를 확인할 수 있습니다.
 
 <div align="center">
   <br />
-  <img src="" width="70%"/>
+  <img src="./etc/시연시나리오/가족/가족생성.png" width="30%" style="margin-right: 5px;"/>
+  <img src="./etc/시연시나리오/가족/가족 홈.png" width="30%"
+  style="margin-right: 5px;"/>
+  <img src="./etc/시연시나리오/가족/가족생성.gif" width="30%"/>
   <br />
+</div>
+
+### 2. 일기
+
+* 가족들이 작성한 그날의 일기를 볼 수 있습니다.
+* 사진을 등록하면 배경에 사진이 함꼐 등록이 됩니다.
+* 사진에 댓글이 등록이 가능합니다.
+
+<div align="center">
+  <br />
+  <img src="./etc/시연시나리오/일기/일기리스트.png" width="30%" style="margin-right: 5px;"/>
+  <img src="./etc/시연시나리오/일기/일기상세.png" width="30%"
+  style="margin-right: 5px;"/>
+  <img src="./etc/시연시나리오/일기/일기생성.png" width="30%"/>
+  <br />
+  <img src="./etc/시연시나리오/일기/일기등록.gif" width="30%" style="margin-right: 5px;"/>
+  <img src="./etc/시연시나리오/일기/일기댓글등록.gif" width="30%"/>
+
+</div>
+
+### 3. 일정
+
+* 캘린더에서 각 날짜별 일정을 확인할 수 있습니다.
+* 월별로 일정을 확인할 수 있습니다.
+* 일정 상세에서 할일을 추가하며, 담당자를 설정할 수 있습니다.
+* 일정 관련하여 사진을 추가할 수 있습니다.
+
+<div align="center">
+  <br />
+  <img src="./etc/시연시나리오/일정/캘린더.png" width="24%" style="margin-right: 3px;"/>
+  <img src="./etc/시연시나리오/일정/캘린더일자별.png" width="24%"
+  style="margin-right: 3px;"/>
+  <img src="./etc/시연시나리오/일정/캘린더월별.png" width="24%" style="margin-right: 3px;"/>
+  <img src="./etc/시연시나리오/일정/캘린더상세.png" width="24%" style="margin-right: 3px;"/>
+  <br />
+  <img src="./etc/시연시나리오/일정/스케줄생성.gif" width="30%" style="margin-right: 5px;"/>
+  <img src="./etc/시연시나리오/일정/스케줄사진등록&사진첩.gif" width="30%" style="margin-right: 5px;"/>
+  <img src="./etc/시연시나리오/일정/할일 등록.gif" width="30%" style="margin-right: 5px;"/>
+
+</div>
+
+### 4. 사진첩
+
+* 일기, 일정에 담겨있던 사진을 모아볼 수 있습니다.
+* 일정은 일정에 대해서, 일기는 누구의 일기인지 확인할 수 있습니다.
+* 사진첩은 사이즈를 두 가지의 경우로 볼수 있습니다.
+
+
+<div align="center">
+  <br />
+  <img src="./etc/시연시나리오/사진첩/사진첩_대.png" width="24%" style="margin-right: 3px;"/>
+  <img src="./etc/시연시나리오/사진첩/사진첩_소.png" width="24%"/>
+</div>
+
+### 5. 알림
+
+* 매일 일정 시간에 가족과 대화할만한 일기의 주제를 추천해줍니다. 
+* CHAT GPT를 이용하여 적절한 질문을 추천해줍니다.
+
+
+<div align="center">
+  <br />
+  <img src="./etc/시연시나리오/알림/공통질문_알림.png" width="24%" style="margin-right: 3px;"/>
+  <img src="./etc/시연시나리오/알림/공통질문_알림.gif" width="24%"/>
+</div>
+
+
+### 6. 프로필
+
+* 개인의 프로필을 볼수 있습니다.
+* 작성한 일기와 일정을 볼 수 있습니다.
+* 이름과 이미지를 설정할 수 있습니다.
+
+<div align="center">
+  <br />
+  <img src="./etc/시연시나리오/프로필/프로필.png" width="24%" style="margin-right: 3px;"/>
 </div>
 
 
