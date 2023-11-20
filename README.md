@@ -39,7 +39,7 @@
 
 <td height="150px" align="center"> <a href="https://github.com/whddls12"> <img src="etc/profile/종인.jpg" width="150px" /> <br><br> 🙄 황종인 <br>(FrontEnd) </a> <br></td> 
 
-<td height="150px" align="center"> <a href="https://github.com/modelism93"> <img src="etc/profile/은석.jpg" width="150px" /> <br><br> 😁 이은석 <br>(BackEnd) </a> <br></td> 
+<td height="150px" align="center"> <a href="https://github.com/euneuneunseok"> <img src="etc/profile/은석.jpg" width="150px" /> <br><br> 😁 이은석 <br>(BackEnd) </a> <br></td> 
 
 <td height="150px" align="center"> <a href="https://github.com/#"> <img src="etc/profile/동현.jpg" width="150px" /> <br><br> 🙂 이동현 <br>(Design) </a> <br></td> 
 
