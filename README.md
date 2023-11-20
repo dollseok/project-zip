@@ -31,17 +31,17 @@
 <table> 
 <tr> 
 
-<td height="150px" align="center"> <a href="https://github.com/sseq007"> <img src="etc/profile/형석.jpg" width="150px" /> <br><br> 👑 이형석 <br>(FullStack) </a><br></td> 
+<td height="150px" align="center"> <a href="https://github.com/gudtjr2949"> <img src="etc/profile/형석.jpg" width="150px" /> <br><br> 👑 이형석 <br>(FullStack) </a><br></td> 
 
 <td height="150px" align="center"> <a href="https://github.com/choijehyuk"> <img src="etc/profile/제혁.jpg" width="150px" /> <br><br> 😆 최제혁 <br>(BackEnd) </a> <br></td> 
 
-<td height="150px" align="center"> <a href="https://github.com/Sohyun043011"> <img src="etc/profile/하진.jpg" width="150px" /> <br><br> 😶 김하진 <br>(BaekEnd) </a> <br></td> 
+<td height="150px" align="center"> <a href="https://github.com/hajin618"> <img src="etc/profile/하진.jpg" width="150px" /> <br><br> 😶 김하진 <br>(BackEnd) </a> <br></td> 
 
-<td height="150px" align="center"> <a href="https://github.com/mxnzx"> <img src="etc/profile/종인.jpg" width="150px" /> <br><br> 🙄 황종인 <br>(BackEnd) </a> <br></td> 
+<td height="150px" align="center"> <a href="https://github.com/whddls12"> <img src="etc/profile/종인.jpg" width="150px" /> <br><br> 🙄 황종인 <br>(FrontEnd) </a> <br></td> 
 
-<td height="150px" align="center"> <a href="https://github.com/dubu777"> <img src="etc/profile/은석.jpg" width="150px" /> <br><br> 😁 이은석 <br>(FrontEnd) </a> <br></td> 
+<td height="150px" align="center"> <a href="https://github.com/modelism93"> <img src="etc/profile/은석.jpg" width="150px" /> <br><br> 😁 이은석 <br>(BackEnd) </a> <br></td> 
 
-<td height="150px" align="center"> <a href="https://github.com/SeongLI"> <img src="etc/profile/동현.jpg" width="150px" /> <br><br> 🙂 이동현 <br>(Design) </a> <br></td> 
+<td height="150px" align="center"> <a href="https://github.com/#"> <img src="etc/profile/동현.jpg" width="150px" /> <br><br> 🙂 이동현 <br>(Design) </a> <br></td> 
 
 </tr> 
 </table>
